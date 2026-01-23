@@ -7,6 +7,9 @@ import ArticlePage from './pages/ArticlePage';
 import EventsPage from './pages/EventsPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
+import MentionsLegalesPage from './pages/MentionsLegalesPage';
+import PolitiqueConfidentialitePage from './pages/PolitiqueConfidentialitePage';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   return (
@@ -19,9 +22,12 @@ function App() {
             <Route path="articles/:slug" element={<ArticlePage />} />
             <Route path="evenements" element={<EventsPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="mentions-legales" element={<MentionsLegalesPage />} />
+            <Route path="politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
           </Route>
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
+        <CookieBanner />
       </Router>
     </AuthProvider>
   );

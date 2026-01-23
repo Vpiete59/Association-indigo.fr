@@ -137,13 +137,19 @@ export default function Footer() {
           <p className="font-body text-center md:text-left">
             © {currentYear} Association Indigo. Association loi 1901.
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             <Link to="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales
             </Link>
             <Link to="/politique-confidentialite" className="hover:text-white transition-colors">
               Confidentialité
             </Link>
+            <button 
+              onClick={() => window.dispatchEvent(new Event('openCookieSettings'))}
+              className="hover:text-white transition-colors"
+            >
+              Gérer les cookies
+            </button>
           </div>
         </div>
       </div>
