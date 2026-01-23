@@ -29,9 +29,10 @@ export default function ArticlesListPage() {
     fetchArticles();
   }, []);
 
-  // Grouper les catégories pour les filtres
+  // Création dynamique des filtres basés sur les articles existants
   const categories = Array.from(new Set(articles.map(a => a.category)));
   
+  // Filtrage
   const filteredArticles = selectedCategory === 'all' 
     ? articles 
     : articles.filter(a => a.category === selectedCategory);
@@ -50,31 +51,40 @@ export default function ArticlesListPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* En-tête avec formes douces */}
-      <section className="bg-white pt-12 pb-16 rounded-b-[3rem] shadow-sm relative overflow-hidden mb-12">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-peach-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-nature-primary/10 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
+      {/* --- HERO SECTION (NOUVEAU DESIGN) --- */}
+      <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
+        
+        {/* Image de fond */}
+        <div className="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop" 
+                alt="Bibliothèque et éducation" 
+                className="w-full h-full object-cover"
+            />
+            {/* Filtre sombre Indigo pour la lisibilité */}
+            <div className="absolute inset-0 bg-indigo-950/70 mix-blend-multiply"></div>
+        </div>
         
         <div className="container mx-auto px-4 relative z-10 text-center">
-            <span className="inline-block py-1 px-3 rounded-full bg-indigo-primary/10 text-indigo-primary font-bold text-sm mb-4 uppercase tracking-wide">
-                Ressources
+            <span className="inline-block py-1 px-4 rounded-full bg-white/20 backdrop-blur-md text-white font-bold text-sm mb-6 uppercase tracking-widest border border-white/30">
+                Ressources Éducatives
             </span>
-            <h1 className="font-heading font-bold text-4xl md:text-5xl text-dark-text mb-6">
+            <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-6 drop-shadow-lg">
               Bibliothèque & Dossiers
             </h1>
-            <p className="font-body text-lg text-dark-text/70 max-w-2xl mx-auto">
-              Retrouvez ici tous nos articles, guides et fiches pratiques pour mieux comprendre et accompagner vos enfants.
+            <p className="font-body text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+              Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants et trouver des clés au quotidien.
             </p>
 
             {/* Filtres de catégorie */}
             {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-3 mt-8">
+              <div className="flex flex-wrap justify-center gap-3 mt-10">
                 <button
                   onClick={() => setSelectedCategory('all')}
-                  className={`px-5 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 ${
+                  className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 ${
                     selectedCategory === 'all'
-                      ? 'bg-indigo-primary text-white shadow-lg shadow-indigo-primary/30'
-                      : 'bg-white text-dark-text/70 hover:bg-gray-50 border border-gray-100'
+                      ? 'bg-peach-primary text-white shadow-lg scale-105'
+                      : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/30'
                   }`}
                 >
                   Tout voir
@@ -83,10 +93,10 @@ export default function ArticlesListPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-5 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 capitalize ${
+                    className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 capitalize ${
                       selectedCategory === cat
-                        ? 'bg-peach-primary text-white shadow-lg shadow-peach-primary/30'
-                        : 'bg-white text-dark-text/70 hover:bg-gray-50 border border-gray-100'
+                        ? 'bg-peach-primary text-white shadow-lg scale-105'
+                        : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/30'
                     }`}
                   >
                     {cat}
@@ -97,7 +107,7 @@ export default function ArticlesListPage() {
         </div>
       </section>
 
-      {/* Grille des articles */}
+      {/* --- GRILLE DES ARTICLES --- */}
       <div className="container mx-auto px-4">
           {filteredArticles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -105,46 +115,44 @@ export default function ArticlesListPage() {
                 <Link
                   key={article.id}
                   to={`/articles/${article.slug}`}
-                  className="group bg-white rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-1"
+                  className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
                 >
-                  {/* ZONE IMAGE (Affichage du Hero) */}
+                  {/* ZONE IMAGE */}
                   <div className="h-56 overflow-hidden relative bg-gray-100">
                     {article.image_url ? (
                       <img
-                        src={article.image_url} // C'est ici que l'image du Hero est chargée
+                        src={article.image_url} 
                         alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         loading="lazy"
                       />
                     ) : (
-                      // Fallback si pas d'image : un fond coloré doux avec icône
+                      // Fallback si pas d'image
                       <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2">
-                        <ImageOff size={32} />
-                        <span className="text-xs font-bold uppercase tracking-widest opacity-50">Pas d'image</span>
+                        <BookOpen size={40} />
                       </div>
                     )}
                     
-                    {/* Badge Catégorie superposé sur l'image */}
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">
+                    {/* Badge Catégorie */}
+                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">
                       {article.category}
                     </div>
                   </div>
 
-                  {/* Contenu Texte de la carte */}
+                  {/* CONTENU TEXTE */}
                   <div className="p-8 flex flex-col flex-grow">
                     <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">
                       {article.title}
                     </h3>
                     
-                    {/* On affiche le sous-titre s'il existe, sinon on coupe le premier paragraphe */}
                     <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow leading-relaxed">
-                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 100) + '...' : "Lire l'article pour en savoir plus.")}
+                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 120) + '...' : "Découvrez cet article complet pour en savoir plus.")}
                     </p>
                     
                     <div className="pt-6 border-t border-gray-50 flex items-center justify-between text-indigo-primary font-bold text-sm mt-auto">
                       <span>Lire le dossier</span>
-                      <div className="w-8 h-8 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all">
-                        <ArrowRight size={16} />
+                      <div className="w-10 h-10 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all duration-300">
+                        <ArrowRight size={18} />
                       </div>
                     </div>
                   </div>
@@ -152,18 +160,18 @@ export default function ArticlesListPage() {
               ))}
             </div>
           ) : (
-            /* État vide si aucune recherche ne correspond */
-            <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100 max-w-2xl mx-auto">
-              <div className="inline-flex p-4 rounded-full bg-gray-100 mb-4 text-gray-400">
-                <Search size={32} />
+            /* --- ÉTAT VIDE --- */
+            <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
+              <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300">
+                <Search size={40} />
               </div>
-              <h3 className="font-heading font-bold text-xl text-dark-text mb-2">Aucun article trouvé</h3>
-              <p className="text-dark-text/60">Nous n'avons pas encore de contenu pour cette catégorie.</p>
+              <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">Aucun résultat</h3>
+              <p className="text-dark-text/60 mb-8">Nous n'avons pas trouvé d'articles dans cette catégorie pour le moment.</p>
               <button 
                 onClick={() => setSelectedCategory('all')}
-                className="mt-6 text-indigo-primary font-bold hover:underline"
+                className="px-8 py-3 bg-indigo-primary text-white font-bold rounded-full hover:bg-indigo-primary/90 transition-all shadow-lg"
               >
-                Voir tous les articles
+                Voir toute la bibliothèque
               </button>
             </div>
           )}
