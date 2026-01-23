@@ -9,7 +9,7 @@ import {
 
 type Tab = 'articles' | 'events';
 
-// Générateur de Slug automatique (reste inchangé)
+// Générateur de Slug automatique
 const generateSlug = (text: string) => {
   return text
     .toString()
@@ -43,17 +43,16 @@ export default function AdminPage() {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
-  // --- FORMULAIRE ARTICLE SIMPLIFIÉ ---
+  // --- FORMULAIRE ARTICLE (Ajusté à votre CSV : Pas de paragraph_2) ---
   const [articleForm, setArticleForm] = useState({
     title: '',
     subtitle: '',
     slug: '',
     category: 'TDAH / TDA',
-    image_url: '',          // Image du Hero (Bandeau)
-    paragraph_1: '',        // Premier bloc de texte
-    poster_image_url: '',   // L'Affiche (leur délire)
-    paragraph_2: '',        // Deuxième bloc de texte
-    image_2_url: '',        // Image illustration finale
+    image_url: '',          // Image du Hero
+    paragraph_1: '',        // Le gros bloc de texte
+    poster_image_url: '',   // L'Affiche
+    image_2_url: '',        // Image illustration
     cta_text: '',
     cta_link: '',
     published: false,
@@ -105,18 +104,18 @@ export default function AdminPage() {
   const handleEditArticle = (article: Article) => {
     setSelectedArticle(article);
     setArticleForm({
-      title: article.title,
+      title: article.title || '',
       subtitle: article.subtitle || '',
-      slug: article.slug,
-      category: article.category,
+      slug: article.slug || '',
+      category: article.category || 'TDAH / TDA',
       image_url: article.image_url || '',
       paragraph_1: article.paragraph_1 || '',
       poster_image_url: article.poster_image_url || '',
-      paragraph_2: article.paragraph_2 || '',
+      // paragraph_2 supprimé car absent de la BDD
       image_2_url: article.image_2_url || '',
       cta_text: article.cta_text || '',
       cta_link: article.cta_link || '',
-      published: article.published,
+      published: article.published || false,
     });
     setIsEditing(true);
   };
@@ -132,15 +131,16 @@ export default function AdminPage() {
     e.preventDefault();
     const slugToSave = articleForm.slug || generateSlug(articleForm.title);
     
-    // On prépare l'objet à sauvegarder. 
-    // Note: On n'utilise plus 'content' (HTML global), mais les champs séparés.
+    // On prépare l'objet à sauvegarder SANS paragraph_2
     const dataToSave = { ...articleForm, slug: slugToSave };
 
     try {
       if (selectedArticle) {
-        await supabase.from('articles').update(dataToSave).eq('id', selectedArticle.id);
+        const { error } = await supabase.from('articles').update(dataToSave).eq('id', selectedArticle.id);
+        if (error) throw error;
       } else {
-        await supabase.from('articles').insert([dataToSave]);
+        const { error } = await supabase.from('articles').insert([dataToSave]);
+        if (error) throw error;
       }
       setIsEditing(false);
       setSelectedArticle(null);
@@ -148,7 +148,7 @@ export default function AdminPage() {
       fetchData();
     } catch (error) {
       console.error('Erreur sauvegarde:', error);
-      alert("Erreur lors de la sauvegarde.");
+      alert("Erreur lors de la sauvegarde. Vérifiez les champs.");
     }
   };
 
@@ -156,18 +156,22 @@ export default function AdminPage() {
     setArticleForm({
       title: '', subtitle: '', slug: '', category: 'TDAH / TDA',
       image_url: '', paragraph_1: '', poster_image_url: '',
-      paragraph_2: '', image_2_url: '', cta_text: '', cta_link: '',
+      image_2_url: '', cta_text: '', cta_link: '',
       published: false,
     });
   };
 
-  // --- HANDLERS EVENTS (Identique à avant) ---
+  // --- HANDLERS EVENTS ---
   const handleEditEvent = (event: Event) => {
     setSelectedEvent(event);
     setEventForm({
-      title: event.title, description: event.description || '', image_url: event.image_url || '',
-      event_date: event.event_date, location: event.location || '', registration_link: event.registration_link || '',
-      published: event.published,
+      title: event.title || '',
+      description: event.description || '',
+      image_url: event.image_url || '',
+      event_date: event.event_date || '',
+      location: event.location || '',
+      registration_link: event.registration_link || '',
+      published: event.published || false,
     });
     setIsEditing(true);
   };
@@ -188,10 +192,23 @@ export default function AdminPage() {
       setSelectedEvent(null);
       setEventForm({ title: '', description: '', image_url: '', event_date: '', location: '', registration_link: '', published: false });
       fetchData();
-    } catch (error) { console.error(error); }
+    } catch (error) { 
+        console.error(error); 
+        alert("Erreur lors de la sauvegarde de l'événement.");
+    }
   };
 
-  if (!user) return ( /* Code Login identique à la version précédente */ 
+  // --- SECURITE DATE ---
+  const formatDateForInput = (dateString: string) => {
+      try {
+          if (!dateString) return '';
+          return new Date(dateString).toISOString().slice(0, 16);
+      } catch (e) {
+          return '';
+      }
+  };
+
+  if (!user) return ( 
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <form onSubmit={handleLogin} className="bg-white p-8 rounded-xl shadow-lg w-96 space-y-4">
             <h1 className="text-2xl font-bold text-center text-indigo-primary">Connexion Admin</h1>
@@ -205,7 +222,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-body">
-      {/* SIDEBAR - Identique à la version précédente */}
+      {/* SIDEBAR */}
       <aside className="w-full md:w-72 bg-white border-r border-gray-100 flex flex-col h-auto md:h-screen sticky top-0 z-40">
         <div className="p-6 border-b border-gray-100">
            <h2 className="font-heading font-bold text-lg text-indigo-primary">Admin Indigo</h2>
@@ -240,7 +257,7 @@ export default function AdminPage() {
               </div>
 
               {activeTab === 'articles' ? (
-                /* --- FORMULAIRE ARTICLE PAS À PAS --- */
+                /* --- FORMULAIRE ARTICLE PAS À PAS (CORRIGÉ) --- */
                 <form onSubmit={handleSaveArticle} className="space-y-8">
                   
                   {/* BLOC 1 : L'ENTÊTE */}
@@ -273,21 +290,14 @@ export default function AdminPage() {
                      <h3 className="font-bold text-indigo-primary flex items-center gap-2"><FileText size={18}/> 2. Le Contenu</h3>
                      
                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Premier Paragraphe (Intro)</label>
-                        <p className="text-xs text-gray-400 mb-2">Décrivez la problématique ici.</p>
-                        <textarea value={articleForm.paragraph_1} onChange={e => setArticleForm({...articleForm, paragraph_1: e.target.value})} className="w-full px-4 py-2 border rounded-xl" rows={6} />
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Texte Principal (Paragraphes)</label>
+                        <p className="text-xs text-gray-400 mb-2">Décrivez la problématique ici. (Saut de ligne automatique)</p>
+                        <textarea value={articleForm.paragraph_1} onChange={e => setArticleForm({...articleForm, paragraph_1: e.target.value})} className="w-full px-4 py-2 border rounded-xl" rows={10} />
                      </div>
 
                      <div className="p-4 bg-peach-primary/5 border border-peach-primary/20 rounded-xl">
                         <label className="block text-sm font-bold text-peach-primary mb-1 flex items-center gap-2"><ImageIcon size={16}/> L'Affiche (Optionnel)</label>
-                        <p className="text-xs text-gray-500 mb-2">Collez ici le lien de leur affiche ou infographie.</p>
                         <input type="text" value={articleForm.poster_image_url} onChange={e => setArticleForm({...articleForm, poster_image_url: e.target.value})} className="w-full px-4 py-2 border border-peach-primary/30 rounded-xl focus:border-peach-primary" placeholder="https://..." />
-                     </div>
-
-                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Deuxième Paragraphe (Développement)</label>
-                        <p className="text-xs text-gray-400 mb-2">La suite de l'explication.</p>
-                        <textarea value={articleForm.paragraph_2} onChange={e => setArticleForm({...articleForm, paragraph_2: e.target.value})} className="w-full px-4 py-2 border rounded-xl" rows={6} />
                      </div>
 
                      <div>
@@ -319,7 +329,7 @@ export default function AdminPage() {
                   <button type="submit" className="w-full py-3 bg-indigo-primary text-white font-bold rounded-xl hover:bg-indigo-primary/90 transition-all shadow-lg">Sauvegarder l'article</button>
                 </form>
               ) : (
-                /* FORMULAIRE EVENT (Simplifié aussi) */
+                /* FORMULAIRE EVENT (Sécurisé avec formatDateForInput) */
                 <form onSubmit={handleSaveEvent} className="space-y-6">
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">Titre</label>
@@ -327,7 +337,13 @@ export default function AdminPage() {
                     </div>
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">Date</label>
-                        <input type="datetime-local" value={eventForm.event_date ? new Date(eventForm.event_date).toISOString().slice(0, 16) : ''} onChange={e => setEventForm({...eventForm, event_date: new Date(e.target.value).toISOString()})} className="w-full px-4 py-2 border rounded-xl" required />
+                        <input 
+                            type="datetime-local" 
+                            value={formatDateForInput(eventForm.event_date)} 
+                            onChange={e => setEventForm({...eventForm, event_date: new Date(e.target.value).toISOString()})} 
+                            className="w-full px-4 py-2 border rounded-xl" 
+                            required 
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">Lieu</label>
@@ -354,7 +370,7 @@ export default function AdminPage() {
               )}
             </div>
           ) : (
-            /* LISTE DES ARTICLES / EVENTS (Reste propre) */
+            /* LISTE DES ARTICLES / EVENTS */
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-50 text-gray-500 uppercase text-xs">

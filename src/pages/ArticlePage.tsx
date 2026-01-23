@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
-import { ArrowLeft, Calendar, Facebook } from 'lucide-react';
+import { ArrowLeft, Facebook } from 'lucide-react';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -83,10 +83,10 @@ export default function ArticlePage() {
                 )}
             </div>
 
-            {/* LE CORPS DE L'ARTICLE (Assemblage des blocs) */}
+            {/* LE CORPS DE L'ARTICLE */}
             <div className="p-8 md:p-12 space-y-12">
                 
-                {/* 1. Premier Paragraphe */}
+                {/* 1. Premier Paragraphe (Principal) */}
                 {article.paragraph_1 && (
                     <div className="prose prose-lg prose-indigo max-w-none text-dark-text/80 whitespace-pre-line">
                         {article.paragraph_1}
@@ -107,14 +107,9 @@ export default function ArticlePage() {
                     </div>
                 )}
 
-                {/* 3. Deuxième Paragraphe */}
-                {article.paragraph_2 && (
-                    <div className="prose prose-lg prose-indigo max-w-none text-dark-text/80 whitespace-pre-line">
-                        {article.paragraph_2}
-                    </div>
-                )}
+                {/* NOTE : Le Paragraphe 2 a été retiré car absent de la base de données */}
 
-                {/* 4. Image Secondaire */}
+                {/* 3. Image Secondaire */}
                 {article.image_2_url && (
                     <div className="rounded-3xl overflow-hidden shadow-lg">
                         <img 
