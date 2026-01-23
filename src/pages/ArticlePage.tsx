@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
-import { ArrowLeft, Facebook } from 'lucide-react';
+import { ArrowLeft, Calendar, Facebook } from 'lucide-react';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -12,7 +12,6 @@ export default function ArticlePage() {
   useEffect(() => {
     async function fetchArticle() {
       if (!slug) return;
-
       try {
         const { data, error } = await supabase
           .from('articles')
@@ -22,149 +21,143 @@ export default function ArticlePage() {
           .maybeSingle();
 
         if (error) throw error;
-
-        if (!data) {
-          setError('Article non trouvé');
-        } else {
-          setArticle(data);
-        }
+        if (!data) setError('Article non trouvé');
+        else setArticle(data);
       } catch (err) {
-        setError('Erreur lors du chargement de l\'article');
+        setError("Erreur de chargement.");
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-
     fetchArticle();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-primary mx-auto"></div>
-          <p className="mt-4 text-dark-text">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-light-bg"><div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div></div>;
 
-  if (error || !article) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-xl text-dark-text mb-4">{error || 'Article non trouvé'}</p>
-          <Link
-            to="/articles"
-            className="inline-flex items-center gap-2 text-indigo-primary hover:underline"
-          >
-            <ArrowLeft size={20} />
-            Retour aux articles
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (error || !article) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-light-bg px-4 text-center">
+      <h1 className="font-heading font-bold text-2xl text-dark-text mb-4">Oups !</h1>
+      <p className="text-dark-text/70 mb-8">{error || "Cet article n'existe pas."}</p>
+      <Link to="/articles" className="px-6 py-3 bg-indigo-primary text-white rounded-full font-bold">Retour à la bibliothèque</Link>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section avec Titre et Sous-titre */}
-      <section className="relative min-h-[60vh] flex items-end bg-gray-900">
-        {article.poster_image_url && (
-          <img
-            src={article.poster_image_url}
-            alt={article.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
-          />
+    <div className="min-h-screen bg-light-bg pb-20">
+      
+      {/* Header Image */}
+      <div className="h-64 md:h-96 w-full relative">
+        {article.image_url ? (
+           <>
+            <img src={article.image_url} alt={article.title} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-indigo-950/40"></div>
+           </>
+        ) : (
+            <div className="w-full h-full bg-gradient-to-r from-indigo-primary to-peach-primary"></div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         
-        <div className="relative container mx-auto px-4 py-12 pb-16">
-          <Link
-            to="/articles"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-6"
-          >
-            <ArrowLeft size={20} />
-            Retour aux articles
-          </Link>
-          
-          <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-4 max-w-4xl">
-            {article.title}
-          </h1>
-          
-          {article.subtitle && (
-            <p className="font-body text-xl md:text-2xl text-white/90 max-w-3xl">
-              {article.subtitle}
-            </p>
-          )}
+        {/* Bouton Retour */}
+        <div className="absolute top-24 left-4 md:left-8 z-10">
+             <Link to="/articles" className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-sm font-bold text-indigo-primary hover:bg-white transition-all shadow-sm">
+                <ArrowLeft size={16} /> Retour
+            </Link>
         </div>
-      </section>
+      </div>
 
-      {/* Contenu Principal */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 -mt-32 relative z-10">
+        <article className="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl overflow-hidden">
             
-            {/* Paragraphe Principal */}
-            {article.paragraph_1 && (
-              <div className="prose prose-lg max-w-none mb-12">
-                <div className="whitespace-pre-wrap font-body text-dark-text text-lg leading-relaxed">
-                  {article.paragraph_1}
+            {/* TITRE ET INFOS */}
+            <div className="p-8 md:p-12 border-b border-gray-100 text-center">
+                <span className="inline-block px-4 py-1 mb-4 bg-indigo-primary/10 text-indigo-primary font-bold rounded-full uppercase tracking-wide text-sm">
+                    {article.category}
+                </span>
+                <h1 className="font-heading font-bold text-3xl md:text-5xl text-dark-text mb-6 leading-tight">
+                    {article.title}
+                </h1>
+                {article.subtitle && (
+                    <p className="font-body text-xl text-dark-text/60 italic max-w-2xl mx-auto">
+                        "{article.subtitle}"
+                    </p>
+                )}
+            </div>
+
+            {/* LE CORPS DE L'ARTICLE (Assemblage des blocs) */}
+            <div className="p-8 md:p-12 space-y-12">
+                
+                {/* 1. Premier Paragraphe */}
+                {article.paragraph_1 && (
+                    <div className="prose prose-lg prose-indigo max-w-none text-dark-text/80 whitespace-pre-line">
+                        {article.paragraph_1}
+                    </div>
+                )}
+
+                {/* 2. L'AFFICHE (Mise en valeur spéciale) */}
+                {article.poster_image_url && (
+                    <div className="flex justify-center py-4">
+                        <div className="relative group max-w-md w-full">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-peach-primary to-indigo-primary rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                            <img 
+                                src={article.poster_image_url} 
+                                alt="Affiche événement" 
+                                className="relative rounded-2xl shadow-2xl w-full object-cover transform transition duration-500 hover:scale-[1.02]" 
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* 3. Deuxième Paragraphe */}
+                {article.paragraph_2 && (
+                    <div className="prose prose-lg prose-indigo max-w-none text-dark-text/80 whitespace-pre-line">
+                        {article.paragraph_2}
+                    </div>
+                )}
+
+                {/* 4. Image Secondaire */}
+                {article.image_2_url && (
+                    <div className="rounded-3xl overflow-hidden shadow-lg">
+                        <img 
+                            src={article.image_2_url} 
+                            alt="Illustration" 
+                            className="w-full h-auto object-cover" 
+                        />
+                    </div>
+                )}
+            </div>
+
+            {/* CTA BOUTON */}
+            {(article.cta_text && article.cta_link) && (
+                <div className="p-8 md:p-12 bg-gray-50 text-center border-t border-gray-100">
+                    <a
+                        href={article.cta_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-8 py-4 bg-peach-primary text-white font-heading font-bold text-lg rounded-full hover:bg-peach-primary/90 transition-all shadow-lg hover:shadow-peach-primary/30 transform hover:-translate-y-1"
+                    >
+                        {article.cta_text}
+                    </a>
                 </div>
-              </div>
             )}
+        </article>
 
-            {/* Image Secondaire */}
-            {article.image_2_url && (
-              <div className="my-12">
-                <img
-                  src={article.image_2_url}
-                  alt="Illustration"
-                  className="w-full rounded-2xl shadow-lg"
-                />
-              </div>
-            )}
-
-            {/* CTA personnalisé si disponible */}
-            {article.cta_text && article.cta_link && (
-              <div className="my-12 text-center">
-                <a
-                  href={article.cta_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-nature-primary text-white font-body font-semibold text-lg rounded-full hover:bg-opacity-90 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-nature-primary focus:ring-offset-2 shadow-lg"
-                >
-                  {article.cta_text}
-                </a>
-              </div>
-            )}
-          </div>
+        {/* Section Partage */}
+        <div className="max-w-4xl mx-auto mt-12 mb-20 text-center">
+            <p className="text-dark-text/60 mb-4 font-bold">Partager cette ressource</p>
+            <div className="flex justify-center">
+                 <a 
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-white text-[#1877F2] font-bold rounded-full shadow-sm hover:shadow-md transition-all border border-gray-100"
+                 >
+                    <Facebook size={18} />
+                    Sur Facebook
+                 </a>
+            </div>
         </div>
-      </section>
 
-      {/* CTA Facebook - Toujours présent */}
-      <section className="py-16 bg-light-bg">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-heading font-semibold text-2xl md:text-3xl text-dark-text mb-4">
-              Rejoignez notre communauté
-            </h2>
-            <p className="font-body text-dark-text/80 mb-8">
-              Échangez avec d'autres familles, partagez vos expériences et trouvez du soutien sur notre groupe Facebook.
-            </p>
-            <a
-              href="https://www.facebook.com/groups/467126453152213"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-[#1877F2] text-white font-body font-semibold text-lg rounded-full hover:bg-[#166FE5] transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#1877F2] focus:ring-offset-2 shadow-lg"
-            >
-              <Facebook size={24} />
-              Rejoindre le groupe Facebook
-            </a>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

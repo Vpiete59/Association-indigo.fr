@@ -1,0 +1,11 @@
+# Robots.txt pour Association Indigo
+# https://association-indigo.fr
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://association-indigo.fr/sitemap.xml
+
+# Interdire l'accès à la page admin pour les robots
+Disallow: /admin
