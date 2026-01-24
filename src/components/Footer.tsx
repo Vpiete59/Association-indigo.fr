@@ -136,37 +136,36 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* COLONNE 3 : PARTENAIRE PRINCIPAL (KINEVIR) */}
+          {/* COLONNE 3 : Rejoindre / Soutenir */}
           <div className="lg:pl-8">
             <h4 className="font-heading font-bold text-lg mb-6 flex items-center gap-2">
               <span className="w-8 h-1 bg-nature-primary rounded-full"></span>
-              Partenaire Officiel
+              Nous rejoindre
             </h4>
             
-            {/* Carte Kinevir - Mise en avant */}
-            <div className="bg-white rounded-2xl p-5 shadow-xl transform hover:-translate-y-1 transition-transform duration-300 group">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-14 h-14 flex-shrink-0 bg-gray-50 rounded-xl p-2 flex items-center justify-center border border-gray-100">
-                  <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h5 className="font-heading font-bold text-dark-text text-lg">Kinevir</h5>
-                    <span className="bg-indigo-primary/10 text-indigo-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Premium</span>
-                  </div>
-                  <p className="text-gray-500 text-sm">Kinésithérapie en ligne</p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3">
-                La plateforme de référence pour la téléconsultation et la kinésithérapie en ligne.
-              </p>
-              <a 
-                href="https://kinevir.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center gap-2 text-sm font-bold text-indigo-primary hover:text-peach-primary transition-colors"
+            <p className="text-indigo-100 text-sm mb-6">
+              L'Association Indigo vit grâce à ses adhérents et bénévoles. Rejoignez-nous pour soutenir les familles d'enfants atypiques !
+            </p>
+
+            <div className="space-y-3">
+              <a
+                href="https://www.helloasso.com/associations/indigo-preseau/adhesions/adhesion-2025"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-white text-indigo-primary font-heading font-bold rounded-xl hover:bg-gray-100 transition-all"
               >
-                Découvrir <ExternalLink size={14} />
+                <Heart size={18} />
+                Adhérer (5€/an)
+              </a>
+              
+              <a
+                href="https://www.helloasso.com/associations/indigo-preseau/formulaires/1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-peach-primary text-white font-heading font-bold rounded-xl hover:bg-peach-primary/90 transition-all"
+              >
+                <Heart size={18} fill="currentColor" />
+                Faire un don
               </a>
             </div>
           </div>
@@ -177,10 +176,24 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-10 mb-10">
           <h4 className="font-heading font-bold text-lg mb-6 flex items-center justify-center gap-2">
             <Handshake size={20} className="text-peach-primary" />
-            Nos Partenaires Locaux
+            Ils nous soutiennent
           </h4>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3">
+            {/* Kinevir en premier */}
+            <a 
+              href="https://kinevir.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex flex-col items-center text-center"
+            >
+              <div className="w-12 h-12 mb-2 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
+              </div>
+              <h5 className="font-heading font-bold text-white text-xs">Kinevir</h5>
+            </a>
+            
+            {/* Autres partenaires */}
             {partners.map((partner) => (
               <a 
                 key={partner.name}
@@ -192,8 +205,7 @@ export default function Footer() {
                 <div className="w-12 h-12 mb-2 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
                 </div>
-                <h5 className="font-heading font-bold text-white text-xs mb-0.5 line-clamp-1">{partner.name}</h5>
-                <p className="text-indigo-200 text-[10px] line-clamp-1">{partner.desc}</p>
+                <h5 className="font-heading font-bold text-white text-xs line-clamp-1">{partner.name}</h5>
               </a>
             ))}
           </div>
