@@ -35,7 +35,7 @@ export default function EventsPage() {
     return {
       day: date.getDate(),
       month: date.toLocaleDateString('fr-FR', { month: 'short' }), // ex: "jan."
-      fullDate: date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }),
+      fullDate: date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
       time: date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')
     };
   };
@@ -54,18 +54,18 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION (NOUVEAU DESIGN) --- */}
+      {/* --- HERO SECTION --- */}
       <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond */}
+        {/* Image de fond mise à jour */}
         <div className="absolute inset-0 z-0">
             <img 
-                src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=2000" 
-                alt="Atelier parents et partage" 
+                src="/indigocolor.webp" 
+                alt="Rencontres et Partage" 
                 className="w-full h-full object-cover"
             />
-            {/* Filtre Vert Nature / Indigo mixé */}
-            <div className="absolute inset-0 bg-nature-primary/80 mix-blend-multiply"></div>
+            {/* Filtre sombre pour la lisibilité */}
+            <div className="absolute inset-0 bg-indigo-950/60 mix-blend-multiply"></div>
         </div>
         
         <div className="container mx-auto px-4 relative z-10 text-center">
@@ -108,7 +108,7 @@ export default function EventsPage() {
                       </div>
                     )}
                     
-                    {/* Badge Date (Style Calendrier Éphéméride) */}
+                    {/* Badge Date */}
                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-2 text-center min-w-[70px] shadow-lg border border-white/50">
                       <span className="block font-heading font-bold text-2xl text-nature-primary leading-none">
                         {day}

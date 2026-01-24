@@ -51,14 +51,14 @@ export default function ArticlesListPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION (NOUVEAU DESIGN) --- */}
+      {/* --- HERO SECTION --- */}
       <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond */}
+        {/* Image de fond mise à jour */}
         <div className="absolute inset-0 z-0">
             <img 
-                src="/indigocolor.webp" 
-                alt="Bibliothèque et éducation" 
+                src="/connaissance.webp" 
+                alt="Savoir et Connaissance" 
                 className="w-full h-full object-cover"
             />
             {/* Filtre sombre Indigo pour la lisibilité */}
