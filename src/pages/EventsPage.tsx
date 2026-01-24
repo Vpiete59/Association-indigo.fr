@@ -13,6 +13,7 @@ export default function EventsPage() {
           .from('events')
           .select('*')
           .eq('published', true)
+          // On ne montre que les événements futurs ou d'aujourd'hui
           .gte('event_date', new Date().toISOString()) 
           .order('event_date', { ascending: true });
 
@@ -52,30 +53,36 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION --- */}
+      {/* --- HERO SECTION (Version Carte Givrée) --- */}
       <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond : SANS FILTRE */}
+        {/* Image de fond : Lumineuse sans filtre */}
         <div className="absolute inset-0 z-0">
             <img 
                 src="/indigocolor.webp" 
                 alt="Rencontres et Partage" 
                 className="w-full h-full object-cover"
             />
-            {/* J'ai supprimé la div overlay ici pour ne pas gâcher les couleurs */}
         </div>
         
-        <div className="container mx-auto px-4 relative z-10 text-center">
-            <span className="inline-block py-1 px-4 rounded-full bg-white/30 backdrop-blur-md text-white font-bold text-sm mb-6 uppercase tracking-widest border border-white/40 shadow-sm">
-                Agenda de l'association
-            </span>
-            {/* Texte avec une ombre portée forte pour rester lisible sur l'aquarelle */}
-            <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-6 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
-              Rencontres & Partage
-            </h1>
-            <p className="font-body text-lg text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-              Cafés des parents, groupes de parole, conférences... Ne restez plus seuls. Venez échanger et trouver du soutien lors de nos prochains rendez-vous.
-            </p>
+        <div className="container mx-auto px-4 relative z-10">
+            {/* CARTE "VERRE GIVRÉ" pour la lisibilité */}
+            <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-white/50 text-center">
+                
+                <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm mb-6 uppercase tracking-widest border border-indigo-200">
+                    Agenda de l'association
+                </span>
+                
+                {/* Titre en Indigo Foncé */}
+                <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-indigo-950 mb-6 leading-tight">
+                  Rencontres & Partage
+                </h1>
+                
+                {/* Texte descriptif sombre */}
+                <p className="font-body text-lg text-indigo-900/80 font-medium max-w-2xl mx-auto leading-relaxed">
+                  Cafés des parents, groupes de parole, conférences... Ne restez plus seuls. Venez échanger et trouver du soutien lors de nos prochains rendez-vous.
+                </p>
+            </div>
         </div>
       </section>
 
