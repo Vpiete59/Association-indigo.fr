@@ -23,6 +23,18 @@ export default function Footer() {
       desc: "Espace de soin et d'écoute bienveillante.",
       url: "https://www.facebook.com/yohanbauduin.cabinet.MERCI",
       image: "/merci.webp",
+    },
+    {
+      name: "Le Baragraphe",
+      desc: "Lieu de convivialité et de soutien local.",
+      url: "https://www.facebook.com/lebaragraphe.fr",
+      image: "/baragraphe.webp",
+    },
+    {
+      name: "Maïté Jonckheere",
+      desc: "Sophrologue à Villereau, gestion du stress et émotions.",
+      url: "https://www.facebook.com/people/Ma%C3%AFt%C3%A9-Jonckheere-Sophrologue-Villereau/pfbid02FBQDg3yfxr2nGCdhnvFhYg475D7eWkLPUQTXBzcgYbRTWoCTjkou44j5Ct6BcsiMl/",
+      image: "/maite.webp", // ⚠️ Assure-toi que l'image porte bien ce nom dans le dossier public
     }
   ];
 
@@ -138,23 +150,25 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* 2. AUTRES PARTENAIRES (Style "Glass" - Fond transparent) */}
-                {localPartners.map((partner) => (
-                    <div key={partner.name} className="bg-white/10 border border-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors flex items-start gap-4">
-                        <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1 flex items-center justify-center">
-                            <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
-                        </div>
-                        <div>
-                            <h5 className="font-heading font-bold text-white text-sm mb-0.5">{partner.name}</h5>
-                            <p className="text-indigo-100 text-xs leading-tight mb-1">
-                                {partner.desc}
-                            </p>
-                            <a href={partner.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/70 hover:text-white flex items-center gap-1">
-                                Voir le site <ExternalLink size={10} />
-                            </a>
-                        </div>
-                    </div>
-                ))}
+                {/* 2. AUTRES PARTENAIRES (Style "Glass") */}
+                <div className="grid grid-cols-1 gap-3">
+                  {localPartners.map((partner) => (
+                      <div key={partner.name} className="bg-white/10 border border-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors flex items-start gap-4">
+                          <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1 flex items-center justify-center">
+                              <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                          </div>
+                          <div className="min-w-0">
+                              <h5 className="font-heading font-bold text-white text-sm mb-0.5 truncate">{partner.name}</h5>
+                              <p className="text-indigo-100 text-xs leading-tight mb-1 line-clamp-2">
+                                  {partner.desc}
+                              </p>
+                              <a href={partner.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/70 hover:text-white flex items-center gap-1">
+                                  Voir le site <ExternalLink size={10} />
+                              </a>
+                          </div>
+                      </div>
+                  ))}
+                </div>
             </div>
 
           </div>
