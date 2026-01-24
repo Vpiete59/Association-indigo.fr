@@ -4,20 +4,23 @@ import { Facebook, Mail, MapPin, ExternalLink, Heart, ChevronRight } from 'lucid
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Liste des partenaires secondaires (Mairie, Locaux...)
+  // Liste des partenaires secondaires avec leurs descriptions
   const localPartners = [
     {
       name: "Ville de Préseau",
+      desc: "Soutien institutionnel et local pour nos actions.",
       url: "https://www.preseau.fr/",
-      image: "/Preseau.webp", // Assure-toi que le fichier est bien dans /public
+      image: "/Preseau.webp", 
     },
     {
       name: "BYcoach Yohan Bauduin",
+      desc: "Accompagnement sportif et mental adapté.",
       url: "https://www.facebook.com/yohan.bauduin.52",
       image: "/Bauduin.webp",
     },
     {
       name: "Cabinet MERCI",
+      desc: "Espace de soin et d'écoute bienveillante.",
       url: "https://www.facebook.com/yohanbauduin.cabinet.MERCI",
       image: "/merci.webp",
     }
@@ -115,62 +118,43 @@ export default function Footer() {
               Nos Partenaires
             </h4>
             
-            {/* 1. KINEVIR (Partenaire Premium - Mis en avant) */}
-            <div className="bg-white rounded-2xl p-6 shadow-xl transform hover:-translate-y-1 transition-transform duration-300 group mb-8 border-4 border-white/20">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-8 w-auto">
-                    {/* Logo Kinevir */}
-                    <img
-                        src="/kinevir-logo.webp"
-                        alt="Logo Kinevir"
-                        className="h-full w-auto object-contain"
-                    />
-                </div>
-                <span className="bg-indigo-50 text-indigo-primary text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide">
-                  Officiel
-                </span>
-              </div>
-              
-              <h5 className="font-heading font-bold text-dark-text text-lg mb-1 group-hover:text-indigo-primary transition-colors">
-                Kinevir
-              </h5>
-              <p className="text-gray-500 text-xs mb-3 leading-relaxed">
-                Plateforme de référence pour la téléconsultation et la kinésithérapie en ligne.
-              </p>
-              
-              <a
-                href="https://kinevir.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-xs font-bold text-indigo-primary hover:text-peach-primary transition-colors uppercase tracking-wide"
-              >
-                Découvrir <ExternalLink size={12} className="ml-1" />
-              </a>
-            </div>
-
-            {/* 2. AUTRES PARTENAIRES (Mairie, Locaux...) */}
-            <div>
-                <p className="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-4 flex items-center gap-2 opacity-80">
-                    Ils nous soutiennent
-                </p>
-                <div className="flex flex-wrap gap-3 items-center">
-                    {localPartners.map((partner) => (
-                        <a 
-                            key={partner.name}
-                            href={partner.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-white/10 hover:bg-white p-2 rounded-lg transition-all duration-300 group/partner w-16 h-16 flex items-center justify-center backdrop-blur-sm border border-white/10"
-                            title={partner.name}
-                        >
-                            <img 
-                                src={partner.image} 
-                                alt={partner.name} 
-                                className="max-w-full max-h-full object-contain opacity-80 group-hover/partner:opacity-100 transition-opacity filter group-hover/partner:brightness-100" // Les logos peuvent être légèrement grisés par défaut si besoin
-                            />
+            <div className="space-y-4">
+                {/* 1. KINEVIR (Mis en avant - Fond Blanc) */}
+                <div className="bg-white rounded-xl p-4 shadow-lg transform hover:-translate-y-1 transition-transform duration-300 group flex items-start gap-4">
+                    <div className="w-12 h-12 flex-shrink-0 bg-gray-50 rounded-lg p-1 flex items-center justify-center border border-gray-100">
+                        <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <h5 className="font-heading font-bold text-dark-text text-sm">Kinevir</h5>
+                            <span className="bg-indigo-50 text-indigo-primary text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Officiel</span>
+                        </div>
+                        <p className="text-gray-500 text-xs leading-tight mb-1">
+                            Téléconsultation & kinésithérapie en ligne.
+                        </p>
+                        <a href="https://kinevir.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-primary hover:text-peach-primary flex items-center gap-1">
+                            Visiter <ExternalLink size={10} />
                         </a>
-                    ))}
+                    </div>
                 </div>
+
+                {/* 2. AUTRES PARTENAIRES (Style "Glass" - Fond transparent) */}
+                {localPartners.map((partner) => (
+                    <div key={partner.name} className="bg-white/10 border border-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors flex items-start gap-4">
+                        <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1 flex items-center justify-center">
+                            <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                        </div>
+                        <div>
+                            <h5 className="font-heading font-bold text-white text-sm mb-0.5">{partner.name}</h5>
+                            <p className="text-indigo-100 text-xs leading-tight mb-1">
+                                {partner.desc}
+                            </p>
+                            <a href={partner.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/70 hover:text-white flex items-center gap-1">
+                                Voir le site <ExternalLink size={10} />
+                            </a>
+                        </div>
+                    </div>
+                ))}
             </div>
 
           </div>
