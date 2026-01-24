@@ -1,40 +1,46 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Mail, MapPin, ExternalLink, Heart, ChevronRight } from 'lucide-react';
+import { Facebook, Mail, MapPin, ExternalLink, Heart, ChevronRight, Handshake } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Liste des partenaires secondaires avec leurs descriptions
-  const localPartners = [
+  // Partenaires locaux
+  const partners = [
     {
       name: "Ville de Préseau",
-      desc: "Soutien institutionnel et local pour nos actions.",
+      desc: "Soutien institutionnel",
       url: "https://www.preseau.fr/",
       image: "/Preseau.webp", 
     },
     {
       name: "BYcoach Yohan Bauduin",
-      desc: "Accompagnement sportif et mental adapté.",
+      desc: "Coaching sportif & mental",
       url: "https://www.facebook.com/yohan.bauduin.52",
       image: "/Bauduin.webp",
     },
     {
       name: "Cabinet MERCI",
-      desc: "Espace de soin et d'écoute bienveillante.",
+      desc: "Soins & écoute",
       url: "https://www.facebook.com/yohanbauduin.cabinet.MERCI",
       image: "/merci.webp",
     },
     {
       name: "Le Baragraphe",
-      desc: "Lieu de convivialité et de soutien local.",
+      desc: "Convivialité locale",
       url: "https://www.facebook.com/lebaragraphe.fr",
       image: "/baragraphe.webp",
     },
     {
       name: "Maïté Jonckheere",
-      desc: "Sophrologue à Villereau, gestion du stress et émotions.",
+      desc: "Sophrologie",
       url: "https://www.facebook.com/people/Ma%C3%AFt%C3%A9-Jonckheere-Sophrologue-Villereau/pfbid02FBQDg3yfxr2nGCdhnvFhYg475D7eWkLPUQTXBzcgYbRTWoCTjkou44j5Ct6BcsiMl/",
-      image: "/maite.webp", // ⚠️ Assure-toi que l'image porte bien ce nom dans le dossier public
+      image: "/maite.webp",
+    },
+    {
+      name: "Study avec Julie",
+      desc: "Soutien scolaire",
+      url: "https://www.facebook.com/people/Studyavecjulie/61567019326778/",
+      image: "/Studavecjulie.webp",
     }
   ];
 
@@ -45,6 +51,8 @@ export default function Footer() {
       <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-peach-primary/20 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="container mx-auto px-4 relative z-10">
+        
+        {/* SECTION PRINCIPALE - 3 COLONNES */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           
           {/* COLONNE 1 : L'Association */}
@@ -62,7 +70,7 @@ export default function Footer() {
                 <span className="text-sm">Preseau (59990)<br />Hauts-de-France</span>
               </div>
               <a 
-                href="mailto:contact@association-indigo.fr" 
+                href="mailto:associationindigo59@gmail.com" 
                 className="flex items-center gap-3 text-indigo-100 hover:text-white transition-colors group"
               >
                 <Mail className="w-5 h-5 flex-shrink-0 text-peach-primary group-hover:scale-110 transition-transform" />
@@ -106,8 +114,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/faq" className="hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
+                  <ChevronRight size={14} /> FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/contact" className="hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
-                  <ChevronRight size={14} /> Une question ?
+                  <ChevronRight size={14} /> Contact
                 </Link>
               </li>
               <li>
@@ -123,56 +136,67 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* COLONNE 3 : PARTENAIRES */}
+          {/* COLONNE 3 : PARTENAIRE PRINCIPAL (KINEVIR) */}
           <div className="lg:pl-8">
             <h4 className="font-heading font-bold text-lg mb-6 flex items-center gap-2">
               <span className="w-8 h-1 bg-nature-primary rounded-full"></span>
-              Nos Partenaires
+              Partenaire Officiel
             </h4>
             
-            <div className="space-y-4">
-                {/* 1. KINEVIR (Mis en avant - Fond Blanc) */}
-                <div className="bg-white rounded-xl p-4 shadow-lg transform hover:-translate-y-1 transition-transform duration-300 group flex items-start gap-4">
-                    <div className="w-12 h-12 flex-shrink-0 bg-gray-50 rounded-lg p-1 flex items-center justify-center border border-gray-100">
-                        <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <h5 className="font-heading font-bold text-dark-text text-sm">Kinevir</h5>
-                            <span className="bg-indigo-50 text-indigo-primary text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Officiel</span>
-                        </div>
-                        <p className="text-gray-500 text-xs leading-tight mb-1">
-                            Téléconsultation & kinésithérapie en ligne.
-                        </p>
-                        <a href="https://kinevir.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-primary hover:text-peach-primary flex items-center gap-1">
-                            Visiter <ExternalLink size={10} />
-                        </a>
-                    </div>
+            {/* Carte Kinevir - Mise en avant */}
+            <div className="bg-white rounded-2xl p-5 shadow-xl transform hover:-translate-y-1 transition-transform duration-300 group">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-14 h-14 flex-shrink-0 bg-gray-50 rounded-xl p-2 flex items-center justify-center border border-gray-100">
+                  <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
                 </div>
-
-                {/* 2. AUTRES PARTENAIRES (Style "Glass") */}
-                <div className="grid grid-cols-1 gap-3">
-                  {localPartners.map((partner) => (
-                      <div key={partner.name} className="bg-white/10 border border-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors flex items-start gap-4">
-                          <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1 flex items-center justify-center">
-                              <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
-                          </div>
-                          <div className="min-w-0">
-                              <h5 className="font-heading font-bold text-white text-sm mb-0.5 truncate">{partner.name}</h5>
-                              <p className="text-indigo-100 text-xs leading-tight mb-1 line-clamp-2">
-                                  {partner.desc}
-                              </p>
-                              <a href={partner.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/70 hover:text-white flex items-center gap-1">
-                                  Voir le site <ExternalLink size={10} />
-                              </a>
-                          </div>
-                      </div>
-                  ))}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h5 className="font-heading font-bold text-dark-text text-lg">Kinevir</h5>
+                    <span className="bg-indigo-primary/10 text-indigo-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Premium</span>
+                  </div>
+                  <p className="text-gray-500 text-sm">Kinésithérapie en ligne</p>
                 </div>
+              </div>
+              <p className="text-gray-600 text-sm mb-3">
+                La plateforme de référence pour la téléconsultation et la kinésithérapie en ligne.
+              </p>
+              <a 
+                href="https://kinevir.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center gap-2 text-sm font-bold text-indigo-primary hover:text-peach-primary transition-colors"
+              >
+                Découvrir <ExternalLink size={14} />
+              </a>
             </div>
-
           </div>
 
+        </div>
+
+        {/* SECTION PARTENAIRES LOCAUX - Bandeau horizontal */}
+        <div className="border-t border-white/10 pt-10 mb-10">
+          <h4 className="font-heading font-bold text-lg mb-6 flex items-center justify-center gap-2">
+            <Handshake size={20} className="text-peach-primary" />
+            Nos Partenaires Locaux
+          </h4>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {partners.map((partner) => (
+              <a 
+                key={partner.name}
+                href={partner.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex flex-col items-center text-center"
+              >
+                <div className="w-12 h-12 mb-2 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                </div>
+                <h5 className="font-heading font-bold text-white text-xs mb-0.5 line-clamp-1">{partner.name}</h5>
+                <p className="text-indigo-200 text-[10px] line-clamp-1">{partner.desc}</p>
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* BARRE DU BAS */}
@@ -180,13 +204,19 @@ export default function Footer() {
           <p className="font-body text-center md:text-left">
             © {currentYear} Association Indigo. Association loi 1901.
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             <Link to="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales
             </Link>
             <Link to="/politique-confidentialite" className="hover:text-white transition-colors">
               Confidentialité
             </Link>
+            <button 
+              onClick={() => window.dispatchEvent(new Event('openCookieSettings'))}
+              className="hover:text-white transition-colors"
+            >
+              Gérer les cookies
+            </button>
           </div>
         </div>
       </div>
