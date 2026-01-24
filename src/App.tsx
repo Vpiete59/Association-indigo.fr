@@ -6,6 +6,7 @@ import ArticlesListPage from './pages/ArticlesListPage';
 import ArticlePage from './pages/ArticlePage';
 import EventsPage from './pages/EventsPage';
 import ContactPage from './pages/ContactPage';
+import FAQPage from './pages/FAQPage';
 import AdminPage from './pages/AdminPage';
 import MentionsLegalesPage from './pages/MentionsLegalesPage';
 import PolitiqueConfidentialitePage from './pages/PolitiqueConfidentialitePage';
@@ -22,6 +23,7 @@ function App() {
             <Route path="articles/:slug" element={<ArticlePage />} />
             <Route path="evenements" element={<EventsPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="faq" element={<FAQPage />} />
             <Route path="mentions-legales" element={<MentionsLegalesPage />} />
             <Route path="politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
           </Route>

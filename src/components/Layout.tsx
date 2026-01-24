@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Facebook, Settings, Heart, BookOpen, CalendarHeart, MessageCircleQuestion } from 'lucide-react';
+import { Menu, X, Facebook, Settings, Heart, BookOpen, CalendarHeart, MessageCircleQuestion, Mail } from 'lucide-react';
 import Footer from './Footer';
 
 export default function Layout() {
@@ -16,19 +16,24 @@ export default function Layout() {
   // --- NAVIGATION CONFIGURATION ---
   const navItems = [
     { 
-      name: "S'informer",      // Au lieu de "Ressources"
+      name: "S'informer",
       href: '/articles',
-      icon: BookOpen           // Icône livre
+      icon: BookOpen
     }, 
     { 
-      name: 'Nos événements',  // Au lieu de "Agenda"
+      name: 'Nos événements',
       href: '/evenements',
-      icon: CalendarHeart      // Icône calendrier avec un cœur (plus associatif)
+      icon: CalendarHeart
     },   
     { 
-      name: 'Une question ?',  // Au lieu de "Contact" -> Plus invitant
+      name: 'Une question ?',
+      href: '/faq',
+      icon: MessageCircleQuestion
+    },
+    { 
+      name: 'Contact',
       href: '/contact',
-      icon: MessageCircleQuestion // Icône bulle de dialogue
+      icon: Mail
     },
   ];
 
@@ -46,17 +51,24 @@ export default function Layout() {
         <nav className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
             
-            {/* LOGO */}
+            {/* LOGO avec image */}
             <Link
               to="/"
-              className="font-heading text-xl md:text-2xl group focus:outline-none flex items-center gap-1"
+              className="font-heading text-xl md:text-2xl group focus:outline-none flex items-center gap-2"
               aria-label="Association Indigo - Retour à l'accueil"
             >
-              <span className="font-semibold text-dark-text">Association</span>
-              <span className="font-bold text-indigo-primary group-hover:text-peach-primary transition-colors duration-300">Indigo</span>
+              <img 
+                src="/logo-indigo.png" 
+                alt="Logo Indigo" 
+                className="h-10 w-10 md:h-12 md:w-12 object-contain"
+              />
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-dark-text">Association</span>
+                <span className="font-bold text-indigo-primary group-hover:text-peach-primary transition-colors duration-300">Indigo</span>
+              </div>
             </Link>
 
-            {/* Navigation Desktop (Avec icônes maintenant !) */}
+            {/* Navigation Desktop */}
             <div className="hidden lg:flex items-center space-x-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
