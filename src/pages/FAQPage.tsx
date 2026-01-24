@@ -12,11 +12,11 @@ const faqData = [
         answer: "Indigo est une association dédiée à l'accompagnement des enfants atypiques (HPI, TSA, TDAH, dyspraxiques, dyslexiques, hypersensibles, etc.) et de leurs parents. Nous proposons un espace sécurisant, créatif et structuré pour soutenir les familles dans leur quotidien, leurs défis et leurs réussites."
       },
       {
-        question: "Que signifie "enfants atypiques" ?",
+        question: "Que signifie « enfants atypiques » ?",
         answer: "Nous utilisons ce terme pour englober les enfants dont le fonctionnement diffère des normes attendues : neuroatypies, profils cognitifs singuliers, hypersensibilités, besoins éducatifs particuliers. L'objectif est d'éviter les étiquettes réductrices et de valoriser la diversité des trajectoires."
       },
       {
-        question: "Pourquoi parler de "parents émérites" ?",
+        question: "Pourquoi parler de « parents émérites » ?",
         answer: "Parce que nous reconnaissons la compétence, la persévérance et l'amour des parents qui accompagnent un enfant atypique. Ce terme souligne leur expertise vécue, souvent invisible mais essentielle."
       }
     ]
