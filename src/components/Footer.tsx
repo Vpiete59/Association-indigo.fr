@@ -40,7 +40,7 @@ export default function Footer() {
       name: "Study avec Julie",
       desc: "Soutien scolaire",
       url: "https://www.facebook.com/people/Studyavecjulie/61567019326778/",
-      image: "/Studavecjulie.webp",
+      image: "/studyavecjulie.webp",
     }
   ];
 
