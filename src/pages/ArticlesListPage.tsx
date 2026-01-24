@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
-import { ArrowRight, BookOpen, Search, ImageOff } from 'lucide-react';
+import { ArrowRight, BookOpen, Search } from 'lucide-react';
 
 export default function ArticlesListPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -38,10 +38,7 @@ export default function ArticlesListPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
-          <p className="font-heading text-indigo-primary font-bold">Chargement de la bibliothèque...</p>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
       </div>
     );
   }
@@ -49,65 +46,63 @@ export default function ArticlesListPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION (Version Lisible) --- */}
-      <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
+      {/* --- HERO SECTION --- */}
+      <section className="relative pt-28 pb-20 md:pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond : Toujours lumineuse, sans filtre sombre global */}
+        {/* Image de fond */}
         <div className="absolute inset-0 z-0">
             <img 
                 src="/connaissance.webp" 
-                alt="Bibliothèque et éducation" 
-                className="w-full h-full object-cover"
+                alt="Bibliothèque" 
+                className="w-full h-full object-cover opacity-90"
             />
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
-            {/* CARTE "VERRE GIVRÉ" pour la lisibilité */}
-            <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-white/50 text-center">
-                
-                <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm mb-6 uppercase tracking-widest border border-indigo-200">
+        <div className="container mx-auto px-4 relative z-10 text-center">
+            
+            {/* Titre et Intro : Texte foncé avec halo blanc pour la lisibilité sur l'image */}
+            <div className="mb-10">
+                <span className="inline-block py-1 px-4 rounded-full bg-indigo-primary/90 text-white font-bold text-xs md:text-sm mb-4 uppercase tracking-widest shadow-md">
                     Ressources Éducatives
                 </span>
                 
-                {/* Titre en Indigo Foncé (plus de blanc illisible) */}
-                <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-indigo-950 mb-6 leading-tight">
+                <h1 className="font-heading font-bold text-4xl md:text-6xl text-indigo-950 mb-6 drop-shadow-[0_2px_15px_rgba(255,255,255,0.8)]">
                   Bibliothèque & Dossiers
                 </h1>
                 
-                {/* Texte descriptif sombre */}
-                <p className="font-body text-lg text-indigo-900/80 font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-                  Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants et trouver des clés au quotidien.
+                <p className="font-body text-lg md:text-xl text-indigo-950/90 font-bold max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_10px_rgba(255,255,255,0.9)]">
+                  Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants.
                 </p>
-
-                {/* Filtres de catégorie : Boutons contrastés */}
-                {categories.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-3">
-                    <button
-                      onClick={() => setSelectedCategory('all')}
-                      className={`px-6 py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-md transform hover:-translate-y-1 ${
-                        selectedCategory === 'all'
-                          ? 'bg-peach-primary text-white shadow-peach-primary/30 ring-2 ring-peach-primary ring-offset-2'
-                          : 'bg-white text-indigo-primary border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200'
-                      }`}
-                    >
-                      Tout voir
-                    </button>
-                    {categories.map(cat => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-6 py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-md transform hover:-translate-y-1 capitalize ${
-                          selectedCategory === cat
-                            ? 'bg-peach-primary text-white shadow-peach-primary/30 ring-2 ring-peach-primary ring-offset-2'
-                            : 'bg-white text-indigo-primary border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                )}
             </div>
+
+            {/* Filtres de catégorie : EFFET GLASS INDIGO sur les BOUTONS */}
+            {categories.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-3">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border ${
+                    selectedCategory === 'all'
+                      ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
+                      : 'bg-indigo-900/10 border-indigo-200 text-indigo-900 hover:bg-indigo-900/20 hover:border-indigo-400'
+                  }`}
+                >
+                  Tout voir
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border capitalize ${
+                      selectedCategory === cat
+                        ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
+                        : 'bg-indigo-900/10 border-indigo-200 text-indigo-900 hover:bg-indigo-900/20 hover:border-indigo-400'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
         </div>
       </section>
 
@@ -121,61 +116,35 @@ export default function ArticlesListPage() {
                   to={`/articles/${article.slug}`}
                   className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
                 >
-                  {/* ZONE IMAGE */}
+                  {/* ... (Reste de la carte identique) ... */}
                   <div className="h-56 overflow-hidden relative bg-gray-100">
                     {article.image_url ? (
-                      <img
-                        src={article.image_url} 
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                      />
+                      <img src={article.image_url} alt={article.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2">
-                        <BookOpen size={40} />
-                      </div>
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2"><BookOpen size={40} /></div>
                     )}
-                    
-                    {/* Badge Catégorie */}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">
-                      {article.category}
-                    </div>
+                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">{article.category}</div>
                   </div>
 
-                  {/* CONTENU TEXTE */}
                   <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">
-                      {article.title}
-                    </h3>
-                    
+                    <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">{article.title}</h3>
                     <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow leading-relaxed">
-                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 120) + '...' : "Découvrez cet article complet pour en savoir plus.")}
+                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 120) + '...' : "Découvrez cet article complet.")}
                     </p>
-                    
                     <div className="pt-6 border-t border-gray-50 flex items-center justify-between text-indigo-primary font-bold text-sm mt-auto">
                       <span>Lire le dossier</span>
-                      <div className="w-10 h-10 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all duration-300">
-                        <ArrowRight size={18} />
-                      </div>
+                      <div className="w-10 h-10 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all duration-300"><ArrowRight size={18} /></div>
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
-              <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300">
-                <Search size={40} />
-              </div>
-              <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">Aucun résultat</h3>
-              <p className="text-dark-text/60 mb-8">Nous n'avons pas trouvé d'articles dans cette catégorie pour le moment.</p>
-              <button 
-                onClick={() => setSelectedCategory('all')}
-                className="px-8 py-3 bg-indigo-primary text-white font-bold rounded-full hover:bg-indigo-primary/90 transition-all shadow-lg"
-              >
-                Voir toute la bibliothèque
-              </button>
-            </div>
+             <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
+               <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300"><Search size={40} /></div>
+               <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">Aucun résultat</h3>
+               <button onClick={() => setSelectedCategory('all')} className="mt-4 px-8 py-3 bg-indigo-primary text-white font-bold rounded-full">Voir tout</button>
+             </div>
           )}
       </div>
     </div>

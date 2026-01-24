@@ -13,7 +13,6 @@ export default function EventsPage() {
           .from('events')
           .select('*')
           .eq('published', true)
-          // On ne montre que les événements futurs ou d'aujourd'hui
           .gte('event_date', new Date().toISOString()) 
           .order('event_date', { ascending: true });
 
@@ -42,10 +41,7 @@ export default function EventsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
-          <p className="font-heading text-nature-primary font-bold">Recherche des événements...</p>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
       </div>
     );
   }
@@ -53,36 +49,33 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION (Version Carte Givrée) --- */}
-      <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
+      {/* --- HERO SECTION --- */}
+      <section className="relative pt-28 pb-20 md:pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond : Lumineuse sans filtre */}
+        {/* Image de fond */}
         <div className="absolute inset-0 z-0">
             <img 
                 src="/indigocolor.webp" 
                 alt="Rencontres et Partage" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover opacity-90"
             />
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
-            {/* CARTE "VERRE GIVRÉ" pour la lisibilité */}
-            <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-white/50 text-center">
-                
-                <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm mb-6 uppercase tracking-widest border border-indigo-200">
-                    Agenda de l'association
-                </span>
-                
-                {/* Titre en Indigo Foncé */}
-                <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-indigo-950 mb-6 leading-tight">
-                  Rencontres & Partage
-                </h1>
-                
-                {/* Texte descriptif sombre */}
-                <p className="font-body text-lg text-indigo-900/80 font-medium max-w-2xl mx-auto leading-relaxed">
-                  Cafés des parents, groupes de parole, conférences... Ne restez plus seuls. Venez échanger et trouver du soutien lors de nos prochains rendez-vous.
-                </p>
-            </div>
+        <div className="container mx-auto px-4 relative z-10 text-center">
+            
+            {/* Badge en verre givré */}
+            <span className="inline-block py-1.5 px-5 rounded-full bg-white/40 backdrop-blur-md text-indigo-900 font-bold text-xs md:text-sm mb-6 uppercase tracking-widest border border-white/50 shadow-md">
+                Agenda de l'association
+            </span>
+            
+            {/* Titre foncé avec halo blanc */}
+            <h1 className="font-heading font-bold text-4xl md:text-6xl text-indigo-950 mb-6 drop-shadow-[0_2px_15px_rgba(255,255,255,0.8)]">
+              Rencontres & Partage
+            </h1>
+            
+            <p className="font-body text-lg md:text-xl text-indigo-950/90 font-bold max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_10px_rgba(255,255,255,0.9)]">
+              Cafés des parents, groupes de parole, conférences... Ne restez plus seuls.
+            </p>
         </div>
       </section>
 
@@ -100,62 +93,31 @@ export default function EventsPage() {
                 >
                   <div className="h-48 relative overflow-hidden">
                     {event.image_url ? (
-                      <img
-                        src={event.image_url}
-                        alt={event.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-nature-primary to-emerald-600 flex items-center justify-center">
-                         <Calendar size={48} className="text-white/30" />
-                      </div>
+                      <div className="w-full h-full bg-gradient-to-br from-nature-primary to-emerald-600 flex items-center justify-center"><Calendar size={48} className="text-white/30" /></div>
                     )}
                     
                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-2 text-center min-w-[70px] shadow-lg border border-white/50">
-                      <span className="block font-heading font-bold text-2xl text-nature-primary leading-none">
-                        {day}
-                      </span>
-                      <span className="block text-xs font-bold text-dark-text uppercase mt-1">
-                        {month}
-                      </span>
+                      <span className="block font-heading font-bold text-2xl text-nature-primary leading-none">{day}</span>
+                      <span className="block text-xs font-bold text-dark-text uppercase mt-1">{month}</span>
                     </div>
                   </div>
 
                   <div className="p-8 flex flex-col flex-grow">
-                    <div className="flex items-center gap-2 text-peach-primary font-bold text-sm mb-3">
-                        <Clock size={16} />
-                        <span>{time}</span>
-                    </div>
-
-                    <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 leading-tight group-hover:text-nature-primary transition-colors">
-                      {event.title}
-                    </h3>
-
+                    <div className="flex items-center gap-2 text-peach-primary font-bold text-sm mb-3"><Clock size={16} /><span>{time}</span></div>
+                    <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 leading-tight group-hover:text-nature-primary transition-colors">{event.title}</h3>
                     {event.location && (
                       <div className="flex items-start gap-3 text-dark-text/70 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100">
                         <MapPin size={18} className="flex-shrink-0 mt-0.5 text-nature-primary" />
                         <span className="font-body text-sm leading-snug">{event.location}</span>
                       </div>
                     )}
-
-                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow">
-                      {event.description}
-                    </p>
-
+                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow">{event.description}</p>
                     {event.registration_link ? (
-                      <a
-                        href={event.registration_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-nature-primary text-white font-heading font-bold rounded-xl hover:bg-opacity-90 transition-all duration-300 shadow-md group-hover:shadow-nature-primary/30"
-                      >
-                        Je m'inscris
-                        <ExternalLink size={18} />
-                      </a>
+                      <a href={event.registration_link} target="_blank" rel="noopener noreferrer" className="mt-auto w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-nature-primary text-white font-heading font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-md">Je m'inscris <ExternalLink size={18} /></a>
                     ) : (
-                       <div className="mt-auto w-full text-center py-4 bg-gray-100 text-gray-400 font-heading font-bold rounded-xl cursor-not-allowed text-sm">
-                          Entrée libre / Sans inscription
-                       </div>
+                       <div className="mt-auto w-full text-center py-4 bg-gray-100 text-gray-400 font-heading font-bold rounded-xl cursor-not-allowed text-sm">Entrée libre</div>
                     )}
                   </div>
                 </div>
@@ -164,27 +126,11 @@ export default function EventsPage() {
           </div>
         ) : (
           <div className="max-w-3xl mx-auto text-center py-20">
-             <div className="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-peach-primary/10 rounded-bl-full"></div>
-                
-                <div className="inline-flex p-6 rounded-full bg-peach-primary/10 text-peach-primary mb-6 relative z-10">
-                    <Calendar size={48} />
-                </div>
-                <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 relative z-10">
-                    Aucun événement à venir pour le moment
-                </h3>
-                <p className="font-body text-lg text-dark-text/70 mb-8 relative z-10">
-                    Notre calendrier se remplit petit à petit. Pour ne rien rater des prochaines rencontres, rejoignez notre groupe Facebook !
-                </p>
-                <a
-                    href="https://www.facebook.com/groups/467126453152213"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-[#1877F2] text-white font-bold rounded-full hover:bg-[#166FE5] transition-all shadow-lg hover:shadow-blue-500/30 relative z-10"
-                >
-                    <Users size={20} />
-                    Rejoindre la communauté Facebook
-                </a>
+             <div className="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100 relative">
+                <div className="inline-flex p-6 rounded-full bg-peach-primary/10 text-peach-primary mb-6"><Calendar size={48} /></div>
+                <h3 className="font-heading font-bold text-2xl text-dark-text mb-4">Aucun événement à venir</h3>
+                <p className="font-body text-lg text-dark-text/70 mb-8">Rejoignez notre groupe Facebook pour les actus !</p>
+                <a href="https://www.facebook.com/groups/467126453152213" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 bg-[#1877F2] text-white font-bold rounded-full hover:bg-[#166FE5] shadow-lg"><Users size={20} /> Facebook</a>
              </div>
           </div>
         )}
