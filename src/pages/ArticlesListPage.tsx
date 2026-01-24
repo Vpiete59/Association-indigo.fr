@@ -15,7 +15,7 @@ export default function ArticlesListPage() {
           .from('articles')
           .select('*')
           .eq('published', true)
-          .order('created_at', { ascending: false }); // Les plus récents en premier
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
         setArticles(data || []);
@@ -29,10 +29,8 @@ export default function ArticlesListPage() {
     fetchArticles();
   }, []);
 
-  // Création dynamique des filtres basés sur les articles existants
   const categories = Array.from(new Set(articles.map(a => a.category)));
   
-  // Filtrage
   const filteredArticles = selectedCategory === 'all' 
     ? articles 
     : articles.filter(a => a.category === selectedCategory);
@@ -54,25 +52,25 @@ export default function ArticlesListPage() {
       {/* --- HERO SECTION --- */}
       <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond mise à jour */}
+        {/* Image de fond : SANS FILTRE */}
         <div className="absolute inset-0 z-0">
             <img 
                 src="/connaissance.webp" 
                 alt="Savoir et Connaissance" 
                 className="w-full h-full object-cover"
             />
-            {/* Filtre sombre Indigo pour la lisibilité */}
-            <div className="absolute inset-0 bg-indigo-950/70 mix-blend-multiply"></div>
+            {/* J'ai supprimé la div overlay ici aussi */}
         </div>
         
         <div className="container mx-auto px-4 relative z-10 text-center">
-            <span className="inline-block py-1 px-4 rounded-full bg-white/20 backdrop-blur-md text-white font-bold text-sm mb-6 uppercase tracking-widest border border-white/30">
+            <span className="inline-block py-1 px-4 rounded-full bg-white/30 backdrop-blur-md text-white font-bold text-sm mb-6 uppercase tracking-widest border border-white/40 shadow-sm">
                 Ressources Éducatives
             </span>
-            <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-6 drop-shadow-lg">
+            {/* Texte avec ombre renforcée */}
+            <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-6 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
               Bibliothèque & Dossiers
             </h1>
-            <p className="font-body text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+            <p className="font-body text-lg text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
               Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants et trouver des clés au quotidien.
             </p>
 
@@ -84,7 +82,7 @@ export default function ArticlesListPage() {
                   className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 ${
                     selectedCategory === 'all'
                       ? 'bg-peach-primary text-white shadow-lg scale-105'
-                      : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/30'
+                      : 'bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/40 shadow-sm'
                   }`}
                 >
                   Tout voir
@@ -96,7 +94,7 @@ export default function ArticlesListPage() {
                     className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 capitalize ${
                       selectedCategory === cat
                         ? 'bg-peach-primary text-white shadow-lg scale-105'
-                        : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/30'
+                        : 'bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/40 shadow-sm'
                     }`}
                   >
                     {cat}
@@ -117,7 +115,6 @@ export default function ArticlesListPage() {
                   to={`/articles/${article.slug}`}
                   className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
                 >
-                  {/* ZONE IMAGE */}
                   <div className="h-56 overflow-hidden relative bg-gray-100">
                     {article.image_url ? (
                       <img
@@ -127,19 +124,16 @@ export default function ArticlesListPage() {
                         loading="lazy"
                       />
                     ) : (
-                      // Fallback si pas d'image
                       <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2">
                         <BookOpen size={40} />
                       </div>
                     )}
                     
-                    {/* Badge Catégorie */}
                     <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">
                       {article.category}
                     </div>
                   </div>
 
-                  {/* CONTENU TEXTE */}
                   <div className="p-8 flex flex-col flex-grow">
                     <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">
                       {article.title}
@@ -160,7 +154,6 @@ export default function ArticlesListPage() {
               ))}
             </div>
           ) : (
-            /* --- ÉTAT VIDE --- */
             <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
               <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300">
                 <Search size={40} />
