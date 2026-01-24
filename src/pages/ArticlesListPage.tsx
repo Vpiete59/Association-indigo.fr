@@ -49,59 +49,65 @@ export default function ArticlesListPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       
-      {/* --- HERO SECTION --- */}
+      {/* --- HERO SECTION (Version Lisible) --- */}
       <section className="relative pt-24 pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond : SANS FILTRE */}
+        {/* Image de fond : Toujours lumineuse, sans filtre sombre global */}
         <div className="absolute inset-0 z-0">
             <img 
                 src="/connaissance.webp" 
-                alt="Savoir et Connaissance" 
+                alt="Bibliothèque et éducation" 
                 className="w-full h-full object-cover"
             />
-            {/* J'ai supprimé la div overlay ici aussi */}
         </div>
         
-        <div className="container mx-auto px-4 relative z-10 text-center">
-            <span className="inline-block py-1 px-4 rounded-full bg-white/30 backdrop-blur-md text-white font-bold text-sm mb-6 uppercase tracking-widest border border-white/40 shadow-sm">
-                Ressources Éducatives
-            </span>
-            {/* Texte avec ombre renforcée */}
-            <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-6 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
-              Bibliothèque & Dossiers
-            </h1>
-            <p className="font-body text-lg text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-              Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants et trouver des clés au quotidien.
-            </p>
+        <div className="container mx-auto px-4 relative z-10">
+            {/* CARTE "VERRE GIVRÉ" pour la lisibilité */}
+            <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-white/50 text-center">
+                
+                <span className="inline-block py-1.5 px-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm mb-6 uppercase tracking-widest border border-indigo-200">
+                    Ressources Éducatives
+                </span>
+                
+                {/* Titre en Indigo Foncé (plus de blanc illisible) */}
+                <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-indigo-950 mb-6 leading-tight">
+                  Bibliothèque & Dossiers
+                </h1>
+                
+                {/* Texte descriptif sombre */}
+                <p className="font-body text-lg text-indigo-900/80 font-medium max-w-2xl mx-auto leading-relaxed mb-10">
+                  Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants et trouver des clés au quotidien.
+                </p>
 
-            {/* Filtres de catégorie */}
-            {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-3 mt-10">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 ${
-                    selectedCategory === 'all'
-                      ? 'bg-peach-primary text-white shadow-lg scale-105'
-                      : 'bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/40 shadow-sm'
-                  }`}
-                >
-                  Tout voir
-                </button>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-6 py-2 rounded-full font-heading font-bold text-sm transition-all duration-300 capitalize ${
-                      selectedCategory === cat
-                        ? 'bg-peach-primary text-white shadow-lg scale-105'
-                        : 'bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/40 shadow-sm'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
+                {/* Filtres de catégorie : Boutons contrastés */}
+                {categories.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <button
+                      onClick={() => setSelectedCategory('all')}
+                      className={`px-6 py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-md transform hover:-translate-y-1 ${
+                        selectedCategory === 'all'
+                          ? 'bg-peach-primary text-white shadow-peach-primary/30 ring-2 ring-peach-primary ring-offset-2'
+                          : 'bg-white text-indigo-primary border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200'
+                      }`}
+                    >
+                      Tout voir
+                    </button>
+                    {categories.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-6 py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-md transform hover:-translate-y-1 capitalize ${
+                          selectedCategory === cat
+                            ? 'bg-peach-primary text-white shadow-peach-primary/30 ring-2 ring-peach-primary ring-offset-2'
+                            : 'bg-white text-indigo-primary border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+            </div>
         </div>
       </section>
 
@@ -115,6 +121,7 @@ export default function ArticlesListPage() {
                   to={`/articles/${article.slug}`}
                   className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
                 >
+                  {/* ZONE IMAGE */}
                   <div className="h-56 overflow-hidden relative bg-gray-100">
                     {article.image_url ? (
                       <img
@@ -129,11 +136,13 @@ export default function ArticlesListPage() {
                       </div>
                     )}
                     
+                    {/* Badge Catégorie */}
                     <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">
                       {article.category}
                     </div>
                   </div>
 
+                  {/* CONTENU TEXTE */}
                   <div className="p-8 flex flex-col flex-grow">
                     <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">
                       {article.title}
