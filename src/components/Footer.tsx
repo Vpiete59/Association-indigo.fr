@@ -4,6 +4,25 @@ import { Facebook, Mail, MapPin, ExternalLink, Heart, ChevronRight } from 'lucid
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
+  // Liste des partenaires secondaires (Mairie, Locaux...)
+  const localPartners = [
+    {
+      name: "Ville de Préseau",
+      url: "https://www.preseau.fr/",
+      image: "/Preseau.webp", // Assure-toi que le fichier est bien dans /public
+    },
+    {
+      name: "BYcoach Yohan Bauduin",
+      url: "https://www.facebook.com/yohan.bauduin.52",
+      image: "/Bauduin.webp",
+    },
+    {
+      name: "Cabinet MERCI",
+      url: "https://www.facebook.com/yohanbauduin.cabinet.MERCI",
+      image: "/merci.webp",
+    }
+  ];
+
   return (
     <footer className="bg-indigo-primary text-white pt-16 pb-8 relative overflow-hidden">
       {/* Éléments décoratifs d'arrière-plan */}
@@ -63,17 +82,17 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/articles" className="hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
-                  <ChevronRight size={14} /> Ressources & Articles
+                  <ChevronRight size={14} /> S'informer
                 </Link>
               </li>
               <li>
                 <Link to="/evenements" className="hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
-                  <ChevronRight size={14} /> Agenda
+                  <ChevronRight size={14} /> Nos événements
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
-                  <ChevronRight size={14} /> Contact
+                  <ChevronRight size={14} /> Une question ?
                 </Link>
               </li>
               <li>
@@ -89,67 +108,87 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* COLONNE 3 : FOCUS PARTENAIRE (KINEVIR) */}
+          {/* COLONNE 3 : PARTENAIRES */}
           <div className="lg:pl-8">
             <h4 className="font-heading font-bold text-lg mb-6 flex items-center gap-2">
               <span className="w-8 h-1 bg-nature-primary rounded-full"></span>
-              Partenaire Officiel
+              Nos Partenaires
             </h4>
             
-            {/* Carte Kinevir */}
-            <div className="bg-white rounded-2xl p-6 shadow-xl transform hover:-translate-y-1 transition-transform duration-300 group">
+            {/* 1. KINEVIR (Partenaire Premium - Mis en avant) */}
+            <div className="bg-white rounded-2xl p-6 shadow-xl transform hover:-translate-y-1 transition-transform duration-300 group mb-8 border-4 border-white/20">
               <div className="flex items-center justify-between mb-4">
-                <div className="h-10 w-auto">
-                    {/* Placeholder pour le logo si l'image ne charge pas, ou ajustement de la taille */}
+                <div className="h-8 w-auto">
+                    {/* Logo Kinevir */}
                     <img
                         src="/kinevir-logo.webp"
                         alt="Logo Kinevir"
                         className="h-full w-auto object-contain"
                     />
                 </div>
-                <span className="bg-indigo-50 text-indigo-primary text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">
-                  Soutien
+                <span className="bg-indigo-50 text-indigo-primary text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide">
+                  Officiel
                 </span>
               </div>
               
-              <h5 className="font-heading font-bold text-dark-text text-lg mb-2 group-hover:text-indigo-primary transition-colors">
+              <h5 className="font-heading font-bold text-dark-text text-lg mb-1 group-hover:text-indigo-primary transition-colors">
                 Kinevir
               </h5>
-              <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                La plateforme de référence pour la <strong className="text-indigo-primary">kinésithérapie en ligne</strong> et la téléconsultation.
+              <p className="text-gray-500 text-xs mb-3 leading-relaxed">
+                Plateforme de référence pour la téléconsultation et la kinésithérapie en ligne.
               </p>
               
               <a
                 href="https://kinevir.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-bold text-indigo-primary hover:text-peach-primary transition-colors"
+                className="inline-flex items-center text-xs font-bold text-indigo-primary hover:text-peach-primary transition-colors uppercase tracking-wide"
               >
-                Découvrir la plateforme <ExternalLink size={16} className="ml-2" />
+                Découvrir <ExternalLink size={12} className="ml-1" />
               </a>
             </div>
+
+            {/* 2. AUTRES PARTENAIRES (Mairie, Locaux...) */}
+            <div>
+                <p className="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-4 flex items-center gap-2 opacity-80">
+                    Ils nous soutiennent
+                </p>
+                <div className="flex flex-wrap gap-3 items-center">
+                    {localPartners.map((partner) => (
+                        <a 
+                            key={partner.name}
+                            href={partner.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-white/10 hover:bg-white p-2 rounded-lg transition-all duration-300 group/partner w-16 h-16 flex items-center justify-center backdrop-blur-sm border border-white/10"
+                            title={partner.name}
+                        >
+                            <img 
+                                src={partner.image} 
+                                alt={partner.name} 
+                                className="max-w-full max-h-full object-contain opacity-80 group-hover/partner:opacity-100 transition-opacity filter group-hover/partner:brightness-100" // Les logos peuvent être légèrement grisés par défaut si besoin
+                            />
+                        </a>
+                    ))}
+                </div>
+            </div>
+
           </div>
 
         </div>
 
-        {/* BARRE DU BAS : Copyright & Mentions légales */}
+        {/* BARRE DU BAS */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-indigo-200">
           <p className="font-body text-center md:text-left">
             © {currentYear} Association Indigo. Association loi 1901.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+          <div className="flex gap-6">
             <Link to="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales
             </Link>
             <Link to="/politique-confidentialite" className="hover:text-white transition-colors">
               Confidentialité
             </Link>
-            <button 
-              onClick={() => window.dispatchEvent(new Event('openCookieSettings'))}
-              className="hover:text-white transition-colors"
-            >
-              Gérer les cookies
-            </button>
           </div>
         </div>
       </div>
