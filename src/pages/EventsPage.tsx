@@ -1,44 +1,51 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase, Article } from '../lib/supabase';
-import { ArrowRight, BookOpen, Search } from 'lucide-react';
+import { supabase, Event } from '../lib/supabase';
+import { Calendar, MapPin, ExternalLink, Clock, Users } from 'lucide-react';
 
-export default function ArticlesListPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
+export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   useEffect(() => {
-    async function fetchArticles() {
+    async function fetchEvents() {
       try {
         const { data, error } = await supabase
-          .from('articles')
+          .from('events')
           .select('*')
           .eq('published', true)
-          .order('created_at', { ascending: false });
+          // Filtre : Uniquement les événements à venir ou aujourd'hui
+          .gte('event_date', new Date().toISOString()) 
+          .order('event_date', { ascending: true });
 
         if (error) throw error;
-        setArticles(data || []);
+        setEvents(data || []);
       } catch (err) {
-        console.error('Erreur chargement articles:', err);
+        console.error('Erreur chargement événements:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchArticles();
+    fetchEvents();
   }, []);
 
-  const categories = Array.from(new Set(articles.map(a => a.category)));
-  
-  const filteredArticles = selectedCategory === 'all' 
-    ? articles 
-    : articles.filter(a => a.category === selectedCategory);
+  const formatDateDetails = (dateString: string) => {
+    const date = new Date(dateString);
+    return {
+      day: date.getDate(),
+      month: date.toLocaleDateString('fr-FR', { month: 'short' }),
+      fullDate: date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+      time: date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')
+    };
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
+          <p className="font-heading text-nature-primary font-bold">Recherche des événements...</p>
+        </div>
       </div>
     );
   }
@@ -49,103 +56,134 @@ export default function ArticlesListPage() {
       {/* --- HERO SECTION --- */}
       <section className="relative pt-28 pb-24 md:pb-32 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         
-        {/* Image de fond */}
+        {/* Image de fond : indigocolor.webp */}
         <div className="absolute inset-0 z-0">
             <img 
-                src="/connaissance.webp" 
-                alt="Bibliothèque" 
+                src="/indigocolor.webp" 
+                alt="Rencontres et Partage" 
                 className="w-full h-full object-cover"
             />
         </div>
         
         <div className="container mx-auto px-4 relative z-10 text-center">
             
-            <div className="mb-10">
-                {/* Badge Bulle de Verre */}
-                <span className="inline-block py-2 px-6 rounded-full bg-white/30 backdrop-blur-md text-indigo-950 font-bold text-xs md:text-sm mb-6 uppercase tracking-widest border border-white/40 shadow-lg">
-                    Ressources Éducatives
-                </span>
-                
-                {/* Texte BLANC + OMBRE NOIRE */}
-                <h1 className="font-heading font-bold text-4xl md:text-6xl text-white mb-6 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-                  Bibliothèque & Dossiers
-                </h1>
-                
-                <p className="font-body text-lg md:text-xl text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
-                  Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants.
-                </p>
-            </div>
-
-            {/* Filtres de catégorie : STYLE BULLES DE VERRE */}
-            {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-3">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border ${
-                    selectedCategory === 'all'
-                      ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
-                      : 'bg-white/30 border-white/40 text-indigo-950 hover:bg-white/50 hover:scale-105'
-                  }`}
-                >
-                  Tout voir
-                </button>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border capitalize ${
-                      selectedCategory === cat
-                        ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
-                        : 'bg-white/30 border-white/40 text-indigo-950 hover:bg-white/50 hover:scale-105'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Badge en "Bulle de verre" */}
+            <span className="inline-block py-2 px-6 rounded-full bg-white/30 backdrop-blur-md text-indigo-950 font-bold text-xs md:text-sm mb-8 uppercase tracking-widest border border-white/40 shadow-lg">
+                Agenda de l'association
+            </span>
+            
+            {/* Titre BLANC + OMBRE PORTÉE (Lisibilité max) */}
+            <h1 className="font-heading font-bold text-4xl md:text-6xl text-white mb-6 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)]">
+              Rencontres & Partage
+            </h1>
+            
+            {/* Description BLANCHE + OMBRE */}
+            <p className="font-body text-lg md:text-xl text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
+              Cafés des parents, groupes de parole, conférences... Ne restez plus seuls. Venez échanger et trouver du soutien lors de nos prochains rendez-vous.
+            </p>
         </div>
       </section>
 
-      {/* --- GRILLE DES ARTICLES --- */}
+      {/* --- GRILLE DES ÉVÉNEMENTS --- */}
       <div className="container mx-auto px-4">
-          {filteredArticles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredArticles.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/articles/${article.slug}`}
-                  className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
+        {events.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.map((event) => {
+              const { day, month, time } = formatDateDetails(event.event_date);
+              
+              return (
+                <div
+                  key={event.id}
+                  className="group bg-white rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-nature-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
                 >
-                  <div className="h-56 overflow-hidden relative bg-gray-100">
-                    {article.image_url ? (
-                      <img src={article.image_url} alt={article.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                  <div className="h-48 relative overflow-hidden">
+                    {event.image_url ? (
+                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2"><BookOpen size={40} /></div>
+                      <div className="w-full h-full bg-gradient-to-br from-nature-primary to-emerald-600 flex items-center justify-center">
+                         <Calendar size={48} className="text-white/30" />
+                      </div>
                     )}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm">{article.category}</div>
+                    
+                    {/* Date */}
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-2 text-center min-w-[70px] shadow-lg border border-white/50">
+                      <span className="block font-heading font-bold text-2xl text-nature-primary leading-none">
+                        {day}
+                      </span>
+                      <span className="block text-xs font-bold text-dark-text uppercase mt-1">
+                        {month}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">{article.title}</h3>
-                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow leading-relaxed">
-                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 120) + '...' : "Découvrez cet article complet.")}
-                    </p>
-                    <div className="pt-6 border-t border-gray-50 flex items-center justify-between text-indigo-primary font-bold text-sm mt-auto">
-                      <span>Lire le dossier</span>
-                      <div className="w-10 h-10 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all duration-300"><ArrowRight size={18} /></div>
+                    <div className="flex items-center gap-2 text-peach-primary font-bold text-sm mb-3">
+                        <Clock size={16} />
+                        <span>{time}</span>
                     </div>
+
+                    <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 leading-tight group-hover:text-nature-primary transition-colors">
+                      {event.title}
+                    </h3>
+
+                    {event.location && (
+                      <div className="flex items-start gap-3 text-dark-text/70 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <MapPin size={18} className="flex-shrink-0 mt-0.5 text-nature-primary" />
+                        <span className="font-body text-sm leading-snug">{event.location}</span>
+                      </div>
+                    )}
+
+                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow">
+                      {event.description}
+                    </p>
+
+                    {event.registration_link ? (
+                      <a
+                        href={event.registration_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-nature-primary text-white font-heading font-bold rounded-xl hover:bg-opacity-90 transition-all duration-300 shadow-md group-hover:shadow-nature-primary/30"
+                      >
+                        Je m'inscris
+                        <ExternalLink size={18} />
+                      </a>
+                    ) : (
+                       <div className="mt-auto w-full text-center py-4 bg-gray-100 text-gray-400 font-heading font-bold rounded-xl cursor-not-allowed text-sm">
+                          Entrée libre / Sans inscription
+                       </div>
+                    )}
                   </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
-              <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300"><Search size={40} /></div>
-              <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">Aucun résultat</h3>
-              <button onClick={() => setSelectedCategory('all')} className="mt-4 px-8 py-3 bg-indigo-primary text-white font-bold rounded-full">Voir tout</button>
-            </div>
-          )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* État vide (Pas d'événements) */
+          <div className="max-w-3xl mx-auto text-center py-20">
+             <div className="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-peach-primary/10 rounded-bl-full"></div>
+                
+                <div className="inline-flex p-6 rounded-full bg-peach-primary/10 text-peach-primary mb-6 relative z-10">
+                    <Calendar size={48} />
+                </div>
+                <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 relative z-10">
+                    Aucun événement à venir pour le moment
+                </h3>
+                <p className="font-body text-lg text-dark-text/70 mb-8 relative z-10">
+                    Notre calendrier se remplit petit à petit. Pour ne rien rater des prochaines rencontres, rejoignez notre groupe Facebook !
+                </p>
+                <a
+                    href="https://www.facebook.com/groups/467126453152213"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-[#1877F2] text-white font-bold rounded-full hover:bg-[#166FE5] transition-all shadow-lg hover:shadow-blue-500/30 relative z-10"
+                >
+                    <Users size={20} />
+                    Rejoindre la communauté Facebook
+                </a>
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );
