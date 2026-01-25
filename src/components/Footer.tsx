@@ -4,44 +4,54 @@ import { Facebook, Mail, MapPin, ExternalLink, Heart, ChevronRight, Handshake } 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Partenaires locaux
-  const partners = [
+  // Partenaires - Ligne 1 (4 partenaires)
+  const partnersRow1 = [
     {
       name: "Ville de Préseau",
-      desc: "Soutien institutionnel",
+      desc: "Soutien institutionnel local",
       url: "https://www.preseau.fr/",
       image: "/Preseau.webp", 
     },
     {
-      name: "BYcoach Yohan Bauduin",
+      name: "STAJ Nord Artois",
+      desc: "Animation & formation jeunesse",
+      url: "https://staj-nordartois.com/",
+      image: "/staj.png",
+    },
+    {
+      name: "BYcoach",
       desc: "Coaching sportif & mental",
       url: "https://www.facebook.com/yohan.bauduin.52",
       image: "/Bauduin.webp",
     },
     {
       name: "Cabinet MERCI",
-      desc: "Soins & écoute",
+      desc: "Soins & écoute bienveillante",
       url: "https://www.facebook.com/yohanbauduin.cabinet.MERCI",
       image: "/merci.webp",
     },
+  ];
+
+  // Partenaires - Ligne 2 (3 partenaires)
+  const partnersRow2 = [
     {
       name: "Le Baragraphe",
-      desc: "Convivialité locale",
+      desc: "Lieu de convivialité",
       url: "https://www.facebook.com/lebaragraphe.fr",
       image: "/baragraphe.webp",
     },
     {
       name: "Maïté Jonckheere",
-      desc: "Sophrologie",
+      desc: "Sophrologie à Villereau",
       url: "https://www.facebook.com/people/Ma%C3%AFt%C3%A9-Jonckheere-Sophrologue-Villereau/pfbid02FBQDg3yfxr2nGCdhnvFhYg475D7eWkLPUQTXBzcgYbRTWoCTjkou44j5Ct6BcsiMl/",
       image: "/maite.webp",
     },
     {
       name: "Study avec Julie",
-      desc: "Soutien scolaire",
+      desc: "Soutien scolaire personnalisé",
       url: "https://www.facebook.com/people/Studyavecjulie/61567019326778/",
       image: "/studyavecjulie.webp",
-    }
+    },
   ];
 
   return (
@@ -172,40 +182,72 @@ export default function Footer() {
 
         </div>
 
-        {/* SECTION PARTENAIRES LOCAUX - Bandeau horizontal */}
+        {/* SECTION PARTENAIRES */}
         <div className="border-t border-white/10 pt-10 mb-10">
-          <h4 className="font-heading font-bold text-lg mb-6 flex items-center justify-center gap-2">
+          <h4 className="font-heading font-bold text-lg mb-8 flex items-center justify-center gap-2">
             <Handshake size={20} className="text-peach-primary" />
             Ils nous soutiennent
           </h4>
           
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3">
-            {/* Kinevir en premier */}
+          {/* KINEVIR - Mis en valeur avec fond blanc */}
+          <div className="flex justify-center mb-6">
             <a 
               href="https://kinevir.com" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex flex-col items-center text-center"
+              className="group bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center gap-4 max-w-md"
             >
-              <div className="w-12 h-12 mb-2 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl p-2 flex items-center justify-center border border-gray-100">
                 <img src="/kinevir-logo.webp" alt="Kinevir" className="max-w-full max-h-full object-contain" />
               </div>
-              <h5 className="font-heading font-bold text-white text-xs">Kinevir</h5>
+              <div className="text-left">
+                <h5 className="font-heading font-bold text-dark-text text-base">Kinevir</h5>
+                <p className="text-gray-600 text-sm">Téléconsultation & Kinésithérapie en ligne</p>
+                <span className="text-xs text-indigo-primary font-semibold flex items-center gap-1 mt-1">
+                  Visiter le site <ExternalLink size={10} />
+                </span>
+              </div>
             </a>
-            
-            {/* Autres partenaires */}
-            {partners.map((partner) => (
+          </div>
+
+          {/* Ligne 1 de partenaires */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+            {partnersRow1.map((partner) => (
               <a 
                 key={partner.name}
                 href={partner.url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex flex-col items-center text-center"
+                className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex items-center gap-3"
               >
-                <div className="w-12 h-12 mb-2 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
                 </div>
-                <h5 className="font-heading font-bold text-white text-xs line-clamp-1">{partner.name}</h5>
+                <div className="min-w-0">
+                  <h5 className="font-heading font-bold text-white text-xs truncate">{partner.name}</h5>
+                  <p className="text-indigo-200 text-[10px] truncate">{partner.desc}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {/* Ligne 2 de partenaires */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
+            {partnersRow2.map((partner) => (
+              <a 
+                key={partner.name}
+                href={partner.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-3 transition-all duration-300 flex items-center gap-3"
+              >
+                <div className="w-10 h-10 flex-shrink-0 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <img src={partner.image} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                </div>
+                <div className="min-w-0">
+                  <h5 className="font-heading font-bold text-white text-xs truncate">{partner.name}</h5>
+                  <p className="text-indigo-200 text-[10px] truncate">{partner.desc}</p>
+                </div>
               </a>
             ))}
           </div>

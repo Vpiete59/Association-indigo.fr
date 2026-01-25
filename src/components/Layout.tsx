@@ -8,9 +8,10 @@ export default function Layout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Fermer le menu mobile au changement de page
+  // Fermer le menu mobile et scroll to top au changement de page
   useEffect(() => {
     setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname]);
 
   // --- NAVIGATION CONFIGURATION ---
