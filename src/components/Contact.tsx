@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { MapPin, Mail, Phone, Facebook, Instagram } from 'lucide-react';
+import { MapPin, Mail, Phone, Facebook, Send, Loader2 } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -7,15 +7,44 @@ export default function Contact() {
     email: '',
     message: '',
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', message: '' });
-    }, 3000);
+    setStatus('sending');
+
+    try {
+      // Envoi via EmailJS
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: 'service_indigo',      // À configurer dans EmailJS
+          template_id: 'template_3a5eort',   // À configurer dans EmailJS
+          user_id: 'VVduH8VzAuhflNyHJ',        // À remplacer par ta clé publique EmailJS
+          template_params: {
+            from_name: formData.name,
+            from_email: formData.email,
+            message: formData.message,
+            to_email: 'associationindigo59@gmail.com',
+          },
+        }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        throw new Error('Erreur envoi');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
   };
 
   return (
@@ -75,10 +104,26 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full px-8 py-4 bg-indigo-primary text-white font-body font-semibold text-lg rounded-full hover:bg-opacity-90 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-primary focus:ring-offset-2 shadow-lg"
+                disabled={status === 'sending'}
+                className="w-full px-8 py-4 bg-indigo-primary text-white font-body font-semibold text-lg rounded-full hover:bg-opacity-90 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-primary focus:ring-offset-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
               >
-                {isSubmitted ? 'Message envoyé !' : 'Envoyer'}
+                {status === 'sending' && <Loader2 className="animate-spin" size={20} />}
+                {status === 'idle' && <><Send size={20} /> Envoyer</>}
+                {status === 'sending' && 'Envoi en cours...'}
+                {status === 'success' && '✓ Message envoyé !'}
+                {status === 'error' && '✗ Erreur, réessayez'}
               </button>
+
+              {status === 'success' && (
+                <p className="text-green-600 text-center font-body mt-2">
+                  Merci ! Nous vous répondrons dans les plus brefs délais.
+                </p>
+              )}
+              {status === 'error' && (
+                <p className="text-red-600 text-center font-body mt-2">
+                  Une erreur est survenue. Vous pouvez aussi nous écrire directement à associationindigo59@gmail.com
+                </p>
+              )}
             </form>
           </div>
 
@@ -144,19 +189,7 @@ export default function Contact() {
                 >
                   <Facebook className="text-indigo-primary group-hover:text-white transition-colors duration-300" size={24} />
                   <span className="font-body font-semibold text-dark-text group-hover:text-white transition-colors duration-300">
-                    Suivez-nous sur Facebook
-                  </span>
-                </a>
-
-                <a
-                  href="https://www.instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-6 py-4 bg-light-bg rounded-full hover:bg-indigo-primary hover:text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-primary focus:ring-offset-2 group"
-                >
-                  <Instagram className="text-indigo-primary group-hover:text-white transition-colors duration-300" size={24} />
-                  <span className="font-body font-semibold text-dark-text group-hover:text-white transition-colors duration-300">
-                    Suivez-nous sur Instagram
+                    Rejoignez notre groupe Facebook
                   </span>
                 </a>
               </div>
