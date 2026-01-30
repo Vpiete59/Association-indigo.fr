@@ -16,28 +16,27 @@ export default function Contact() {
     setStatus('sending');
     setErrorMessage('');
 
-    const serviceID = 'service_indigo';  // Vérifiez que c'est bien l'ID dans EmailJS
-    const templateID = 'template_3a5eort'; // Vérifiez que c'est bien l'ID du template
-    const publicKey = 'VVduH8VzAuhflNyHJ';   // Votre clé publique
+    // --- VOS IDENTIFIANTS EMAILJS ---
+    const serviceID = 'service_indigo';  
+    const templateID = 'template_3a5eort'; 
+    const publicKey = 'VVduH8VzAuhflNyHJ';   
 
     const data = {
       service_id: serviceID,
       template_id: templateID,
       user_id: publicKey,
       template_params: {
-        from_name: formData.name,
-        from_email: formData.email,
-        message: formData.message,
-        to_email: 'associationindigo59@gmail.com', // Assurez-vous que votre template utilise {{to_email}} ou supprimez cette ligne si c'est configuré par défaut
+        from_name: formData.name,   // Vérifiez que votre template EmailJS utilise bien {{from_name}}
+        from_email: formData.email, // Vérifiez que votre template utilise bien {{from_email}}
+        message: formData.message,  // Vérifiez que votre template utilise bien {{message}}
+        to_email: 'associationindigo59@gmail.com',
       },
     };
 
     try {
       const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
@@ -49,13 +48,13 @@ export default function Contact() {
         const errorText = await response.text();
         console.error('Erreur EmailJS:', errorText);
         setStatus('error');
-        // Affiche l'erreur exacte pour le débogage
+        // Affiche l'erreur à l'écran pour vous aider à comprendre
         setErrorMessage(`Erreur (${response.status}) : ${errorText}`);
       }
     } catch (error) {
       console.error('Erreur réseau:', error);
       setStatus('error');
-      setErrorMessage("Erreur de connexion réseau. Vérifiez votre internet.");
+      setErrorMessage("Erreur de connexion. Vérifiez votre internet.");
     }
   };
 
@@ -67,6 +66,7 @@ export default function Contact() {
             
             {/* Colonne Gauche : Infos */}
             <div className="bg-indigo-primary p-10 text-white flex flex-col justify-between relative overflow-hidden">
+              {/* Cercles décoratifs */}
               <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
               <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-peach-primary/20 rounded-full blur-2xl"></div>
               
@@ -78,6 +78,7 @@ export default function Contact() {
                 </p>
                 
                 <div className="space-y-6">
+                  {/* Adresse */}
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                       <MapPin size={20} className="text-peach-primary" />
@@ -88,6 +89,7 @@ export default function Contact() {
                     </div>
                   </div>
 
+                  {/* Email */}
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                       <Mail size={20} className="text-peach-primary" />
@@ -102,6 +104,7 @@ export default function Contact() {
                 </div>
               </div>
 
+              {/* Réseaux Sociaux - UNIQUEMENT FACEBOOK */}
               <div className="mt-12 pt-8 border-t border-white/10">
                 <a 
                   href="https://www.facebook.com/groups/467126453152213"
@@ -130,7 +133,7 @@ export default function Contact() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all"
-                    placeholder="Jean Dupont"
+                    placeholder="Votre nom"
                     required
                   />
                 </div>
@@ -145,7 +148,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all"
-                    placeholder="jean@exemple.com"
+                    placeholder="votre@email.com"
                     required
                   />
                 </div>
@@ -160,7 +163,7 @@ export default function Contact() {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all resize-none"
-                    placeholder="Bonjour, je souhaiterais avoir des informations sur..."
+                    placeholder="Comment pouvons-nous vous aider ?"
                     required
                   ></textarea>
                 </div>
@@ -173,7 +176,7 @@ export default function Contact() {
                   {status === 'sending' ? (
                     <>
                       <Loader2 className="animate-spin" size={20} />
-                      Envoi en cours...
+                      Envoi...
                     </>
                   ) : (
                     <>
