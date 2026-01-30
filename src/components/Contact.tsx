@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { MapPin, Mail, Phone, Facebook, Send, Loader2 } from 'lucide-react';
+import { MapPin, Mail, Facebook, Send, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -7,30 +7,38 @@ export default function Contact() {
     email: '',
     message: '',
   });
+  
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus('sending');
+    setErrorMessage('');
+
+    const serviceID = 'service_indigo';  // Vérifiez que c'est bien l'ID dans EmailJS
+    const templateID = 'template_3a5eort'; // Vérifiez que c'est bien l'ID du template
+    const publicKey = 'VVduH8VzAuhflNyHJ';   // Votre clé publique
+
+    const data = {
+      service_id: serviceID,
+      template_id: templateID,
+      user_id: publicKey,
+      template_params: {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_email: 'associationindigo59@gmail.com', // Assurez-vous que votre template utilise {{to_email}} ou supprimez cette ligne si c'est configuré par défaut
+      },
+    };
 
     try {
-      // Envoi via EmailJS
       const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          service_id: 'service_indigo',      // À configurer dans EmailJS
-          template_id: 'template_3a5eort',   // À configurer dans EmailJS
-          user_id: 'VVduH8VzAuhflNyHJ',        // À remplacer par ta clé publique EmailJS
-          template_params: {
-            from_name: formData.name,
-            from_email: formData.email,
-            message: formData.message,
-            to_email: 'associationindigo59@gmail.com',
-          },
-        }),
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
@@ -38,162 +46,162 @@ export default function Contact() {
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus('idle'), 5000);
       } else {
-        throw new Error('Erreur envoi');
+        const errorText = await response.text();
+        console.error('Erreur EmailJS:', errorText);
+        setStatus('error');
+        // Affiche l'erreur exacte pour le débogage
+        setErrorMessage(`Erreur (${response.status}) : ${errorText}`);
       }
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('Erreur réseau:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
+      setErrorMessage("Erreur de connexion réseau. Vérifiez votre internet.");
     }
   };
 
   return (
-    <section id="contact" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="font-heading font-semibold text-3xl md:text-4xl lg:text-5xl text-center text-dark-text mb-16">
-          Contactez-nous
-        </h2>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
+    <section id="contact" className="py-20 bg-white relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            
+            {/* Colonne Gauche : Infos */}
+            <div className="bg-indigo-primary p-10 text-white flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-peach-primary/20 rounded-full blur-2xl"></div>
+              
               <div>
-                <label htmlFor="name" className="block font-body text-dark-text mb-2 font-semibold">
-                  Nom <span className="text-peach-primary">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-primary focus:border-transparent transition-all duration-300 font-body"
-                  placeholder="Votre nom"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block font-body text-dark-text mb-2 font-semibold">
-                  Email <span className="text-peach-primary">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-primary focus:border-transparent transition-all duration-300 font-body"
-                  placeholder="votre.email@exemple.fr"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block font-body text-dark-text mb-2 font-semibold">
-                  Message <span className="text-peach-primary">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  required
-                  rows={6}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-primary focus:border-transparent transition-all duration-300 font-body resize-none"
-                  placeholder="Votre message..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full px-8 py-4 bg-indigo-primary text-white font-body font-semibold text-lg rounded-full hover:bg-opacity-90 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-primary focus:ring-offset-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
-              >
-                {status === 'sending' && <Loader2 className="animate-spin" size={20} />}
-                {status === 'idle' && <><Send size={20} /> Envoyer</>}
-                {status === 'sending' && 'Envoi en cours...'}
-                {status === 'success' && '✓ Message envoyé !'}
-                {status === 'error' && '✗ Erreur, réessayez'}
-              </button>
-
-              {status === 'success' && (
-                <p className="text-green-600 text-center font-body mt-2">
-                  Merci ! Nous vous répondrons dans les plus brefs délais.
+                <h2 className="font-heading font-bold text-3xl mb-6">Contactez-nous</h2>
+                <p className="font-body text-indigo-100 mb-8 leading-relaxed">
+                  Une question sur nos ateliers ? Besoin d'échanger sur votre situation ?
+                  Nous sommes là pour vous écouter et vous répondre.
                 </p>
-              )}
-              {status === 'error' && (
-                <p className="text-red-600 text-center font-body mt-2">
-                  Une erreur est survenue. Vous pouvez aussi nous écrire directement à associationindigo59@gmail.com
-                </p>
-              )}
-            </form>
-          </div>
+                
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                      <MapPin size={20} className="text-peach-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-bold text-lg">Notre Adresse</h3>
+                      <p className="font-body text-indigo-100">Mairie de Preseau<br />59990 Preseau</p>
+                    </div>
+                  </div>
 
-          <div className="space-y-8">
-            <div>
-              <h3 className="font-heading font-medium text-2xl text-dark-text mb-6">
-                Informations
-              </h3>
-
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="bg-light-bg p-3 rounded-full">
-                    <MapPin className="text-indigo-primary" size={24} />
-                  </div>
-                  <div>
-                    <p className="font-body text-dark-text text-lg">
-                      <strong>Preseau, Nord (59)</strong>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-light-bg p-3 rounded-full">
-                    <Phone className="text-indigo-primary" size={24} />
-                  </div>
-                  <div>
-                    <a
-                      href="tel:+33671787579"
-                      className="font-body text-dark-text text-lg hover:text-indigo-primary transition-colors duration-300"
-                    >
-                      +33 6 71 78 75 79
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-light-bg p-3 rounded-full">
-                    <Mail className="text-indigo-primary" size={24} />
-                  </div>
-                  <div>
-                    <a
-                      href="mailto:associationindigo59@gmail.com"
-                      className="font-body text-dark-text text-lg hover:text-indigo-primary transition-colors duration-300"
-                    >
-                      associationindigo59@gmail.com
-                    </a>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                      <Mail size={20} className="text-peach-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-bold text-lg">Email</h3>
+                      <a href="mailto:associationindigo59@gmail.com" className="font-body text-indigo-100 hover:text-white transition-colors">
+                        associationindigo59@gmail.com
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <h3 className="font-heading font-medium text-2xl text-dark-text mb-6">
-                Suivez-nous
-              </h3>
-
-              <div className="space-y-4">
-                <a
+              <div className="mt-12 pt-8 border-t border-white/10">
+                <a 
                   href="https://www.facebook.com/groups/467126453152213"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-6 py-4 bg-light-bg rounded-full hover:bg-indigo-primary hover:text-white transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-primary focus:ring-offset-2 group"
+                  className="flex items-center gap-3 text-white hover:text-peach-primary transition-colors group"
                 >
-                  <Facebook className="text-indigo-primary group-hover:text-white transition-colors duration-300" size={24} />
-                  <span className="font-body font-semibold text-dark-text group-hover:text-white transition-colors duration-300">
-                    Rejoignez notre groupe Facebook
-                  </span>
+                  <div className="bg-white/10 p-2 rounded-full group-hover:bg-white/20 transition-colors">
+                    <Facebook size={20} />
+                  </div>
+                  <span className="font-heading font-bold">Rejoignez notre communauté</span>
                 </a>
               </div>
             </div>
+
+            {/* Colonne Droite : Formulaire */}
+            <div className="p-10 bg-white">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-bold text-dark-text mb-2 font-heading">
+                    Votre Nom
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all"
+                    placeholder="Jean Dupont"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-bold text-dark-text mb-2 font-heading">
+                    Votre Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all"
+                    placeholder="jean@exemple.com"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-bold text-dark-text mb-2 font-heading">
+                    Votre Message
+                  </label>
+                  <textarea
+                    id="message"
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-dark-text focus:outline-none focus:ring-2 focus:ring-indigo-primary/50 focus:border-indigo-primary transition-all resize-none"
+                    placeholder="Bonjour, je souhaiterais avoir des informations sur..."
+                    required
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="w-full py-4 px-6 bg-peach-primary text-white font-heading font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-lg hover:shadow-peach-primary/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {status === 'sending' ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={20} />
+                      Envoyer le message
+                    </>
+                  )}
+                </button>
+
+                {status === 'success' && (
+                  <div className="p-4 bg-green-50 text-green-700 rounded-xl flex items-center gap-3 animate-fade-in border border-green-100">
+                    <CheckCircle size={20} />
+                    <span className="font-bold text-sm">Message envoyé avec succès !</span>
+                  </div>
+                )}
+
+                {status === 'error' && (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-xl flex flex-col gap-1 animate-fade-in border border-red-100">
+                    <div className="flex items-center gap-3">
+                        <AlertCircle size={20} />
+                        <span className="font-bold text-sm">Erreur lors de l'envoi.</span>
+                    </div>
+                    {errorMessage && <p className="text-xs ml-8 opacity-80">{errorMessage}</p>}
+                  </div>
+                )}
+              </form>
+            </div>
+
           </div>
         </div>
       </div>
