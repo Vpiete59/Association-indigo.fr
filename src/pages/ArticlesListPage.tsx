@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
 import { ArrowRight, BookOpen, Search } from 'lucide-react';
+import SEO from '../components/SEO';
 
 // Composant Image avec placeholder
 function ImageWithPlaceholder({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -59,6 +60,11 @@ export default function ArticlesListPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
+        <SEO
+          title="Bibliothèque & Ressources | TDAH, DYS, HPI, Phobie Scolaire"
+          description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
+          canonical="/articles"
+        />
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
       </div>
     );
@@ -66,7 +72,12 @@ export default function ArticlesListPage() {
 
   return (
     <div className="min-h-screen bg-light-bg pb-20">
-      
+      <SEO
+        title="Bibliothèque & Ressources | TDAH, DYS, HPI, Phobie Scolaire"
+        description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
+        canonical="/articles"
+      />
+
       {/* --- HERO SECTION --- */}
       <section className="relative pt-28 pb-20 md:pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         

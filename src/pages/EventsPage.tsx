@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase, Event } from '../lib/supabase';
 import { Calendar, MapPin, ExternalLink, Clock, Users } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -42,6 +43,11 @@ export default function EventsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
+        <SEO
+          title="Nos Événements | Ateliers, Groupes de Parole, Cafés Parents"
+          description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
+          canonical="/evenements"
+        />
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
           <p className="font-heading text-nature-primary font-bold">Recherche des événements...</p>
@@ -50,9 +56,43 @@ export default function EventsPage() {
     );
   }
 
+  const eventsStructuredData = events.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Événements Association Indigo',
+        itemListElement: events.map((event, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Event',
+            name: event.title,
+            description: event.description,
+            startDate: event.event_date,
+            location: event.location
+              ? { '@type': 'Place', name: event.location }
+              : { '@type': 'Place', name: 'Preseau, Nord' },
+            organizer: {
+              '@type': 'Organization',
+              name: 'Association Indigo',
+              url: 'https://association-indigo.fr',
+            },
+            image: event.image_url || 'https://association-indigo.fr/og-image.webp',
+            url: event.registration_link || 'https://association-indigo.fr/evenements',
+          },
+        })),
+      }
+    : null;
+
   return (
     <div className="min-h-screen bg-light-bg pb-20">
-      
+      <SEO
+        title="Nos Événements | Ateliers, Groupes de Parole, Cafés Parents"
+        description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
+        canonical="/evenements"
+        structuredData={eventsStructuredData || undefined}
+      />
+
       {/* --- HERO SECTION --- */}
       <section className="relative pt-28 pb-24 md:pb-32 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
         

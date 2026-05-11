@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, HelpCircle, MessageCircle, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 // Couleurs pour chaque catégorie
 const categoryColors = [
@@ -114,6 +115,23 @@ const faqData = [
   }
 ];
 
+const faqStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.flatMap((section) =>
+    section.items
+      .filter((item) => typeof item.answer === 'string')
+      .map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer as string,
+        },
+      }))
+  ),
+};
+
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<string | null>(null);
 
@@ -123,7 +141,13 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen">
-      
+      <SEO
+        title="FAQ | Questions Fréquentes sur l'Association Indigo"
+        description="Toutes les réponses à vos questions sur l'Association Indigo : accompagnement enfants atypiques, ateliers, groupes de parole, adhésion, prise en charge TDAH, DYS, HPI."
+        canonical="/faq"
+        structuredData={faqStructuredData}
+      />
+
       {/* Hero Section - Arc-en-ciel */}
       <section className="relative pt-28 pb-20 overflow-hidden">
         {/* Fond dégradé arc-en-ciel */}

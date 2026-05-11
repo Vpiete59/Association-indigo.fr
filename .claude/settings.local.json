@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(grep -oE \"<main[^>]*>[^<]{0,200}\" dist/articles/tdah-tda/index.html)",
+      "Bash(grep -oE \"<main[^>]*>[^<]{0,300}\" dist/index.html)",
+      "Bash(npx vite *)"
+    ]
+  }
+}

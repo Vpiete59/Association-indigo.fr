@@ -1,11 +1,17 @@
 import Contact from '../components/Contact';
 import { Link } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function ContactPage() {
   return (
     <div className="bg-light-bg min-h-screen">
-      
+      <SEO
+        title="Nous Contacter | Association Indigo - Preseau"
+        description="Contactez l'Association Indigo à Preseau. Une question sur nos ateliers, groupes de parole ou l'accompagnement des enfants atypiques ? Nous vous répondons rapidement."
+        canonical="/contact"
+      />
+
       {/* Composant Contact (Formulaire + Infos) */}
       <div className="pt-20">
         <Contact />

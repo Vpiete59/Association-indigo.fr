@@ -1,14 +1,18 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, lazy, Suspense } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase, Article, Event } from '../lib/supabase';
-import { 
-  Trash2, Edit, Plus, Save, X, LogOut, 
-  LayoutDashboard, Calendar, FileText, CheckCircle, XCircle, 
-  Image as ImageIcon, Type, Search
+import {
+  Trash2, Edit, Plus, Save, X, LogOut,
+  LayoutDashboard, Calendar, FileText, CheckCircle, XCircle,
+  Image as ImageIcon, Type, Search, BarChart3
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
-type Tab = 'articles' | 'events';
+// Lazy load : Recharts pèse ~200KB, on évite de l'inclure dans le bundle public
+const VisitorsPanel = lazy(() => import('../components/admin/VisitorsPanel'));
+
+type Tab = 'articles' | 'events' | 'visitors';
 
 // Générateur de Slug automatique (titre -> url)
 const generateSlug = (text: string) => {
@@ -85,7 +89,7 @@ export default function AdminPage() {
 
   // Chargement des données au démarrage
   useEffect(() => {
-    if (user) fetchData();
+    if (user && activeTab !== 'visitors') fetchData();
   }, [user, activeTab]);
 
   async function fetchData() {
@@ -221,6 +225,7 @@ export default function AdminPage() {
   // --- ÉCRAN DE CONNEXION ---
   if (!user) return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-primary via-white to-peach-primary relative overflow-hidden">
+      <SEO title="Administration | Association Indigo" description="" canonical="/admin" noIndex={true} />
         <div className="absolute inset-0 bg-white/30 backdrop-blur-sm"></div>
         <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative z-10 border border-white/50">
           <div className="text-center mb-8">
@@ -269,6 +274,9 @@ export default function AdminPage() {
           <button onClick={() => { setActiveTab('events'); setIsEditing(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'events' ? 'bg-peach-primary/10 text-peach-primary' : 'text-gray-500 hover:bg-gray-50'}`}>
             <Calendar size={20} /> Événements
           </button>
+          <button onClick={() => { setActiveTab('visitors'); setIsEditing(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'visitors' ? 'bg-nature-primary/10 text-nature-primary' : 'text-gray-500 hover:bg-gray-50'}`}>
+            <BarChart3 size={20} /> Visiteurs
+          </button>
         </nav>
 
         <div className="p-4 border-t border-gray-100">
@@ -285,14 +293,18 @@ export default function AdminPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="font-heading font-bold text-3xl text-dark-text capitalize">
-                Gestion des {activeTab === 'articles' ? 'Articles' : 'Événements'}
+                {activeTab === 'articles' && 'Gestion des Articles'}
+                {activeTab === 'events' && 'Gestion des Événements'}
+                {activeTab === 'visitors' && 'Statistiques de visite'}
               </h1>
               <p className="text-gray-500">
-                {activeTab === 'articles' ? `${articles.length} articles publiés` : `${events.length} événements à venir`}
+                {activeTab === 'articles' && `${articles.length} articles publiés`}
+                {activeTab === 'events' && `${events.length} événements à venir`}
+                {activeTab === 'visitors' && 'Trafic anonyme du site (hors admin)'}
               </p>
             </div>
-            
-            {!isEditing && (
+
+            {!isEditing && activeTab !== 'visitors' && (
               <button
                 onClick={() => {
                   activeTab === 'articles' ? resetArticleForm() : setEventForm({ title: '', description: '', image_url: '', event_date: '', location: '', registration_link: '', published: false });
@@ -305,7 +317,15 @@ export default function AdminPage() {
             )}
           </div>
 
-          {loadingData ? (
+          {activeTab === 'visitors' ? (
+            <Suspense fallback={
+              <div className="flex justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
+              </div>
+            }>
+              <VisitorsPanel />
+            </Suspense>
+          ) : loadingData ? (
              <div className="flex justify-center py-20">
                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
              </div>

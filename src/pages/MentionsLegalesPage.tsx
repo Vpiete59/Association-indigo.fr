@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function MentionsLegalesPage() {
   return (
     <div className="min-h-screen bg-light-bg py-20">
+      <SEO
+        title="Mentions Légales | Association Indigo"
+        description="Mentions légales de l'Association Indigo, association loi 1901 (RNA W596011146) basée à Preseau (59990)."
+        canonical="/mentions-legales"
+        noIndex={true}
+      />
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <Link

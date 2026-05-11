@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
 import { ArrowLeft, Facebook } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -33,19 +34,83 @@ export default function ArticlePage() {
     fetchArticle();
   }, [slug]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-light-bg"><div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div></div>;
+  const articleStructuredData = article
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.title,
+        description: article.subtitle || article.paragraph_1?.substring(0, 160),
+        image: article.image_url || 'https://association-indigo.fr/og-image.webp',
+        author: {
+          '@type': 'Organization',
+          name: 'Association Indigo',
+          url: 'https://association-indigo.fr',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Association Indigo',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://association-indigo.fr/logo-indigo.png',
+          },
+        },
+        datePublished: article.created_at,
+        dateModified: article.updated_at,
+        url: `https://association-indigo.fr/articles/${article.slug}`,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `https://association-indigo.fr/articles/${article.slug}`,
+        },
+      }
+    : null;
+
+  // Fallback générique basé sur le slug : transforme "le-tdah-chez-la-femme" -> "Le Tdah Chez La Femme"
+  const slugToTitle = (s: string) =>
+    s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const fallbackTitle = slug ? slugToTitle(slug) : 'Article';
+  const fallbackDesc = `Découvrez notre dossier ${fallbackTitle} : ressources, conseils et accompagnement pour les familles d'enfants atypiques par l'Association Indigo.`;
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-light-bg">
+      <SEO
+        title={fallbackTitle}
+        description={fallbackDesc}
+        canonical={`/articles/${slug || ''}`}
+        ogType="article"
+      />
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
+    </div>
+  );
 
   if (error || !article) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-light-bg px-4 text-center">
+      <SEO
+        title="Article non trouvé"
+        description="Cet article n'existe pas ou a été déplacé."
+        canonical={`/articles/${slug || ''}`}
+        noIndex={true}
+      />
       <h1 className="font-heading font-bold text-2xl text-dark-text mb-4">Oups !</h1>
       <p className="text-dark-text/70 mb-8">{error || "Cet article n'existe pas."}</p>
       <Link to="/articles" className="px-6 py-3 bg-indigo-primary text-white rounded-full font-bold">Retour à la bibliothèque</Link>
     </div>
   );
 
+  const seoDescription = article.meta_description
+    || article.subtitle
+    || (article.paragraph_1 ? article.paragraph_1.substring(0, 155) + '...' : `Découvrez notre dossier complet sur ${article.title} - Association Indigo.`);
+
   return (
     <div className="min-h-screen bg-light-bg pb-20">
-      
+      <SEO
+        title={`${article.title} | ${article.category}`}
+        description={seoDescription}
+        canonical={`/articles/${article.slug}`}
+        ogImage={article.image_url || undefined}
+        ogType="article"
+        structuredData={articleStructuredData || undefined}
+      />
+
       {/* Header Image */}
       <div className="h-64 md:h-96 w-full relative">
         {article.image_url ? (

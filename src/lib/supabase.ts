@@ -18,9 +18,12 @@ export interface Article {
   image_url?: string;
   poster_image_url: string;
   paragraph_1: string;
+  paragraph_2?: string;
   image_2_url?: string;
   cta_text?: string;
   cta_link?: string;
+  meta_description?: string;
+  meta_keywords?: string;
   published: boolean;
   created_at: string;
   updated_at: string;

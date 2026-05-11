@@ -3,10 +3,14 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Facebook, Settings, Heart, BookOpen, CalendarHeart, MessageCircleQuestion, Mail } from 'lucide-react';
 import Footer from './Footer';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 export default function Layout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+
+  // Tracking analytics anonyme (exclut /admin, géré dans le hook)
+  useAnalytics();
 
   // Fermer le menu mobile et scroll to top au changement de page
   useEffect(() => {

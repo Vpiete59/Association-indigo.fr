@@ -1,5 +1,4 @@
-import React from 'react';
-import { Facebook } from 'lucide-react'; 
+import { Facebook } from 'lucide-react';
 
 export default function Hero() {
   return (

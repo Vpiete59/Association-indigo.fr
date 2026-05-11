@@ -3,36 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>Association Indigo | TDAH, DYS, HPI | Preseau - Valenciennes</title>
-    <meta name="description" content="Association Indigo à Preseau (proche Valenciennes). Accompagnement bienveillant des familles d'enfants atypiques : TDAH, troubles DYS, HPI, hypersensibilité, phobie scolaire." />
-    
-    <meta name="keywords" content="TDAH, TDA, enfant atypique, HPI, haut potentiel, dyslexie, DYS, troubles apprentissage, hypersensibilité, phobie scolaire, association, Preseau, Nord, Valenciennes, accompagnement parents, enfant précoce, zèbre" />
-    
+    <meta name="robots" content="index, follow" />
     <meta name="author" content="Association Indigo" />
-    <meta name="copyright" content="Association Indigo" />
-    
-    <link rel="canonical" href="https://association-indigo.fr/" />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://association-indigo.fr/" />
-    <meta property="og:title" content="Association Indigo | Accompagnement Enfants Atypiques" />
-    <meta property="og:description" content="Soutien aux familles d'enfants TDAH, DYS, HPI à Preseau. Découvrez nos ateliers, groupes de parole et ressources." />
-    
-    <meta property="og:image" content="https://association-indigo.fr/og-image.webp" />
-    <meta property="og:image:type" content="image/webp" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Association Indigo | TDAH, DYS, HPI" />
-    <meta name="twitter:description" content="Accompagnement bienveillant des familles d'enfants atypiques." />
-    <meta name="twitter:image" content="https://association-indigo.fr/og-image.webp" />
+    <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
+    <!-- Schema.org Organisation (donnees corrigées) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -41,7 +21,10 @@
       "legalName": "Association Indigo Preseau",
       "description": "Association loi 1901 d'accompagnement des familles d'enfants atypiques : TDAH, DYS, HPI, hypersensibilité, phobie scolaire.",
       "url": "https://association-indigo.fr",
-      "logo": "https://association-indigo.fr/logo.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://association-indigo.fr/logo-indigo.png"
+      },
       "foundingDate": "2024",
       "address": {
         "@type": "PostalAddress",
@@ -61,16 +44,19 @@
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
-        "email": "contact@association-indigo.fr",
+        "email": "associationindigo59@gmail.com",
         "url": "https://association-indigo.fr/contact"
-      },
-      "keywords": "TDAH, HPI, DYS, enfants atypiques, hypersensibilité, accompagnement parents"
+      }
     }
     </script>
 
+    <!-- Polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Titre / meta par défaut (override par react-helmet-async sur chaque page) -->
+    <title>Association Indigo</title>
   </head>
   <body>
     <div id="root"></div>

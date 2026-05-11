@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function PolitiqueConfidentialitePage() {
   return (
     <div className="min-h-screen bg-light-bg py-20">
+      <SEO
+        title="Politique de Confidentialité | Association Indigo"
+        description="Politique de confidentialité et gestion des données personnelles de l'Association Indigo."
+        canonical="/politique-confidentialite"
+        noIndex={true}
+      />
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <Link

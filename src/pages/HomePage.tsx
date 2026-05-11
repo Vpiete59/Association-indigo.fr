@@ -1,17 +1,48 @@
 import { Link } from 'react-router-dom';
-import { 
-  Heart, 
-  HandHeart, 
-  Star, 
-  BookOpen, 
-  Calendar, 
-  Mail, 
-  Facebook, 
-  ArrowRight, 
-  Quote, 
-  CheckCircle2 
+import {
+  Heart,
+  HandHeart,
+  Star,
+  BookOpen,
+  Calendar,
+  Mail,
+  Facebook,
+  ArrowRight,
+  Quote,
+  CheckCircle2
 } from 'lucide-react';
 import Hero from '../components/Hero';
+import SEO from '../components/SEO';
+
+const homeStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'Association Indigo',
+  legalName: 'Association Indigo Preseau',
+  description: 'Association loi 1901 accompagnant les familles d\'enfants atypiques : TDAH, DYS, HPI, hypersensibilité, phobie scolaire à Preseau (Nord).',
+  url: 'https://association-indigo.fr',
+  logo: 'https://association-indigo.fr/logo-indigo.png',
+  foundingDate: '2024',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Mairie de Preseau',
+    addressLocality: 'Preseau',
+    postalCode: '59990',
+    addressRegion: 'Nord',
+    addressCountry: 'FR',
+  },
+  areaServed: {
+    '@type': 'Place',
+    name: 'Valenciennois, Nord, Hauts-de-France',
+  },
+  sameAs: ['https://www.facebook.com/groups/467126453152213'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'associationindigo59@gmail.com',
+    url: 'https://association-indigo.fr/contact',
+  },
+};
 
 export default function HomePage() {
   const values = [
@@ -78,6 +109,12 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO
+        title="Association Indigo | TDAH, DYS, HPI | Preseau - Valenciennes"
+        description="Association Indigo à Preseau (proche Valenciennes). Accompagnement bienveillant des familles d'enfants atypiques : TDAH, troubles DYS, HPI, hypersensibilité, phobie scolaire."
+        canonical="/"
+        structuredData={homeStructuredData}
+      />
       {/* Hero Section */}
       <Hero />
 
