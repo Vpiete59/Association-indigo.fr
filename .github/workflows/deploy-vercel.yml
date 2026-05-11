@@ -1,0 +1,22 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Permet aussi de lancer un déploiement manuel depuis l'onglet Actions
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        run: |
+          echo "Déclenchement du déploiement Vercel..."
+          status=$(curl -s -o response.txt -w "%{http_code}" -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}")
+          echo "Code HTTP : $status"
+          echo "Réponse : $(cat response.txt)"
+          if [ "$status" != "200" ] && [ "$status" != "201" ]; then
+            echo "❌ Le déploiement a échoué (status $status)"
+            exit 1
+          fi
+          echo "✅ Déploiement déclenché avec succès"
