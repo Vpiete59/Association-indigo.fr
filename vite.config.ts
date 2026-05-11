@@ -51,11 +51,34 @@ async function fetchArticleSlugs(): Promise<string[]> {
   }
 }
 
+// Sur Vercel/Lambda (env serverless), Chrome système n'est pas dispo -> utilise @sparticuz/chromium
+// En local, on garde le Chromium par défaut bundlé avec puppeteer
+async function getRendererOptions() {
+  const baseOptions = {
+    renderAfterTime: 8000,
+    maxConcurrentRoutes: 1,
+    headless: true,
+  };
+
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    console.log('[prerender] Environnement serverless détecté -> utilisation de @sparticuz/chromium');
+    const chromium = (await import('@sparticuz/chromium')).default;
+    return {
+      ...baseOptions,
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
+    };
+  }
+
+  return baseOptions;
+}
+
 export default defineConfig(async () => {
   const articleSlugs = await fetchArticleSlugs();
   const articleRoutes = articleSlugs.map((s) => `/articles/${s}`);
   const routes = [...STATIC_ROUTES, ...articleRoutes];
   console.log(`[prerender] ${routes.length} routes à prerendre`);
+  const rendererOptions = await getRendererOptions();
 
   return {
     plugins: [
@@ -63,11 +86,7 @@ export default defineConfig(async () => {
       prerender({
         routes,
         renderer: '@prerenderer/renderer-puppeteer',
-        rendererOptions: {
-          renderAfterTime: 8000,
-          maxConcurrentRoutes: 1,
-          headless: true,
-        },
+        rendererOptions,
         postProcess(renderedRoute) {
           renderedRoute.html = renderedRoute.html.replace(
             /http:\/\/localhost:\d+/g,
