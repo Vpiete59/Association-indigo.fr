@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase, Article } from '../lib/supabase';
 import { ArrowLeft, Facebook } from 'lucide-react';
-import SEO from '../components/SEO';
+import SEO, { clampDescription } from '../components/SEO';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -39,7 +39,8 @@ export default function ArticlePage() {
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: article.title,
-        description: article.subtitle || article.paragraph_1?.substring(0, 160),
+        description: clampDescription(article.meta_description || article.subtitle || article.paragraph_1 || article.title),
+        inLanguage: 'fr-FR',
         image: article.image_url || 'https://association-indigo.fr/og-image.webp',
         author: {
           '@type': 'Organization',
@@ -96,14 +97,19 @@ export default function ArticlePage() {
     </div>
   );
 
-  const seoDescription = article.meta_description
+  // Description : meta saisie > sous-titre > début du texte, complétée si trop courte (< 110 car.)
+  const rawDescription = (article.meta_description
     || article.subtitle
-    || (article.paragraph_1 ? article.paragraph_1.substring(0, 155) + '...' : `Découvrez notre dossier complet sur ${article.title} - Association Indigo.`);
+    || article.paragraph_1
+    || `Découvrez notre dossier complet sur ${article.title}.`).replace(/\s+/g, ' ').trim();
+  const seoDescription = rawDescription.length < 110
+    ? `${rawDescription.replace(/[.\s]+$/, '')}. Ressources et conseils pour les familles d'enfants atypiques, par l'Association Indigo (Preseau).`
+    : rawDescription;
 
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       <SEO
-        title={`${article.title} | ${article.category}`}
+        title={article.title}
         description={seoDescription}
         canonical={`/articles/${article.slug}`}
         ogImage={article.image_url || undefined}

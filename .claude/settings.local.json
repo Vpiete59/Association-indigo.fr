@@ -6,7 +6,13 @@
       "Bash(npm run *)",
       "Bash(grep -oE \"<main[^>]*>[^<]{0,200}\" dist/articles/tdah-tda/index.html)",
       "Bash(grep -oE \"<main[^>]*>[^<]{0,300}\" dist/index.html)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Read(//c/Users/Piete/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"nonprofit family support children neurodiversity pastel warm\" --design-system -p \"Association Indigo\" --variance 5 --density 3)",
+      "Bash(python scripts/search.py \"friendly rounded warm playful\" --domain typography -n 4)",
+      "Bash(sed -i 's/title=\"Bibliothèque & Ressources | TDAH, DYS, HPI, Phobie Scolaire\"/title=\"Articles TDAH, DYS, HPI, phobie scolaire\"/' src/pages/ArticlesListPage.tsx)",
+      "Bash(sed -i 's/title=\"Nos Événements | Ateliers, Groupes de Parole, Cafés Parents\"/title=\"Ateliers, groupes de parole et cafés parents\"/' src/pages/EventsPage.tsx)",
+      "Bash(sed -i 's/title=\"FAQ | Questions Fréquentes sur l'\"'\"'Association Indigo\"/title=\"FAQ : questions fréquentes\"/' src/pages/FAQPage.tsx)"
     ]
   }
 }

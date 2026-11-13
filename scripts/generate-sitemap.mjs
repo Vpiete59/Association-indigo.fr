@@ -14,8 +14,7 @@ const staticUrls = [
   { loc: '/evenements', changefreq: 'weekly', priority: '0.8' },
   { loc: '/faq', changefreq: 'monthly', priority: '0.7' },
   { loc: '/contact', changefreq: 'monthly', priority: '0.7' },
-  { loc: '/mentions-legales', changefreq: 'yearly', priority: '0.2' },
-  { loc: '/politique-confidentialite', changefreq: 'yearly', priority: '0.2' },
+  // mentions-legales et politique-confidentialite sont en noindex : elles ne doivent pas figurer ici
 ];
 
 async function fetchArticles() {

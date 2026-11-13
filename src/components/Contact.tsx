@@ -71,7 +71,7 @@ export default function Contact() {
               <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-peach-primary/20 rounded-full blur-2xl"></div>
               
               <div>
-                <h2 className="font-heading font-bold text-3xl mb-6">Contactez-nous</h2>
+                <h1 className="font-heading font-bold text-3xl mb-6">Contacter l'Association Indigo</h1>
                 <p className="font-body text-indigo-100 mb-8 leading-relaxed">
                   Une question sur nos ateliers ? Besoin d'échanger sur votre situation ?
                   Nous sommes là pour vous écouter et vous répondre.

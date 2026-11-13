@@ -44,7 +44,7 @@ export default function EventsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
         <SEO
-          title="Nos Événements | Ateliers, Groupes de Parole, Cafés Parents"
+          title="Ateliers, groupes de parole et cafés parents"
           description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
           canonical="/evenements"
         />
@@ -87,7 +87,7 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       <SEO
-        title="Nos Événements | Ateliers, Groupes de Parole, Cafés Parents"
+        title="Ateliers, groupes de parole et cafés parents"
         description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
         canonical="/evenements"
         structuredData={eventsStructuredData || undefined}

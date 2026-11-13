@@ -142,7 +142,7 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen">
       <SEO
-        title="FAQ | Questions Fréquentes sur l'Association Indigo"
+        title="FAQ : questions fréquentes"
         description="Toutes les réponses à vos questions sur l'Association Indigo : accompagnement enfants atypiques, ateliers, groupes de parole, adhésion, prise en charge TDAH, DYS, HPI."
         canonical="/faq"
         structuredData={faqStructuredData}

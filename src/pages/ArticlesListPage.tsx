@@ -61,7 +61,7 @@ export default function ArticlesListPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light-bg">
         <SEO
-          title="Bibliothèque & Ressources | TDAH, DYS, HPI, Phobie Scolaire"
+          title="Articles TDAH, DYS, HPI, phobie scolaire"
           description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
           canonical="/articles"
         />
@@ -73,7 +73,7 @@ export default function ArticlesListPage() {
   return (
     <div className="min-h-screen bg-light-bg pb-20">
       <SEO
-        title="Bibliothèque & Ressources | TDAH, DYS, HPI, Phobie Scolaire"
+        title="Articles TDAH, DYS, HPI, phobie scolaire"
         description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
         canonical="/articles"
       />

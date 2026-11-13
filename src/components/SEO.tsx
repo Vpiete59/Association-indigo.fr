@@ -14,6 +14,14 @@ const SITE_NAME = 'Association Indigo';
 const BASE_URL = 'https://association-indigo.fr';
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.webp`;
 
+// Coupe proprement à ~155 caractères sur une fin de mot (au-delà Google tronque)
+export function clampDescription(text: string, max = 155): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.–-]+$/, '') + '…';
+}
+
 export default function SEO({
   title,
   description,
@@ -23,7 +31,10 @@ export default function SEO({
   structuredData,
   noIndex = false,
 }: SEOProps) {
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  // Google tronque vers ~60 caractères : on n'ajoute le nom du site que s'il tient
+  const withSite = `${title} | ${SITE_NAME}`;
+  const fullTitle = title.includes(SITE_NAME) || withSite.length > 65 ? title : withSite;
+  description = clampDescription(description);
   const fullCanonical = canonical.startsWith('http') ? canonical : `${BASE_URL}${canonical}`;
 
   return (
