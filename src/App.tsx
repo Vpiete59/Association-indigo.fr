@@ -12,6 +12,10 @@ import AdminPage from './pages/AdminPage';
 import MentionsLegalesPage from './pages/MentionsLegalesPage';
 import PolitiqueConfidentialitePage from './pages/PolitiqueConfidentialitePage';
 import CookieBanner from './components/CookieBanner';
+import { lazy, Suspense } from 'react';
+
+// Maquettes de design : uniquement en local (npm run dev). En production, ce code est retiré du build.
+const PreviewRouter = import.meta.env.DEV ? lazy(() => import('./previews/PreviewRouter')) : null;
 
 function App() {
   return (
@@ -30,6 +34,9 @@ function App() {
             <Route path="politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
           </Route>
           <Route path="/admin" element={<AdminPage />} />
+          {PreviewRouter && (
+            <Route path="/preview/*" element={<Suspense fallback={null}><PreviewRouter /></Suspense>} />
+          )}
         </Routes>
         <CookieBanner />
       </Router>
