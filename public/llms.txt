@@ -1,0 +1,23 @@
+# Association Indigo
+
+> Association loi 1901 de parents, basée à Préseau (59990, Nord, près de Valenciennes). Elle accompagne les familles d'enfants atypiques : TDAH / TDA, troubles DYS, haut potentiel (HPI, HPE), hypersensibilité, phobie scolaire. Groupes de parole pour les parents, ateliers pour les enfants, articles pour comprendre. Accueil avec ou sans diagnostic.
+
+## Dossiers par profil
+
+- [TDAH / TDA](https://association-indigo.fr/articles/tdah-tda): déficit de l'attention, impulsivité, hyperactivité
+- [Troubles DYS](https://association-indigo.fr/articles/dys): dyslexie, dyspraxie, dysphasie, dysgraphie, dyscalculie
+- [Haut potentiel](https://association-indigo.fr/articles/haut-potentiel): HPI, HPE, « zèbres »
+- [Phobie scolaire](https://association-indigo.fr/articles/phobie-scolaire): refus scolaire anxieux
+- [Hypersensibilité](https://association-indigo.fr/articles/lhypersensibilite-chez-lenfant): quand un enfant ressent tout plus fort
+
+## Pages principales
+
+- [Bibliothèque](https://association-indigo.fr/articles): tous les articles de l'association
+- [Rendez-vous](https://association-indigo.fr/evenements): groupes de parole, ateliers, conférences (salle la Verrière, Préseau)
+- [Questions fréquentes](https://association-indigo.fr/faq): fonctionnement, âge, coût, diagnostic
+- [Contact](https://association-indigo.fr/contact): associationindigo59@gmail.com
+
+## Adhésion
+
+- Adhésion : 5 € par an, via HelloAsso
+- Dons libres via HelloAsso

@@ -2,13 +2,11 @@
 // Le monde : la table des ateliers vue de dessus. Tapis de découpe vert d'eau,
 // papiers pastel découpés, scotch washi, étiquettes, tickets et tampons.
 import { useState, type CSSProperties, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { Link, NavLink } from 'react-router-dom';
 import { Menu, X, MapPin, Mail, Facebook, Scissors, Settings } from 'lucide-react';
-import { LINKS, PARTNERS, type ProfileKey } from '../shared';
+import { LINKS, PARTNERS, type ProfileKey } from './data';
 
-export const BASE = '/preview/c';
-export const articleHref = (slug: string) => `${BASE}/articles/${slug}`;
+export const articleHref = (slug: string) => `/articles/${slug}`;
 
 export const PAPER = {
   lilas: '#CBD1FA',
@@ -88,21 +86,6 @@ html:has(.atelier) { scrollbar-color: #9FCDB0 var(--mat, #D5EDDC); }
 }
 `;
 
-export function AtelierHead({ title }: { title: string }) {
-  return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="robots" content="noindex, nofollow" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap"
-      />
-    </Helmet>
-  );
-}
-
 export function Tape({ color, style, className = '' }: { color: string; style?: CSSProperties; className?: string }) {
   return <span aria-hidden className={`tape ${className}`} style={{ background: color, ...style }} />;
 }
@@ -143,9 +126,9 @@ export function Stamp({ children, className = '', style }: { children: ReactNode
 }
 
 const NAV = [
-  { label: 'Comprendre', to: `${BASE}#bibliotheque` },
-  { label: 'Ateliers', to: `${BASE}#ateliers` },
-  { label: 'Questions', to: `${BASE}#questions` },
+  { label: 'Comprendre', to: '/articles' },
+  { label: 'Rendez-vous', to: '/evenements' },
+  { label: 'Questions', to: '/faq' },
   { label: 'Contact', to: '/contact' },
 ];
 
@@ -154,13 +137,19 @@ export function AtelierHeader() {
   return (
     <header className="relative z-30 bg-white border-b-2 border-[var(--ink)]">
       <div className="mx-auto max-w-6xl px-4 h-[76px] flex items-center justify-between gap-4">
-        <Link to={BASE} className="flex items-center gap-3 shrink-0">
+        <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="Association Indigo, retour à l'accueil">
           <img src="/logo-indigo.png" alt="" width={48} height={48} className="h-12 w-12" />
           <span className="display text-xl font-extrabold leading-none">Association Indigo</span>
         </Link>
         <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-1 font-extrabold">
           {NAV.map((n) => (
-            <Link key={n.label} to={n.to} className="px-4 py-2.5 rounded-full hover:bg-[var(--mat)]">{n.label}</Link>
+            <NavLink
+              key={n.label}
+              to={n.to}
+              className={({ isActive }) => `px-4 py-2.5 rounded-full ${isActive ? 'bg-[var(--mat)] text-[var(--ink)] shadow-[inset_0_0_0_2px_var(--grid-strong)]' : 'hover:bg-[var(--mat)]'}`}
+            >
+              {n.label}
+            </NavLink>
           ))}
           <a href={LINKS.adhesion} className="ml-2 rounded-full bg-[var(--ink)] text-white px-5 py-3 hover:bg-[var(--act)] transition-colors">
             Adhérer · 5 € par an
@@ -176,7 +165,14 @@ export function AtelierHeader() {
       {open && (
         <nav aria-label="Navigation mobile" className="lg:hidden border-t border-[var(--grid)] px-4 py-3 grid gap-1 font-extrabold">
           {NAV.map((n) => (
-            <Link key={n.label} to={n.to} onClick={() => setOpen(false)} className="px-3 py-3 rounded-xl hover:bg-[var(--mat)]">{n.label}</Link>
+            <NavLink
+              key={n.label}
+              to={n.to}
+              onClick={() => setOpen(false)}
+              className={({ isActive }) => `px-3 py-3 rounded-xl ${isActive ? 'bg-[var(--mat)]' : 'hover:bg-[var(--mat)]'}`}
+            >
+              {n.label}
+            </NavLink>
           ))}
           <a href={LINKS.adhesion} className="mt-1 px-3 py-3 rounded-xl bg-[var(--ink)] text-white text-center">Adhérer · 5 € par an</a>
           <Link to="/admin" className="mt-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-[var(--ink-2)] hover:bg-[var(--mat)]">
@@ -209,7 +205,7 @@ export function AtelierFooter() {
           <p className="mt-4 font-semibold text-[var(--ink-2)] max-w-sm">
             Accompagner les particularités, valoriser les singularités. Association loi 1901 de parents, à Préseau.
           </p>
-          <p className="mt-5 flex items-center gap-2 font-extrabold"><MapPin size={18} aria-hidden /> Salle la Verrière, Préseau (59990)</p>
+          <p className="mt-5 flex items-center gap-2 font-extrabold"><MapPin size={18} aria-hidden /> Préseau (59990), Hauts-de-France</p>
           <a href={`mailto:${LINKS.email}`} className="mt-2 flex items-center gap-2 font-extrabold underline"><Mail size={18} aria-hidden /> {LINKS.email}</a>
           <a href={LINKS.facebook} className="mt-2 flex items-center gap-2 font-extrabold underline"><Facebook size={18} aria-hidden /> Le groupe privé des parents</a>
         </div>
@@ -241,5 +237,35 @@ export function AtelierFooter() {
         </div>
       </div>
     </footer>
+  );
+}
+
+type SettleVars = CSSProperties & { '--r'?: string; '--d'?: string };
+
+// En-tête des pages intérieures : le titre découpé dans une bande de papier, posé sur le tapis
+export function PageHeader({
+  title, intro, paper = '#FFFFFF', children, sparkles = true,
+}: { title: string; intro?: ReactNode; paper?: string; children?: ReactNode; sparkles?: boolean }) {
+  return (
+    <section className="mat relative overflow-hidden">
+      <div aria-hidden className="mat-diagonal pointer-events-none absolute inset-0" />
+      {sparkles && (
+        <div aria-hidden className="pointer-events-none absolute right-[6%] top-8 hidden md:block">
+          <Sparkle color={SPARK.rouge} size={44} className="settle absolute right-10 top-0" style={{ '--r': '10deg', '--d': '300ms' } as SettleVars} />
+          <Sparkle color={SPARK.indigo} size={32} className="settle absolute right-0 top-12" style={{ '--r': '-8deg', '--d': '380ms' } as SettleVars} />
+          <Sparkle color={SPARK.orange} size={38} className="settle absolute right-16 top-16" style={{ '--r': '4deg', '--d': '460ms' } as SettleVars} />
+        </div>
+      )}
+      <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-14 sm:pt-16 sm:pb-16">
+        <h1
+          className="settle paper w-fit max-w-full px-4 pt-2 pb-1.5 text-[clamp(2.2rem,5vw,3.9rem)] font-extrabold leading-[1.05]"
+          style={{ backgroundColor: paper, clipPath: 'polygon(0 3%,100% 0,99.5% 97%,0.5% 100%)', '--r': '-1.2deg', '--d': '80ms' } as SettleVars}
+        >
+          {title}
+        </h1>
+        {intro && <div className="mt-6 max-w-[40rem] text-lg sm:text-xl font-semibold leading-relaxed text-[var(--ink-2)]">{intro}</div>}
+        {children}
+      </div>
+    </section>
   );
 }

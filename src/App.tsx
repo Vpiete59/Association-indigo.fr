@@ -11,6 +11,7 @@ import FAQPage from './pages/FAQPage';
 import AdminPage from './pages/AdminPage';
 import MentionsLegalesPage from './pages/MentionsLegalesPage';
 import PolitiqueConfidentialitePage from './pages/PolitiqueConfidentialitePage';
+import NotFoundPage from './pages/NotFoundPage';
 import CookieBanner from './components/CookieBanner';
 import { lazy, Suspense } from 'react';
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="faq" element={<FAQPage />} />
             <Route path="mentions-legales" element={<MentionsLegalesPage />} />
             <Route path="politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/admin" element={<AdminPage />} />
           {PreviewRouter && (

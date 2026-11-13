@@ -1,44 +1,60 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase, Article } from '../lib/supabase';
-import { ArrowRight, BookOpen, Search } from 'lucide-react';
+// Bibliothèque « L'atelier » : les pochettes par profil, une recherche, les fiches en tirages scotchés.
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ArrowRight, Search, X, Clock } from 'lucide-react';
+import { supabase, type Article } from '../lib/supabase';
 import SEO from '../components/SEO';
+import { PROFILES, cleanTitle, categoryLabel, type ProfileKey } from '../atelier/data';
+import { readingMinutes } from '../atelier/articleBody';
+import { Tape, PAPER, PROFILE_PAPER, articleHref } from '../atelier/kit';
 
-// Composant Image avec placeholder
-function ImageWithPlaceholder({ src, alt, className }: { src: string; alt: string; className?: string }) {
-  const [loaded, setLoaded] = useState(false);
-  
-  return (
-    <div className="relative w-full h-full">
-      {/* Placeholder skeleton */}
-      {!loaded && (
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
-      )}
-      <img 
-        src={src} 
-        alt={alt} 
-        className={`${className} transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        loading="lazy"
-        onLoad={() => setLoaded(true)}
-      />
-    </div>
-  );
+type Filter = 'tout' | ProfileKey | 'famille';
+
+const FILTERS: { key: Filter; label: string; paper: string }[] = [
+  { key: 'tout', label: 'Tout', paper: '#FFFFFF' },
+  ...PROFILES.map((p) => ({ key: p.key as Filter, label: p.name, paper: PROFILE_PAPER[p.key] })),
+  { key: 'famille', label: 'Vie de famille & ateliers', paper: PAPER.menthe },
+];
+
+const SEO_PROPS = {
+  title: 'Articles TDAH, DYS, HPI, phobie scolaire',
+  description:
+    'Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles.',
+  canonical: '/articles',
+};
+
+const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const TILT = [-1.5, 1, -0.5, 1.5, -1, 0.5];
+
+function excerpt(a: Article) {
+  const raw = (a.subtitle || a.paragraph_1 || '').replace(/[\p{Extended_Pictographic}️]/gu, '').replace(/\s+/g, ' ').trim();
+  return raw.length > 150 ? raw.slice(0, raw.lastIndexOf(' ', 150)) + '…' : raw;
+}
+
+function matchesFilter(a: Article, f: Filter) {
+  if (f === 'tout') return true;
+  if (f === 'famille') return a.category === 'Autre';
+  const p = PROFILES.find((x) => x.key === f)!;
+  return a.category === p.category || a.slug === p.dossier;
 }
 
 export default function ArticlesListPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [params, setParams] = useSearchParams();
+  const [query, setQuery] = useState('');
+
+  const filter: Filter = (FILTERS.some((f) => f.key === params.get('profil')) ? params.get('profil') : 'tout') as Filter;
+  const setFilter = (f: Filter) => setParams(f === 'tout' ? {} : { profil: f }, { replace: true });
 
   useEffect(() => {
-    async function fetchArticles() {
+    (async () => {
       try {
         const { data, error } = await supabase
           .from('articles')
           .select('*')
           .eq('published', true)
           .order('created_at', { ascending: false });
-
         if (error) throw error;
         setArticles(data || []);
       } catch (err) {
@@ -46,155 +62,166 @@ export default function ArticlesListPage() {
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchArticles();
+    })();
   }, []);
 
-  const categories = Array.from(new Set(articles.map(a => a.category)));
-  
-  const filteredArticles = selectedCategory === 'all' 
-    ? articles 
-    : articles.filter(a => a.category === selectedCategory);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-bg">
-        <SEO
-          title="Articles TDAH, DYS, HPI, phobie scolaire"
-          description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
-          canonical="/articles"
-        />
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
-      </div>
-    );
-  }
+  const profile = PROFILES.find((p) => p.key === filter);
+  const results = useMemo(() => {
+    const q = norm(query.trim());
+    // Une recherche porte sur toute la bibliothèque, quel que soit l'onglet ouvert
+    if (q) return articles.filter((a) => norm(`${a.title} ${a.subtitle || ''} ${a.paragraph_1 || ''}`).includes(q));
+    let list = articles.filter((a) => matchesFilter(a, filter));
+    // Le dossier principal du profil passe en tête
+    if (profile) list = [...list.filter((a) => a.slug === profile.dossier), ...list.filter((a) => a.slug !== profile.dossier)];
+    return list;
+  }, [articles, filter, query, profile]);
 
   return (
-    <div className="min-h-screen bg-light-bg pb-20">
-      <SEO
-        title="Articles TDAH, DYS, HPI, phobie scolaire"
-        description="Guides, fiches pratiques et dossiers complets pour comprendre le TDAH, les troubles DYS, le Haut Potentiel et la phobie scolaire. Ressources gratuites pour les familles."
-        canonical="/articles"
-      />
+    <div>
+      <SEO {...SEO_PROPS} />
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative pt-28 pb-20 md:pb-28 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
-        
-        {/* Image de fond */}
-        <div className="absolute inset-0 z-0">
-            <img 
-                src="/connaissance.webp" 
-                alt="Bibliothèque" 
-                className="w-full h-full object-cover opacity-90"
-            />
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10 text-center">
-            
-            {/* Titre et Intro */}
-            <div className="mb-10">
-                <span className="inline-block py-1 px-4 rounded-full bg-indigo-primary/90 text-white font-bold text-xs md:text-sm mb-4 uppercase tracking-widest shadow-md">
-                    Ressources Éducatives
-                </span>
-                
-                <h1 className="font-heading font-bold text-4xl md:text-6xl text-indigo-950 mb-6 drop-shadow-[0_2px_15px_rgba(255,255,255,0.8)]">
-                  Bibliothèque & Dossiers
-                </h1>
-                
-                <p className="font-body text-lg md:text-xl text-indigo-950/90 font-bold max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_10px_rgba(255,255,255,0.9)]">
-                  Explorez nos guides, fiches pratiques et articles pour mieux comprendre le fonctionnement de vos enfants.
-                </p>
-            </div>
+      <PageHeaderBlock count={articles.length} filter={filter} setFilter={setFilter} query={query} setQuery={setQuery} />
 
-            {/* Filtres de catégorie */}
-            {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-3">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border ${
-                    selectedCategory === 'all'
-                      ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
-                      : 'bg-indigo-900/10 border-indigo-200 text-indigo-900 hover:bg-indigo-900/20 hover:border-indigo-400'
-                  }`}
-                >
-                  Tout voir
-                </button>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-6 py-2 md:py-3 rounded-full font-heading font-bold text-sm transition-all duration-300 shadow-lg backdrop-blur-md border capitalize ${
-                      selectedCategory === cat
-                        ? 'bg-peach-primary text-white border-peach-primary transform scale-105'
-                        : 'bg-indigo-900/10 border-indigo-200 text-indigo-900 hover:bg-indigo-900/20 hover:border-indigo-400'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+      <section className="bg-white py-14 sm:py-20" aria-busy={loading}>
+        <div className="mx-auto max-w-6xl px-4">
+          {profile && !query && (
+            <div className="paper relative mb-14 grid gap-4 p-7 sm:p-9 md:grid-cols-[1fr_auto] md:items-center" style={{ backgroundColor: PROFILE_PAPER[profile.key] }}>
+              <Tape color="#FFFFFF" className="-top-3 left-10 rotate-[-5deg]" />
+              <div>
+                <h2 className="text-3xl font-extrabold">{profile.name}</h2>
+                <p className="mt-2 max-w-2xl text-lg font-semibold text-[var(--ink-2)]">{profile.summary}</p>
               </div>
-            )}
+              <Link
+                to={articleHref(profile.dossier)}
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--ink)] px-6 py-3.5 font-extrabold text-white hover:bg-[var(--act)]"
+              >
+                Lire le dossier <ArrowRight size={18} aria-hidden />
+              </Link>
+            </div>
+          )}
+
+          <p className="mb-8 font-extrabold text-[var(--ink-2)]" aria-live="polite">
+            {loading
+              ? 'Chargement des fiches…'
+              : `${results.length} fiche${results.length > 1 ? 's' : ''}${query.trim() ? ` pour « ${query.trim()} », dans toute la bibliothèque` : ''}`}
+          </p>
+
+          {loading ? (
+            <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2].map((i) => <li key={i} className="aspect-[4/5] animate-pulse bg-[var(--mat)]" />)}
+            </ul>
+          ) : results.length ? (
+            <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+              {results.map((a, i) => {
+                const p = PROFILES.find((x) => x.category === a.category || x.dossier === a.slug);
+                const paper = p ? PROFILE_PAPER[p.key] : PAPER.menthe;
+                return (
+                  <li key={a.id}>
+                    <Link
+                      to={articleHref(a.slug)}
+                      className="paper paper-lift group relative flex h-full flex-col bg-white p-3 pb-5"
+                      style={{ transform: `rotate(${TILT[i % TILT.length]}deg)` }}
+                    >
+                      <Tape color={paper} className="-top-3 left-1/2 -translate-x-1/2" />
+                      {a.image_url ? (
+                        <img src={a.image_url} alt="" loading="lazy" width={600} height={450} className="aspect-[4/3] w-full object-cover" />
+                      ) : (
+                        <div aria-hidden className="mat aspect-[4/3] w-full" />
+                      )}
+                      <div className="flex flex-1 flex-col px-2 pt-4">
+                        <span className="tag w-fit px-3 pt-1 pb-0.5 text-[13px] font-extrabold" style={{ backgroundColor: paper }}>
+                          {p ? p.name : categoryLabel(a.category)}
+                        </span>
+                        <h2 className="mt-3 text-xl font-bold leading-snug group-hover:text-[var(--act)]">{cleanTitle(a.title)}</h2>
+                        {excerpt(a) && <p className="mt-2 flex-1 text-[15px] font-semibold leading-relaxed text-[var(--ink-2)] line-clamp-3">{excerpt(a)}</p>}
+                        <p className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--ink-2)]">
+                          <Clock size={15} aria-hidden /> {readingMinutes(a.paragraph_1)} min de lecture
+                        </p>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="paper relative mx-auto max-w-xl rotate-[-1deg] bg-[#FFF9E3] p-10 text-center">
+              <Tape color={PAPER.saumon} className="-top-3 left-1/2 -translate-x-1/2" />
+              <p className="text-2xl font-extrabold display">Aucune fiche ne correspond{query ? ` à « ${query} »` : ''}</p>
+              <p className="mt-2 font-semibold text-[var(--ink-2)]">Essayez un autre mot, ou regardez toutes les fiches.</p>
+              <button
+                type="button"
+                onClick={() => { setQuery(''); setFilter('tout'); }}
+                className="mt-6 rounded-full bg-[var(--ink)] px-6 py-3.5 font-extrabold text-white hover:bg-[var(--act)]"
+              >
+                Voir toutes les fiches
+              </button>
+            </div>
+          )}
         </div>
       </section>
-
-      {/* --- GRILLE DES ARTICLES --- */}
-      <div className="container mx-auto px-4">
-          {filteredArticles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredArticles.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/articles/${article.slug}`}
-                  className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-indigo-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
-                >
-                  {/* Image avec placeholder */}
-                  <div className="h-56 overflow-hidden relative bg-gray-100">
-                    {article.image_url ? (
-                      <ImageWithPlaceholder 
-                        src={article.image_url} 
-                        alt={article.title} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-primary/5 text-indigo-primary/20 gap-2">
-                        <BookOpen size={40} />
-                      </div>
-                    )}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-primary uppercase tracking-wide shadow-sm z-10">
-                      {article.category}
-                    </div>
-                  </div>
-
-                  <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="font-heading font-bold text-xl text-dark-text mb-3 group-hover:text-indigo-primary transition-colors leading-tight">
-                      {article.title}
-                    </h3>
-                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow leading-relaxed">
-                      {article.subtitle || (article.paragraph_1 ? article.paragraph_1.substring(0, 120) + '...' : "Découvrez cet article complet.")}
-                    </p>
-                    <div className="pt-6 border-t border-gray-50 flex items-center justify-between text-indigo-primary font-bold text-sm mt-auto">
-                      <span>Lire le dossier</span>
-                      <div className="w-10 h-10 rounded-full bg-indigo-primary/10 flex items-center justify-center group-hover:bg-indigo-primary group-hover:text-white transition-all duration-300">
-                        <ArrowRight size={18} />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-             <div className="text-center py-20 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 max-w-2xl mx-auto">
-               <div className="inline-flex p-6 rounded-full bg-gray-50 mb-6 text-gray-300">
-                 <Search size={40} />
-               </div>
-               <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">Aucun résultat</h3>
-               <button onClick={() => setSelectedCategory('all')} className="mt-4 px-8 py-3 bg-indigo-primary text-white font-bold rounded-full">
-                 Voir tout
-               </button>
-             </div>
-          )}
-      </div>
     </div>
+  );
+}
+
+function PageHeaderBlock({
+  count, filter, setFilter, query, setQuery,
+}: { count: number; filter: Filter; setFilter: (f: Filter) => void; query: string; setQuery: (q: string) => void }) {
+  return (
+    <section className="mat relative overflow-hidden">
+      <div aria-hidden className="mat-diagonal pointer-events-none absolute inset-0" />
+      <div className="relative mx-auto max-w-6xl px-4 pt-12 sm:pt-16">
+        <h1
+          className="settle paper w-fit bg-white px-4 pt-2 pb-1.5 text-[clamp(2.2rem,5vw,3.9rem)] font-extrabold leading-[1.05]"
+          style={{ clipPath: 'polygon(0 3%,100% 0,99.5% 97%,0.5% 100%)', '--r': '-1.2deg' } as CSSProperties}
+        >
+          La bibliothèque des parents
+        </h1>
+        <p className="mt-6 max-w-[42rem] text-lg sm:text-xl font-semibold leading-relaxed text-[var(--ink-2)]">
+          {count ? `${count} articles` : 'Des articles'} écrits par l'association pour comprendre le TDAH, les troubles DYS, le haut potentiel,
+          l'hypersensibilité et la phobie scolaire. Gratuits, sans inscription.
+        </p>
+
+        <div className="mt-8 max-w-md">
+          <label htmlFor="recherche" className="display text-lg font-bold">Chercher un mot</label>
+          <div className="paper relative mt-2 flex items-center bg-white">
+            <Search size={20} className="ml-4 shrink-0 text-[var(--ink-2)]" aria-hidden />
+            <input
+              id="recherche"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="sommeil, MDPH, dyslexie…"
+              className="w-full bg-transparent px-3 py-3.5 text-lg font-semibold placeholder:text-[#7D7AA0] focus:outline-none"
+            />
+            {query && (
+              <button type="button" onClick={() => setQuery('')} aria-label="Effacer la recherche" className="mr-2 grid h-10 w-10 place-items-center rounded-full hover:bg-[var(--mat)]">
+                <X size={18} aria-hidden />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Les onglets des pochettes */}
+        <div role="group" aria-label="Filtrer par profil" className="mt-10 flex flex-wrap items-end gap-2">
+          {FILTERS.map((f) => {
+            const on = f.key === filter;
+            return (
+              <button
+                key={f.key}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setFilter(f.key)}
+                className={`display rounded-t-2xl px-4 sm:px-5 text-[15px] font-bold transition-[padding,transform] duration-200 ${
+                  on ? 'pt-4 pb-3 shadow-[0_-4px_10px_-4px_rgba(42,40,78,.25)]' : 'pt-2.5 pb-2 translate-y-1 hover:translate-y-0 opacity-90'
+                }`}
+                style={{ backgroundColor: on ? (f.key === 'tout' ? '#FFFFFF' : f.paper) : f.paper, outline: on ? '2px solid var(--ink)' : undefined, outlineOffset: on ? '-2px' : undefined }}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }

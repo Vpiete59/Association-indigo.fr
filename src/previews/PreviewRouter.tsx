@@ -3,8 +3,6 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import DirectionA from './DirectionA';
 import DirectionB from './DirectionB';
-import HomeAtelier from './atelier/HomeAtelier';
-import ArticleAtelier from './atelier/ArticleAtelier';
 
 const DIRECTIONS = [
   {
@@ -20,13 +18,6 @@ const DIRECTIONS = [
     pitch: "L'heure indigo au-dessus des champs de Préseau. Les étincelles du logo deviennent une constellation : une étoile par profil, la page passe du crépuscule à la nuit.",
     fonts: 'Fredoka + Nunito Sans (formes rondes, comme les personnages du logo)',
     swatches: ['#B9BEEE', '#CDC8F1', '#FBD6C5', '#B6DDB6', '#F2A65A', '#252A63'],
-  },
-  {
-    id: 'c',
-    name: "L'atelier",
-    pitch: "La table des ateliers vue de dessus : tapis de découpe, guirlande d'étiquettes, papier découpé, scotch washi. Version approfondie, avec la page article.",
-    fonts: 'Grandstander + Nunito (une écriture d’enfant, mais lisible)',
-    swatches: ['#D7EEDD', '#CBD1FA', '#FFC7B2', '#FFE69E', '#BFE3F7', '#2A284E'],
   },
 ];
 
@@ -62,7 +53,7 @@ function Index() {
           <h1 className="text-3xl font-bold">Association Indigo : 3 directions de design</h1>
         </div>
         <p className="mt-3 max-w-3xl text-lg text-[#4a4c6a]">
-          Page d'accueil complète, avec les vrais articles et événements de la base. Même contenu, même logo, trois mondes différents.
+          Page d'accueil complète, avec les vrais articles et événements de la base. La direction C « L'atelier » a été retenue : c'est maintenant le site lui-même (bouton « Site actuel »).
           Aperçu local uniquement : ces pages n'existent pas dans le build de production.
         </p>
         <ul className="mt-10 grid md:grid-cols-3 gap-6">
@@ -92,8 +83,6 @@ export default function PreviewRouter() {
         <Route index element={<Index />} />
         <Route path="a" element={<DirectionA />} />
         <Route path="b" element={<DirectionB />} />
-        <Route path="c" element={<HomeAtelier />} />
-        <Route path="c/articles/:slug" element={<ArticleAtelier />} />
       </Routes>
       <Switcher />
     </>

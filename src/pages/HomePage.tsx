@@ -1,25 +1,17 @@
+// Accueil « L'atelier »
+import { type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Heart,
-  HandHeart,
-  Star,
-  BookOpen,
-  Calendar,
-  Mail,
-  Facebook,
-  ArrowRight,
-  Quote,
-  CheckCircle2
-} from 'lucide-react';
-import Hero from '../components/Hero';
+import { ArrowRight, ArrowUpRight, Facebook, MapPin, Clock, Heart, Plus } from 'lucide-react';
+import { PROFILES, TESTIMONIALS, LINKS, useSiteData, articlesFor, cleanTitle, eventDay, type LiteArticle } from '../atelier/data';
 import SEO from '../components/SEO';
+import { Tape, Sparkle, CutLine, Stamp, PAPER, PROFILE_PAPER, SPARK, articleHref } from '../atelier/kit';
 
 const homeStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
   name: 'Association Indigo',
   legalName: 'Association Indigo Preseau',
-  description: 'Association loi 1901 accompagnant les familles d\'enfants atypiques : TDAH, DYS, HPI, hypersensibilité, phobie scolaire à Preseau (Nord).',
+  description: "Association loi 1901 accompagnant les familles d'enfants atypiques : TDAH, DYS, HPI, hypersensibilité, phobie scolaire à Preseau (Nord).",
   url: 'https://association-indigo.fr',
   logo: 'https://association-indigo.fr/logo-indigo.png',
   foundingDate: '2024',
@@ -31,10 +23,7 @@ const homeStructuredData = {
     addressRegion: 'Nord',
     addressCountry: 'FR',
   },
-  areaServed: {
-    '@type': 'Place',
-    name: 'Valenciennois, Nord, Hauts-de-France',
-  },
+  areaServed: { '@type': 'Place', name: 'Valenciennois, Nord, Hauts-de-France' },
   sameAs: ['https://www.facebook.com/groups/467126453152213'],
   contactPoint: {
     '@type': 'ContactPoint',
@@ -44,374 +33,384 @@ const homeStructuredData = {
   },
 };
 
+type Vars = CSSProperties & { '--r'?: string; '--d'?: string };
+const v = (r: number, d = 0): Vars => ({ '--r': `${r}deg`, '--d': `${d}ms` });
+
+// Courbe de la ficelle : y(t) = 10 + 96·t·(1−t), en px (SVG 0..1000 × 0..60)
+const sag = (t: number) => 10 + 96 * t * (1 - t);
+const GARLAND_T = [0.22, 0.38, 0.54, 0.7, 0.86];
+const SWING_R = [-3, 2, -1.5, 3, -2.5];
+
+// Questions reprises telles quelles de la page FAQ du site
+const FAQ = [
+  { q: 'Faut-il un diagnostic pour participer ?', a: 'Non. Indigo accueille les enfants avec ou sans diagnostic. Ce qui compte, ce sont les besoins, pas les étiquettes.' },
+  { q: 'À partir de quel âge accompagnez-vous les enfants ?', a: "Nous intervenons généralement à partir de 3 ans et sans limite d'âge supérieure, avec des formats adaptés à chaque tranche d'âge." },
+  { q: 'Les activités sont-elles payantes ?', a: "Certaines actions sont gratuites grâce au soutien de partenaires. D'autres sont proposées à tarif solidaire sur adhésion. Les informations précises sont indiquées sur chaque activité." },
+  { q: 'Comment prendre contact ou s’inscrire à un atelier ?', a: 'Vous pouvez nous écrire via notre page contact, nous envoyer un email ou venir nous rencontrer lors de nos réunions. Nous vous guidons ensuite vers l’accompagnement et les professionnels les plus adaptés.' },
+];
+
+function Ruler() {
+  // Graduations du tapis : un trait par cm (40 px), un chiffre tous les 5 cm
+  return (
+    <div aria-hidden className="relative h-6 overflow-hidden border-b border-[var(--grid-strong)]"
+      style={{ backgroundImage: 'repeating-linear-gradient(90deg, var(--grid-strong) 0 1.5px, transparent 1.5px 40px)', backgroundSize: '40px 9px', backgroundRepeat: 'repeat-x', backgroundPosition: '-1px 0' }}>
+      {Array.from({ length: 14 }, (_, i) => (
+        <span key={i} className="absolute top-[7px] text-[11px] font-bold tabular-nums text-[#5E9A73]" style={{ left: `${(i + 1) * 200 + 4}px` }}>
+          {(i + 1) * 5}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function ProfileTag({ p, i, hanging, compact }: { p: (typeof PROFILES)[number]; i: number; hanging?: boolean; compact?: boolean }) {
+  return (
+    <Link
+      to={articleHref(p.dossier)}
+      className="swing group block"
+      style={{ '--r': `${SWING_R[i]}deg`, filter: 'drop-shadow(0 8px 10px rgba(42,40,78,.22))' } as Vars}
+    >
+      {hanging && <span aria-hidden className="mx-auto block h-5 w-[2px] bg-[var(--ink)]/50" />}
+      <span className={`tag relative block ${compact ? 'w-full px-4 pt-7 pb-3' : 'w-[176px] px-5 pt-7 pb-4'}`} style={{ backgroundColor: PROFILE_PAPER[p.key] }}>
+        <span aria-hidden className="absolute left-1/2 top-2.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-white ring-2 ring-[var(--ink)]/25" />
+        <span className={`display block font-extrabold leading-tight ${compact ? 'text-[1.05rem]' : 'text-[1.2rem]'}`}>{p.name}</span>
+        {!compact && <span className="mt-1 block text-[14px] font-semibold leading-snug text-[var(--ink-2)]">{p.short}</span>}
+        <span className="mt-2 inline-flex items-center gap-1 text-[14px] font-extrabold">
+          Lire le dossier <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" aria-hidden />
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+function Garland() {
+  return (
+    <>
+      {/* Écran large : les étiquettes pendent à une ficelle tendue sur le tapis */}
+      <div className="relative hidden lg:block h-[262px]">
+        <svg className="absolute inset-x-0 top-0 h-[60px] w-full" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden>
+          <path d="M0 10 Q500 106 1000 10" fill="none" stroke="var(--ink)" strokeOpacity=".55" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        </svg>
+        <span aria-hidden className="absolute -left-1.5 top-[4px] h-3.5 w-3.5 rounded-full bg-[var(--act)] ring-2 ring-white" />
+        <span aria-hidden className="absolute -right-1.5 top-[4px] h-3.5 w-3.5 rounded-full bg-[var(--act)] ring-2 ring-white" />
+        <div className="settle paper absolute left-0 top-[46px] w-[172px] bg-white px-4 py-3" style={v(-4, 60)}>
+          <Tape color={PAPER.menthe} className="-top-3 left-6 !w-16 rotate-[-6deg]" />
+          <p id="guirlande" className="display text-[1.05rem] font-bold leading-tight">Je cherche des infos sur…</p>
+        </div>
+        <ul aria-labelledby="guirlande">
+          {PROFILES.map((p, i) => (
+            <li key={p.key} className="absolute -translate-x-1/2" style={{ left: `${GARLAND_T[i] * 100}%`, top: `${sag(GARLAND_T[i])}px` }}>
+              <ProfileTag p={p} i={i} hanging />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+function Pochette({ p, i, all }: { p: (typeof PROFILES)[number]; i: number; all: LiteArticle[] }) {
+  const dossier = all.find((a) => a.slug === p.dossier);
+  const inside = [dossier, ...articlesFor(p, all)].filter(Boolean) as LiteArticle[];
+  // Les fiches qui dépassent : d'abord les articles liés (le dossier porte déjà le nom de la pochette)
+  const others = inside.filter((a) => a.slug !== p.dossier);
+  const slips = (others.length ? others : inside).slice(0, 2);
+  return (
+    <li className="relative pt-[70px]">
+      {/* les fiches qui dépassent de la pochette */}
+      {slips.map((a, k) => (
+        <Link
+          key={a.slug}
+          to={articleHref(a.slug)}
+          title={cleanTitle(a.title)}
+          className="paper paper-lift absolute left-3 right-5 bg-white px-3 pt-2 pb-8 text-[13px] font-bold leading-snug hover:text-[var(--act)]"
+          style={{ top: k === 0 ? 0 : 26, transform: `rotate(${k === 0 ? -3 + i : 2 - i / 2}deg)`, zIndex: k }}
+        >
+          <span className="line-clamp-1">{cleanTitle(a.title)}</span>
+        </Link>
+      ))}
+      <Link
+        to={`/articles?profil=${p.key}`}
+        aria-label={`Ouvrir la pochette ${p.name}`}
+        className="paper group relative z-10 flex h-full min-h-[190px] flex-col rounded-[3px_16px_6px_6px] p-5 pt-6"
+        style={{ backgroundColor: PROFILE_PAPER[p.key] }}
+      >
+        <span aria-hidden className="absolute -top-3.5 left-0 h-4 w-20 rounded-t-lg" style={{ backgroundColor: PROFILE_PAPER[p.key] }} />
+        <h3 className="display text-[1.35rem] font-extrabold leading-tight">{p.name}</h3>
+        <p className="mt-1.5 flex-1 text-[15px] font-semibold leading-snug text-[var(--ink-2)]">{p.short}</p>
+        <p className="mt-4 inline-flex items-center gap-1.5 font-extrabold">
+          {inside.length ? `${inside.length} article${inside.length > 1 ? 's' : ''}` : 'Le dossier'}
+          <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" aria-hidden />
+        </p>
+      </Link>
+    </li>
+  );
+}
+
 export default function HomePage() {
-  const values = [
-    {
-      icon: Heart,
-      title: 'Bienveillance',
-      description: "Un espace sans jugement pour accueillir votre parole.",
-      color: 'text-peach-primary',
-      bgColor: 'bg-peach-primary/10'
-    },
-    {
-      icon: HandHeart,
-      title: 'Entraide',
-      description: "Ne restez plus isolés face aux défis du quotidien.",
-      color: 'text-nature-primary',
-      bgColor: 'bg-nature-primary/10'
-    },
-    {
-      icon: Star,
-      title: 'Valorisation',
-      description: "Transformer la différence en une véritable force.",
-      color: 'text-indigo-primary',
-      bgColor: 'bg-indigo-primary/10'
-    },
-  ];
-
-  const pathologies = [
-    {
-      title: 'TDAH / TDA',
-      description: "Comprendre le déficit de l'attention et l'hyperactivité.",
-      slug: 'tdah-tda',
-      color: 'bg-indigo-primary',
-    },
-    {
-      title: 'Troubles DYS',
-      description: 'Dyslexie, Dyspraxie et autres troubles des apprentissages.',
-      slug: 'dys',
-      color: 'bg-peach-primary',
-    },
-    {
-      title: 'Phobie Scolaire',
-      description: 'Accompagner le refus scolaire anxieux avec douceur.',
-      slug: 'phobie-scolaire',
-      color: 'bg-nature-primary',
-    },
-    {
-      title: 'Haut Potentiel',
-      description: 'HPI, HPE, Zèbres : gérer intensité et hypersensibilité.',
-      slug: 'haut-potentiel',
-      color: 'bg-indigo-primary',
-    },
-  ];
-
-  const testimonials = [
-    {
-      text: "Grâce à Indigo, nous avons enfin compris que notre fils n'était pas 'difficile', mais qu'il percevait le monde différemment. Un soulagement immense.",
-      author: "Sophie, maman de Léo (TDAH)",
-    },
-    {
-      text: "L'association a été une bouffée d'oxygène. Rencontrer d'autres parents qui vivent la même chose permet de se sentir moins seule.",
-      author: "Marc, papa de Julie (HPI)",
-    }
-  ];
+  const data = useSiteData();
+  const next = data.events[0];
+  const latest = data.articles.filter((a) => a.image_url).slice(0, 3);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div>
       <SEO
         title="Association Indigo | TDAH, DYS, HPI | Preseau - Valenciennes"
         description="Association Indigo à Preseau (proche Valenciennes). Accompagnement bienveillant des familles d'enfants atypiques : TDAH, troubles DYS, HPI, hypersensibilité, phobie scolaire."
         canonical="/"
         structuredData={homeStructuredData}
       />
-      {/* Hero Section */}
-      <Hero />
 
-      {/* Section Qui sommes-nous - Redesignée pour être plus lisible */}
-      <section id="qui-sommes-nous" className="py-20 bg-white relative overflow-hidden">
-        {/* Décoration d'arrière-plan subtile */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-indigo-primary/5 rounded-full blur-3xl"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl text-dark-text mb-6">
-              Plus qu'une association, <span className="text-indigo-primary">une famille</span>
-            </h2>
-            <p className="font-body text-lg text-dark-text/80 leading-relaxed mb-8">
-              L'Association Indigo, basée à Preseau (Nord), est le point de repère pour les familles d'enfants atypiques. 
-              Nous transformons le parcours du combattant en un chemin partagé.
-            </p>
-            
-            {/* Liste des profils accompagnés pour scanner rapidement */}
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              {['TDAH/TDA', 'DYS', 'HPI/HPE', 'Hypersensibilité', 'Phobie Scolaire'].map((tag) => (
-                <span key={tag} className="px-4 py-2 bg-light-bg text-indigo-primary rounded-full font-semibold text-sm shadow-sm border border-indigo-primary/10">
-                  {tag}
+      {/* ——— La table de l'atelier ——— */}
+      <section className="mat relative overflow-hidden">
+        <Ruler />
+        <div aria-hidden className="mat-diagonal pointer-events-none absolute inset-0" />
+        <div className="relative mx-auto max-w-6xl px-4">
+          <Garland />
+
+          <div className="grid lg:grid-cols-[1.08fr_1fr] gap-12 lg:gap-10 items-center pt-10 lg:pt-2 pb-24">
+            <div>
+              <h1 className="font-extrabold leading-[0.98] tracking-[-0.01em] text-[clamp(2.3rem,5vw,4.25rem)]">
+                <span className="settle paper block w-fit whitespace-nowrap bg-white px-4 pt-2 pb-1.5" style={{ ...v(-1.5, 120), clipPath: 'polygon(0 3%,100% 0,99.5% 97%,0.5% 100%)' }}>
+                  Ici, on grandit
                 </span>
-              ))}
+                <span className="settle paper mt-2 ml-6 sm:ml-14 block w-fit whitespace-nowrap px-4 pt-2 pb-1.5" style={{ ...v(1.2, 200), backgroundColor: PAPER.beurre, clipPath: 'polygon(1% 0,100% 4%,99% 100%,0 96%)' }}>
+                  avec sa
+                </span>
+                <span className="settle paper mt-2 block w-fit whitespace-nowrap px-4 pt-2 pb-1.5" style={{ ...v(-0.8, 280), backgroundColor: PAPER.saumon, clipPath: 'polygon(0 0,99% 3%,100% 100%,1% 97%)' }}>
+                  différence
+                </span>
+              </h1>
+              <p className="mt-8 text-lg sm:text-xl leading-relaxed text-[var(--ink-2)] max-w-[33rem]">
+                L'Association Indigo accueille à Préseau, près de Valenciennes, les familles d'enfants atypiques :
+                TDAH, troubles DYS, haut potentiel, hypersensibilité, phobie scolaire. Des groupes de parole pour les parents,
+                des ateliers pour les enfants.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href="#ateliers" className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] text-white px-6 py-4 font-extrabold hover:bg-[var(--act)] transition-colors">
+                  Venir à un groupe de parole <ArrowRight size={18} aria-hidden />
+                </a>
+                <a href={LINKS.facebook} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-4 font-extrabold hover:bg-[#F3FAF5] border-2 border-[var(--ink)]">
+                  <Facebook size={18} aria-hidden /> Le groupe des parents
+                </a>
+              </div>
+              {/* Mobile : les étiquettes de la guirlande, posées sur le tapis */}
+              <div className="lg:hidden mt-10">
+                <p id="guirlande-mobile" className="display text-xl font-bold">Je cherche des infos sur…</p>
+                <ul aria-labelledby="guirlande-mobile" className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4">
+                  {PROFILES.map((p, i) => (
+                    <li key={p.key}><ProfileTag p={p} i={i} compact /></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Collage : photo scotchée, étincelles du logo, ticket du dernier atelier */}
+            <div className="relative mx-auto w-full max-w-[540px] h-[400px] sm:h-[460px]">
+              <svg className="absolute inset-0 h-full w-full" viewBox="0 0 200 180" preserveAspectRatio="none" aria-hidden>
+                <path d="M58 10c40-16 96-4 122 26s26 78 0 106-74 40-110 30S6 132 4 94 18 26 58 10Z" fill={PAPER.lilas} />
+              </svg>
+              <Sparkle color={SPARK.rouge} size={46} className="settle absolute left-[2%] top-[2%] z-10" style={v(10, 420)} />
+              <Sparkle color={SPARK.indigo} size={34} className="settle absolute left-[13%] top-[-3%] z-10" style={v(-8, 480)} />
+              <Sparkle color={SPARK.orange} size={40} className="settle absolute left-[-3%] top-[17%] z-10" style={v(4, 540)} />
+              <figure className="settle paper absolute left-[9%] right-[3%] top-[8%] bg-white p-3 pb-11" style={v(-2.5, 320)}>
+                <Tape color={PAPER.saumon} className="-top-3 left-10 rotate-[-8deg]" />
+                <Tape color={PAPER.ciel} className="-top-3 right-8 rotate-[7deg]" />
+                <img
+                  src="/gemini_generated_image_enqzn8enqzn8enqz.webp"
+                  alt="Un petit garçon avec une cape souffle sur un pissenlit dans un jardin"
+                  width={1000} height={545}
+                  className="w-full aspect-[4/3] object-cover object-[30%_50%]"
+                />
+                <figcaption className="display absolute bottom-2.5 right-4 hidden sm:block text-lg font-bold">Souffler, s'envoler, grandir</figcaption>
+              </figure>
+              {next && (
+                <a href="#ateliers" className="settle ticket paper absolute bottom-0 left-[-2%] sm:left-[-8%] z-10 w-[255px] bg-[#FFE69E] px-7 py-4" style={v(4, 600)}>
+                  <span className="block text-sm font-extrabold">{data.eventsArePast ? 'Dernier atelier' : 'Prochain atelier'}</span>
+                  <span className="display mt-0.5 block text-lg font-bold leading-tight">{next.title}</span>
+                  <span className="mt-1 block text-sm font-bold text-[var(--ink-2)]">
+                    {eventDay(next.event_date).weekday} {eventDay(next.event_date).day} {eventDay(next.event_date).monthLong} · {eventDay(next.event_date).time}
+                  </span>
+                </a>
+              )}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {values.map((value) => {
-              const Icon = value.icon;
+      {/* ——— Première fois ? ——— */}
+      <section className="relative bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex flex-wrap items-start justify-between gap-8">
+            <h2 className="text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-tight max-w-xl">
+              Première fois ? Voilà comment ça se passe
+            </h2>
+            <Stamp className="h-40 w-40 rotate-[-12deg] text-[15px] shrink-0">Avec ou sans diagnostic, bienvenue</Stamp>
+          </div>
+          <CutLine className="mt-10" />
+          <ol className="mt-10 grid md:grid-cols-3 gap-8">
+            {[
+              { n: '1', t: 'Vous lisez', d: "Un dossier sur le profil de votre enfant, écrit simplement par l'association. Pour mettre des mots sur ce que vous vivez.", l: 'Choisir un dossier', h: '#bibliotheque', c: PAPER.lilas, r: -1.5 },
+              { n: '2', t: 'Vous venez en parler', d: 'Un groupe de parole entre parents, salle la Verrière à Préseau, pendant que les enfants participent à leur atelier.', l: 'Voir les ateliers', h: '#ateliers', c: PAPER.beurre, r: 1 },
+              { n: '3', t: 'On avance ensemble', d: "L'adhésion à 5 € par an donne un accès prioritaire aux ateliers. Les questions du quotidien se posent sur le groupe Facebook privé.", l: 'Adhérer', h: LINKS.adhesion, c: PAPER.menthe, r: -0.8 },
+            ].map((s) => (
+              <li key={s.n} className="paper relative p-7 pt-6" style={{ backgroundColor: s.c, transform: `rotate(${s.r}deg)` }}>
+                <span aria-hidden className="display block text-[3.4rem] font-extrabold leading-none text-[var(--ink)]/85">{s.n}</span>
+                <h3 className="display mt-3 text-2xl font-extrabold">{s.t}</h3>
+                <p className="mt-2 leading-relaxed text-[var(--ink-2)] font-semibold">{s.d}</p>
+                <a href={s.h} className="mt-5 inline-flex items-center gap-1.5 font-extrabold underline">
+                  {s.l} <ArrowRight size={17} aria-hidden />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ——— Les ateliers ——— */}
+      <section id="ateliers" className="mat scroll-mt-4 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div className="max-w-2xl">
+              <h2 className="text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-tight">
+                {data.eventsArePast ? 'Retour sur nos derniers ateliers' : 'Les prochains ateliers'}
+              </h2>
+              <p className="mt-3 text-lg font-semibold text-[var(--ink-2)]">
+                Salle la Verrière, à Préseau. Pendant que les parents échangent, les enfants créent, bougent et se font des copains.
+              </p>
+            </div>
+            {data.eventsArePast && (
+              <a href={LINKS.facebook} className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] text-white px-6 py-3.5 font-extrabold hover:bg-[var(--act)] transition-colors">
+                <Facebook size={18} aria-hidden /> Être prévenu du prochain
+              </a>
+            )}
+          </div>
+          <ul className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-14">
+            {data.loading && [0, 1, 2].map((i) => <li key={i} className="aspect-[3/4] bg-white/50 animate-pulse" />)}
+            {data.events.map((e, i) => {
+              const d = eventDay(e.event_date);
+              const tapes = [PAPER.saumon, PAPER.ciel, PAPER.beurre];
               return (
-                <div
-                  key={value.title}
-                  className="bg-white border border-gray-100 rounded-3xl p-8 text-center hover:shadow-xl transition-all duration-300 group"
-                >
-                  <div className="flex justify-center mb-6">
-                    <div className={`${value.color} ${value.bgColor} rounded-2xl p-4 transition-transform duration-300 group-hover:scale-110`}>
-                      <Icon size={40} strokeWidth={1.5} />
-                    </div>
-                  </div>
-                  <h3 className="font-heading font-bold text-xl text-dark-text mb-3">
-                    {value.title}
-                  </h3>
-                  <p className="font-body text-dark-text/70">
-                    {value.description}
+                <li key={e.id} className="paper paper-lift relative bg-white p-3 pb-5" style={{ transform: `rotate(${[-2.5, 1.5, -1][i % 3]}deg)` }}>
+                  <Tape color={tapes[i % 3]} className="-top-3 left-1/2 -translate-x-1/2" />
+                  {e.image_url && <img src={e.image_url} alt={`Affiche : ${e.title}`} loading="lazy" className="w-full aspect-[3/4] object-cover" />}
+                  <h3 className="display mt-4 text-xl font-bold leading-snug">{e.title}</h3>
+                  <p className="mt-1.5 text-[15px] font-bold text-[var(--ink-2)] flex flex-wrap gap-x-4 gap-y-1">
+                    <span className="inline-flex items-center gap-1.5"><Clock size={15} aria-hidden /> {d.weekday} {d.day} {d.month} · {d.time}</span>
+                    {e.location && <span className="inline-flex items-center gap-1.5"><MapPin size={15} aria-hidden /> {e.location}</span>}
                   </p>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       </section>
 
-      {/* Section Articles - Pathologies */}
-      <section id="articles" className="py-20 bg-light-bg">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 max-w-6xl mx-auto gap-6">
+      {/* ——— La bibliothèque ——— */}
+      <section id="bibliotheque" className="scroll-mt-4 bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 text-indigo-primary mb-3 bg-white px-4 py-1 rounded-full shadow-sm">
-                <BookOpen size={20} />
-                <span className="font-body font-semibold text-sm uppercase tracking-wide">Comprendre</span>
-              </div>
-              <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark-text mb-4">
-                Mieux comprendre pour mieux accompagner
-              </h2>
-              <p className="font-body text-lg text-dark-text/80">
-                L'information est la première clé de l'acceptation. Explorez nos dossiers complets.
+              <h2 className="text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-tight">La bibliothèque des parents</h2>
+              <p className="mt-3 text-lg font-semibold text-[var(--ink-2)]">
+                {data.articles.length ? `${data.articles.length} articles` : 'Des articles'} écrits par l'association, rangés par profil.
+                Tirez une fiche, ou ouvrez la pochette.
               </p>
             </div>
-            <Link
-              to="/articles"
-              className="hidden md:inline-flex items-center gap-2 text-indigo-primary font-bold hover:text-indigo-primary/80 transition-colors"
-            >
-              Voir toute la bibliothèque <ArrowRight size={20} />
+            <Link to="/articles" className="inline-flex items-center gap-2 font-extrabold underline">
+              Toute la bibliothèque <ArrowRight size={18} aria-hidden />
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {pathologies.map((item) => (
-              <Link
-                key={item.slug}
-                to={`/articles/${item.slug}`}
-                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border-b-4 border-transparent hover:border-indigo-primary flex flex-col h-full"
-              >
-                <div className={`${item.color} w-12 h-12 rounded-xl mb-6 flex items-center justify-center shadow-md transform group-hover:rotate-6 transition-transform`}>
-                  <BookOpen size={24} className="text-white" />
-                </div>
-                <h3 className="font-heading font-bold text-xl text-dark-text mb-3">
-                  {item.title}
-                </h3>
-                <p className="font-body text-sm text-dark-text/70 mb-6 flex-grow">
-                  {item.description}
-                </p>
-                <div className="flex items-center text-indigo-primary font-semibold text-sm mt-auto">
-                  Lire le dossier
-                  <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
-          </div>
-          
-          <div className="mt-8 text-center md:hidden">
-             <Link
-              to="/articles"
-              className="inline-flex items-center gap-2 text-indigo-primary font-bold"
-            >
-              Voir toute la bibliothèque <ArrowRight size={20} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* NOUVELLE SECTION: Témoignages */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="font-heading font-bold text-3xl text-center text-dark-text mb-12">
-            La parole aux familles
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.map((t, i) => (
-              <div key={i} className="bg-light-bg rounded-tr-3xl rounded-bl-3xl rounded-tl-lg rounded-br-lg p-8 relative">
-                <Quote className="absolute top-4 left-4 text-peach-primary/20 w-12 h-12" />
-                <p className="font-body text-dark-text/80 italic relative z-10 mb-6 leading-relaxed">
-                  "{t.text}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-peach-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {t.author.charAt(0)}
-                  </div>
-                  <span className="font-heading font-semibold text-dark-text">{t.author}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section Événements & Contact (Regroupées pour la fluidité) */}
-      <section id="agenda-contact" className="py-20 bg-gradient-to-b from-white to-light-bg">
-        <div className="container mx-auto px-4">
-          
-          {/* Agenda Preview */}
-          <div className="bg-white rounded-[2rem] shadow-xl p-8 md:p-12 max-w-5xl mx-auto mb-20 overflow-hidden relative">
-             <div className="absolute top-0 left-0 w-full h-2 bg-peach-primary"></div>
-             <div className="flex flex-col md:flex-row items-center gap-12">
-                <div className="flex-1">
-                   <div className="inline-flex items-center gap-2 text-peach-primary mb-4">
-                    <Calendar size={24} />
-                    <span className="font-body font-bold uppercase tracking-wide text-sm">Agenda</span>
-                  </div>
-                  <h2 className="font-heading font-bold text-3xl md:text-4xl text-dark-text mb-6">
-                    Ne manquez aucun atelier
-                  </h2>
-                  <p className="font-body text-lg text-dark-text/80 mb-8">
-                    Groupes de parole, ateliers créatifs, cafés des parents... Nos événements sont pensés pour créer du lien et vous outiller au quotidien.
-                  </p>
-                  <Link
-                    to="/evenements"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-peach-primary text-white font-body font-bold rounded-full hover:bg-peach-dark transition-all duration-300 shadow-lg hover:shadow-peach-primary/30"
-                  >
-                    Voir le calendrier
-                    <ArrowRight size={20} />
-                  </Link>
-                </div>
-                <div className="hidden md:block w-px h-64 bg-gray-100"></div>
-                <div className="flex-1 text-center md:text-left">
-                    <h3 className="font-heading font-bold text-xl text-dark-text mb-6">Pourquoi participer ?</h3>
-                    <ul className="space-y-4">
-                        {[
-                            'Rompre l\'isolement',
-                            'Échanger des astuces concrètes',
-                            'Rencontrer des professionnels bienveillants',
-                            'Permettre aux enfants de se faire des amis'
-                        ].map(item => (
-                            <li key={item} className="flex items-center gap-3 text-dark-text/80">
-                                <CheckCircle2 size={20} className="text-nature-primary flex-shrink-0" />
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-             </div>
-          </div>
-
-          {/* Contact Banner */}
-          <div className="max-w-4xl mx-auto text-center">
-             <h2 className="font-heading font-bold text-3xl text-dark-text mb-6">Une question ?</h2>
-             <p className="font-body text-lg text-dark-text/80 mb-8 max-w-2xl mx-auto">
-                Que ce soit pour une demande d'information ou simplement pour échanger avant de nous rejoindre, nous sommes à votre écoute.
-             </p>
-             <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-nature-primary text-nature-primary font-body font-bold rounded-full hover:bg-nature-primary hover:text-white transition-all duration-300"
-              >
-                <Mail size={20} />
-                Nous contacter
-              </Link>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Section Adhésion / Don - Corrigée pour l'accessibilité */}
-      <section
-        id="soutenir"
-        className="py-20 relative overflow-hidden bg-nature-primary"
-      >
-        {/* Motif de fond subtil pour éviter le plat sans casser le contraste */}
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px' }}></div>
-
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl text-white mb-6">
-            Soutenez nos actions
-          </h2>
-          <p className="text-white/90 text-lg max-w-2xl mx-auto mb-12">
-            L'Association Indigo vit grâce à ses adhérents et donateurs. Chaque geste nous aide à organiser plus d'ateliers et à accompagner plus de familles.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            {/* Carte Adhésion */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl transform hover:-translate-y-1 transition-transform duration-300">
-              <div className="text-nature-primary mb-4 flex justify-center">
-                 <Heart size={48} fill="currentColor" className="opacity-20" />
-              </div>
-              <h3 className="font-heading font-bold text-2xl text-dark-text mb-2">
-                Devenir Adhérent
-              </h3>
-              <p className="font-body text-3xl font-bold text-nature-primary mb-4">
-                5€ <span className="text-base font-normal text-gray-500">/ an</span>
-              </p>
-              <ul className="text-left space-y-3 mb-8 text-dark-text/80 text-sm">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-nature-primary"/> Accès prioritaire aux ateliers</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-nature-primary"/> Participation à la vie de l'asso</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-nature-primary"/> Soutien moral</li>
+          <ul className="mt-12 grid sm:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-10">
+            {PROFILES.map((p, i) => <Pochette key={p.key} p={p} i={i} all={data.articles} />)}
+          </ul>
+          {latest.length > 0 && (
+            <div className="mt-16">
+              <CutLine />
+              <p className="display mt-8 text-2xl font-bold">Derniers ajouts</p>
+              <ul className="mt-5 grid md:grid-cols-3 gap-6">
+                {latest.map((a) => (
+                  <li key={a.slug}>
+                    <Link to={articleHref(a.slug)} className="paper paper-lift group flex gap-4 items-center bg-[#F6FBF7] p-3 rounded-md">
+                      <img src={a.image_url} alt="" loading="lazy" className="h-16 w-16 object-cover rounded shrink-0" />
+                      <span className="font-extrabold leading-snug group-hover:text-[var(--act)]">{cleanTitle(a.title)}</span>
+                    </Link>
+                  </li>
+                ))}
               </ul>
-              <a
-                href="https://www.helloasso.com/associations/indigo-preseau/paiements/adhesion-indigo-preseau"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-4 bg-nature-primary text-white font-body font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-md"
-              >
-                J'adhère
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ——— Les questions ——— */}
+      <section id="questions" className="mat scroll-mt-4 py-20 sm:py-24">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="paper relative bg-white px-6 sm:px-12 py-12">
+            <Tape color={PAPER.mauve} className="-top-3 left-12 rotate-[-5deg]" />
+            <Tape color={PAPER.beurre} className="-top-3 right-12 rotate-[4deg]" />
+            <h2 className="text-[clamp(1.9rem,3.6vw,2.7rem)] font-extrabold leading-tight">Les questions qu'on nous pose</h2>
+            <div className="mt-8 divide-y-2 divide-dashed divide-[var(--grid-strong)] border-y-2 border-dashed border-[var(--grid-strong)]">
+              {FAQ.map((f) => (
+                <details key={f.q} className="group py-1">
+                  <summary className="flex items-center justify-between gap-4 py-4 text-lg font-extrabold">
+                    {f.q}
+                    <Plus size={22} className="chev shrink-0 transition-transform duration-300" aria-hidden />
+                  </summary>
+                  <p className="pb-5 pr-8 leading-relaxed font-semibold text-[var(--ink-2)]">{f.a}</p>
+                </details>
+              ))}
+            </div>
+            <Link to="/faq" className="mt-6 inline-flex items-center gap-2 font-extrabold underline">
+              Toutes les questions <ArrowRight size={18} aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ——— Les mots des familles ——— */}
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-5xl px-4">
+          <h2 className="text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-tight text-center">Les mots des familles</h2>
+          <div className="mt-14 grid md:grid-cols-2 gap-12">
+            {TESTIMONIALS.map((t, i) => (
+              <figure key={t.author} className="paper relative p-8 pt-10" style={{ backgroundColor: i ? PAPER.saumon : PAPER.beurre, transform: `rotate(${i ? 2 : -2}deg)` }}>
+                <Tape color={i ? PAPER.lilas : PAPER.ciel} className="-top-3 left-1/2 -translate-x-1/2" />
+                <blockquote className="display text-xl sm:text-2xl leading-snug font-bold">«&nbsp;{t.text}&nbsp;»</blockquote>
+                <figcaption className="mt-5 font-extrabold">{t.author}, <span className="font-semibold">{t.role}</span></figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ——— Prendre part ——— */}
+      <section className="mat py-20 sm:py-24">
+        <div className="mx-auto max-w-5xl px-4">
+          <h2 className="text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-tight text-center">Prendre part à l'aventure</h2>
+          <p className="mt-3 text-center text-lg font-semibold text-[var(--ink-2)]">L'association vit grâce aux familles qui la rejoignent.</p>
+          <div className="mt-12 grid md:grid-cols-2 gap-10">
+            <div className="ticket paper bg-white px-10 py-9 rotate-[-1deg]">
+              <h3 className="text-2xl font-extrabold">Adhérer</h3>
+              <p className="display mt-1 text-5xl font-extrabold tabular-nums">5 € <span className="text-xl">par an</span></p>
+              <p className="mt-4 font-semibold text-[var(--ink-2)]">Accès prioritaire aux ateliers, une voix dans la vie de l'association, et des parents qui comprennent.</p>
+              <a href={LINKS.adhesion} className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] text-white px-6 py-3.5 font-extrabold hover:bg-[var(--act)] transition-colors">
+                J'adhère sur HelloAsso <ArrowUpRight size={18} aria-hidden />
               </a>
             </div>
-
-            {/* Carte Don */}
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-xl text-white">
-              <div className="mb-4 flex justify-center text-white">
-                 <Star size={48} className="opacity-50" />
-              </div>
-              <h3 className="font-heading font-bold text-2xl mb-2">
-                Faire un Don
-              </h3>
-              <p className="font-body text-3xl font-bold mb-4">
-                Libre
-              </p>
-              <p className="font-body text-white/80 mb-8 min-h-[80px] flex items-center justify-center">
-                Aidez-nous à acheter du matériel pédagogique et à financer des intervenants experts.
-              </p>
-              <a
-                href="https://www.helloasso.com/associations/indigo-preseau/formulaires/1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-4 bg-white text-nature-primary font-body font-bold rounded-xl hover:bg-gray-50 transition-all shadow-md"
-              >
-                Je donne
+            <div className="ticket paper px-10 py-9 rotate-[1deg]" style={{ backgroundColor: PAPER.beurre }}>
+              <h3 className="text-2xl font-extrabold">Donner</h3>
+              <p className="display mt-1 text-5xl font-extrabold">Libre</p>
+              <p className="mt-4 font-semibold text-[var(--ink-2)]">Du matériel pédagogique, des intervenants spécialisés, plus de familles accueillies.</p>
+              <a href={LINKS.don} className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] text-white px-6 py-3.5 font-extrabold hover:bg-[var(--act)] transition-colors">
+                <Heart size={18} aria-hidden /> Je fais un don
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Facebook - Simplifié et moderne */}
-      <section className="py-12 bg-[#1877F2] text-white">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
-          <div className="bg-white/20 p-4 rounded-full">
-            <Facebook size={32} />
-          </div>
-          <div>
-            <h2 className="font-heading font-bold text-2xl mb-1">
-              Rejoignez la communauté
-            </h2>
-            <p className="font-body text-white/80">
-              Échangez avec d'autres parents sur notre groupe privé.
-            </p>
-          </div>
-          <a
-            href="https://www.facebook.com/groups/467126453152213"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-white text-[#1877F2] font-body font-bold rounded-full hover:bg-gray-100 transition-all shadow-lg whitespace-nowrap"
-          >
-            Rejoindre le groupe
-          </a>
-        </div>
-      </section>
     </div>
   );
 }
+

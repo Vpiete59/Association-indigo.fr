@@ -1,67 +1,49 @@
+// Rendez-vous « L'atelier » : tickets pour les dates à venir, affiches punaisées pour les derniers ateliers.
 import { useEffect, useState } from 'react';
-import { supabase, Event } from '../lib/supabase';
-import { Calendar, MapPin, ExternalLink, Clock, Users } from 'lucide-react';
+import { MapPin, Clock, ArrowUpRight, Facebook, CalendarDays } from 'lucide-react';
+import { supabase, type Event } from '../lib/supabase';
 import SEO from '../components/SEO';
+import { LINKS, eventDay } from '../atelier/data';
+import { PageHeader, Tape, Stamp, PAPER } from '../atelier/kit';
+
+const SEO_PROPS = {
+  title: 'Ateliers, groupes de parole et cafés parents',
+  description:
+    "Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois.",
+  canonical: '/evenements',
+};
+const TICKET_PAPERS = [PAPER.beurre, PAPER.ciel, PAPER.saumon, PAPER.lilas];
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [upcoming, setUpcoming] = useState<Event[]>([]);
+  const [past, setPast] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchEvents() {
+    (async () => {
       try {
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .eq('published', true)
-          // Filtre : Uniquement les événements à venir ou aujourd'hui
-          .gte('event_date', new Date().toISOString()) 
-          .order('event_date', { ascending: true });
-
-        if (error) throw error;
-        setEvents(data || []);
+        const now = new Date().toISOString();
+        const [up, before] = await Promise.all([
+          supabase.from('events').select('*').eq('published', true).gte('event_date', now).order('event_date', { ascending: true }),
+          supabase.from('events').select('*').eq('published', true).lt('event_date', now).order('event_date', { ascending: false }).limit(6),
+        ]);
+        if (up.error) throw up.error;
+        setUpcoming(up.data || []);
+        setPast(before.data || []);
       } catch (err) {
         console.error('Erreur chargement événements:', err);
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchEvents();
+    })();
   }, []);
 
-  const formatDateDetails = (dateString: string) => {
-    const date = new Date(dateString);
-    return {
-      day: date.getDate(),
-      month: date.toLocaleDateString('fr-FR', { month: 'short' }),
-      fullDate: date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-      time: date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')
-    };
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-bg">
-        <SEO
-          title="Ateliers, groupes de parole et cafés parents"
-          description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
-          canonical="/evenements"
-        />
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-nature-primary border-t-transparent"></div>
-          <p className="font-heading text-nature-primary font-bold">Recherche des événements...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const eventsStructuredData = events.length > 0
+  const eventsStructuredData = upcoming.length
     ? {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         name: 'Événements Association Indigo',
-        itemListElement: events.map((event, index) => ({
+        itemListElement: upcoming.map((event, index) => ({
           '@type': 'ListItem',
           position: index + 1,
           item: {
@@ -69,162 +51,120 @@ export default function EventsPage() {
             name: event.title,
             description: event.description,
             startDate: event.event_date,
-            location: event.location
-              ? { '@type': 'Place', name: event.location }
-              : { '@type': 'Place', name: 'Preseau, Nord' },
-            organizer: {
-              '@type': 'Organization',
-              name: 'Association Indigo',
-              url: 'https://association-indigo.fr',
-            },
+            eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+            location: { '@type': 'Place', name: event.location || 'Preseau, Nord', address: 'Preseau, 59990, FR' },
+            organizer: { '@type': 'Organization', name: 'Association Indigo', url: 'https://association-indigo.fr' },
             image: event.image_url || 'https://association-indigo.fr/og-image.webp',
             url: event.registration_link || 'https://association-indigo.fr/evenements',
           },
         })),
       }
-    : null;
+    : undefined;
 
   return (
-    <div className="min-h-screen bg-light-bg pb-20">
-      <SEO
-        title="Ateliers, groupes de parole et cafés parents"
-        description="Cafés des parents, groupes de parole, ateliers créatifs... Retrouvez les prochains événements de l'Association Indigo à Preseau et dans le Valenciennois."
-        canonical="/evenements"
-        structuredData={eventsStructuredData || undefined}
+    <div>
+      <SEO {...SEO_PROPS} structuredData={eventsStructuredData} />
+
+      <PageHeader
+        title="Les rendez-vous de l'association"
+        paper={PAPER.beurre}
+        intro={
+          <>
+            Groupes de parole pour les parents, ateliers pour les enfants, conférences : on se retrouve le plus souvent
+            <strong className="text-[var(--ink)]"> salle la Verrière, à Préseau</strong>. Pas besoin de diagnostic pour venir.
+          </>
+        }
       />
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative pt-28 pb-24 md:pb-32 rounded-b-[3rem] overflow-hidden shadow-xl mb-12">
-        
-        {/* Image de fond : indigocolor.webp */}
-        <div className="absolute inset-0 z-0">
-            <img 
-                src="/indigocolor.webp" 
-                alt="Rencontres et Partage" 
-                className="w-full h-full object-cover"
-            />
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10 text-center">
-            
-            {/* Badge en "Bulle de verre" */}
-            <span className="inline-block py-2 px-6 rounded-full bg-white/30 backdrop-blur-md text-indigo-950 font-bold text-xs md:text-sm mb-8 uppercase tracking-widest border border-white/40 shadow-lg">
-                Agenda de l'association
-            </span>
-            
-            {/* Titre BLANC + OMBRE PORTÉE (Lisibilité max) */}
-            <h1 className="font-heading font-bold text-4xl md:text-6xl text-white mb-6 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)]">
-              Rencontres & Partage
-            </h1>
-            
-            {/* Description BLANCHE + OMBRE */}
-            <p className="font-body text-lg md:text-xl text-white font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]">
-              Cafés des parents, groupes de parole, conférences... Ne restez plus seuls. Venez échanger et trouver du soutien lors de nos prochains rendez-vous.
-            </p>
+      {/* À venir */}
+      <section className="bg-white py-16 sm:py-20" aria-busy={loading}>
+        <div className="mx-auto max-w-5xl px-4">
+          <h2 className="text-[clamp(1.9rem,3.6vw,2.7rem)] font-extrabold">Prochaines dates</h2>
+
+          {loading ? (
+            <div className="mt-8 h-40 animate-pulse bg-[var(--mat)]" />
+          ) : upcoming.length ? (
+            <ul className="mt-10 grid gap-8">
+              {upcoming.map((e, i) => {
+                const d = eventDay(e.event_date);
+                return (
+                  <li key={e.id} className="ticket paper grid gap-6 px-8 py-7 sm:grid-cols-[110px_1fr_auto] sm:items-center sm:px-12" style={{ backgroundColor: TICKET_PAPERS[i % 4] }}>
+                    <div className="text-center sm:border-r-2 sm:border-dashed sm:border-[var(--ink)]/25 sm:pr-6">
+                      <span className="block text-sm font-extrabold uppercase">{d.weekday}</span>
+                      <span className="display block text-6xl font-extrabold leading-none tabular-nums">{d.day}</span>
+                      <span className="block font-extrabold">{d.monthLong} {d.year}</span>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-extrabold leading-snug">{e.title}</h3>
+                      <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 font-bold text-[var(--ink-2)]">
+                        <span className="inline-flex items-center gap-1.5"><Clock size={16} aria-hidden /> {d.time}</span>
+                        {e.location && <span className="inline-flex items-center gap-1.5"><MapPin size={16} aria-hidden /> {e.location}</span>}
+                      </p>
+                      {e.description && <p className="mt-3 max-w-2xl font-semibold leading-relaxed text-[var(--ink-2)] whitespace-pre-line">{e.description}</p>}
+                    </div>
+                    {e.registration_link ? (
+                      <a
+                        href={e.registration_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--ink)] px-6 py-3.5 font-extrabold text-white hover:bg-[var(--act)]"
+                      >
+                        Je m'inscris <ArrowUpRight size={18} aria-hidden />
+                      </a>
+                    ) : (
+                      <span className="font-extrabold">Entrée libre</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="mt-10 grid items-center gap-10 md:grid-cols-[1fr_auto]">
+              <div className="paper relative rotate-[-1deg] bg-[#FFF9E3] p-8 sm:p-10">
+                <Tape color={PAPER.lilas} className="-top-3 left-12 rotate-[-6deg]" />
+                <p className="display text-2xl font-extrabold">Pas de nouvelle date annoncée pour l'instant</p>
+                <p className="mt-3 max-w-xl text-lg font-semibold leading-relaxed text-[var(--ink-2)]">
+                  Les prochains rendez-vous sont publiés en premier sur le groupe Facebook des parents. Rejoignez-le pour être prévenu.
+                </p>
+                <a
+                  href={LINKS.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-6 py-3.5 font-extrabold text-white hover:bg-[var(--act)]"
+                >
+                  <Facebook size={18} aria-hidden /> Rejoindre le groupe des parents
+                </a>
+              </div>
+              <Stamp className="mx-auto h-40 w-40 rotate-[10deg] text-[15px]">Avec ou sans diagnostic, bienvenue</Stamp>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* --- GRILLE DES ÉVÉNEMENTS --- */}
-      <div className="container mx-auto px-4">
-        {events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => {
-              const { day, month, time } = formatDateDetails(event.event_date);
-              
-              return (
-                <div
-                  key={event.id}
-                  className="group bg-white rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-nature-primary/10 transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2"
-                >
-                  <div className="h-48 relative overflow-hidden">
-                    {event.image_url ? (
-                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-nature-primary to-emerald-600 flex items-center justify-center">
-                         <Calendar size={48} className="text-white/30" />
-                      </div>
-                    )}
-                    
-                    {/* Date */}
-                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-2 text-center min-w-[70px] shadow-lg border border-white/50">
-                      <span className="block font-heading font-bold text-2xl text-nature-primary leading-none">
-                        {day}
-                      </span>
-                      <span className="block text-xs font-bold text-dark-text uppercase mt-1">
-                        {month}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-8 flex flex-col flex-grow">
-                    <div className="flex items-center gap-2 text-peach-primary font-bold text-sm mb-3">
-                        <Clock size={16} />
-                        <span>{time}</span>
-                    </div>
-
-                    <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 leading-tight group-hover:text-nature-primary transition-colors">
-                      {event.title}
-                    </h3>
-
-                    {event.location && (
-                      <div className="flex items-start gap-3 text-dark-text/70 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                        <MapPin size={18} className="flex-shrink-0 mt-0.5 text-nature-primary" />
-                        <span className="font-body text-sm leading-snug">{event.location}</span>
-                      </div>
-                    )}
-
-                    <p className="font-body text-dark-text/70 mb-6 line-clamp-3 text-sm flex-grow">
-                      {event.description}
+      {/* Les derniers ateliers */}
+      {past.length > 0 && (
+        <section className="mat py-16 sm:py-20">
+          <div className="mx-auto max-w-6xl px-4">
+            <h2 className="text-[clamp(1.9rem,3.6vw,2.7rem)] font-extrabold">Retour sur les derniers ateliers</h2>
+            <ul className="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {past.map((e, i) => {
+                const d = eventDay(e.event_date);
+                return (
+                  <li key={e.id} className="paper paper-lift relative bg-white p-3 pb-5" style={{ transform: `rotate(${[-2.5, 1.5, -1, 2, -1.5, 1][i % 6]}deg)` }}>
+                    <Tape color={TICKET_PAPERS[i % 4]} className="-top-3 left-1/2 -translate-x-1/2" />
+                    {e.image_url && <img src={e.image_url} alt={`Affiche : ${e.title}`} loading="lazy" width={600} height={800} className="aspect-[3/4] w-full object-cover" />}
+                    <h3 className="mt-4 text-xl font-bold leading-snug">{e.title}</h3>
+                    <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[15px] font-bold text-[var(--ink-2)]">
+                      <span className="inline-flex items-center gap-1.5"><CalendarDays size={15} aria-hidden /> {d.weekday} {d.day} {d.monthLong} {d.year}</span>
+                      {e.location && <span className="inline-flex items-center gap-1.5"><MapPin size={15} aria-hidden /> {e.location}</span>}
                     </p>
-
-                    {event.registration_link ? (
-                      <a
-                        href={event.registration_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-nature-primary text-white font-heading font-bold rounded-xl hover:bg-opacity-90 transition-all duration-300 shadow-md group-hover:shadow-nature-primary/30"
-                      >
-                        Je m'inscris
-                        <ExternalLink size={18} />
-                      </a>
-                    ) : (
-                       <div className="mt-auto w-full text-center py-4 bg-gray-100 text-gray-400 font-heading font-bold rounded-xl cursor-not-allowed text-sm">
-                          Entrée libre / Sans inscription
-                       </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        ) : (
-          /* État vide (Pas d'événements) */
-          <div className="max-w-3xl mx-auto text-center py-20">
-             <div className="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-peach-primary/10 rounded-bl-full"></div>
-                
-                <div className="inline-flex p-6 rounded-full bg-peach-primary/10 text-peach-primary mb-6 relative z-10">
-                    <Calendar size={48} />
-                </div>
-                <h3 className="font-heading font-bold text-2xl text-dark-text mb-4 relative z-10">
-                    Aucun événement à venir pour le moment
-                </h3>
-                <p className="font-body text-lg text-dark-text/70 mb-8 relative z-10">
-                    Notre calendrier se remplit petit à petit. Pour ne rien rater des prochaines rencontres, rejoignez notre groupe Facebook !
-                </p>
-                <a
-                    href="https://www.facebook.com/groups/467126453152213"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-[#1877F2] text-white font-bold rounded-full hover:bg-[#166FE5] transition-all shadow-lg hover:shadow-blue-500/30 relative z-10"
-                >
-                    <Users size={20} />
-                    Rejoindre la communauté Facebook
-                </a>
-             </div>
-          </div>
-        )}
-      </div>
+        </section>
+      )}
     </div>
   );
 }

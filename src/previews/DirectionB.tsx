@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Facebook, MapPin, Clock, Mail, Menu, X, Heart } from 'lucide-react';
 import {
   PROFILES, TESTIMONIALS, PARTNERS, LINKS, usePreviewData, articlesFor, cleanTitle, eventDay, categoryLabel, type ProfileKey,
-} from './shared';
+} from '../atelier/data';
 
 // Couleurs des étincelles du logo, adoucies
 const STAR: Record<ProfileKey, { fill: string; x: number; y: number }> = {

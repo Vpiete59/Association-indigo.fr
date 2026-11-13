@@ -1,5 +1,5 @@
-// Données partagées par les 3 maquettes de design (route /preview, DEV uniquement).
-// Tout le contenu affiché vient soit du site actuel, soit de Supabase : rien n'est inventé.
+// Contenu partagé du site (profils, liens, partenaires) et chargement des articles/événements.
+// Tout vient du site existant ou de Supabase : rien n'est inventé.
 import { useEffect, useState } from 'react';
 import { supabase, type Article, type Event } from '../lib/supabase';
 
@@ -95,6 +95,10 @@ export interface PreviewData {
   articles: LiteArticle[]; // tous les articles publiés, plus récents d'abord
   events: Event[]; // à venir si il y en a, sinon les derniers passés
   eventsArePast: boolean;
+}
+
+export function useSiteData(): PreviewData {
+  return usePreviewData();
 }
 
 export function usePreviewData(): PreviewData {

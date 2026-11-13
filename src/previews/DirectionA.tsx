@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Facebook, MapPin, Clock, Mail, Menu, X, Heart, Check } from 'lucide-react';
 import {
   PROFILES, TESTIMONIALS, PARTNERS, LINKS, usePreviewData, articlesFor, cleanTitle, eventDay, categoryLabel, type ProfileKey,
-} from './shared';
+} from '../atelier/data';
 
 const TINT: Record<ProfileKey, string> = {
   tdah: '#D9DDFB',

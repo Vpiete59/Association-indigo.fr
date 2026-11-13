@@ -22,8 +22,8 @@ export default {
         },
       },
       fontFamily: {
-        heading: ['Quicksand', 'sans-serif'],
-        body: ['Open Sans', 'sans-serif'],
+        heading: ['Grandstander', 'system-ui', 'sans-serif'],
+        body: ['Nunito', 'system-ui', 'sans-serif'],
       },
     },
   },

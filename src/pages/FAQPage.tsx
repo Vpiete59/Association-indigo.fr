@@ -1,22 +1,17 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle, MessageCircle, Sparkles } from 'lucide-react';
+// Questions fréquentes « L'atelier » : une feuille de couleur par thème, des réponses dépliables.
 import { Link } from 'react-router-dom';
+import { Plus, Mail, Facebook } from 'lucide-react';
 import SEO from '../components/SEO';
+import { LINKS } from '../atelier/data';
+import { PageHeader, Tape, PAPER } from '../atelier/kit';
 
-// Couleurs pour chaque catégorie
-const categoryColors = [
-  { bg: 'bg-indigo-primary/10', border: 'border-indigo-primary/20', title: 'text-indigo-primary', accent: 'bg-indigo-primary' },
-  { bg: 'bg-peach-primary/10', border: 'border-peach-primary/20', title: 'text-peach-primary', accent: 'bg-peach-primary' },
-  { bg: 'bg-nature-primary/10', border: 'border-nature-primary/20', title: 'text-nature-primary', accent: 'bg-nature-primary' },
-  { bg: 'bg-purple-100', border: 'border-purple-200', title: 'text-purple-600', accent: 'bg-purple-500' },
-  { bg: 'bg-amber-100', border: 'border-amber-200', title: 'text-amber-600', accent: 'bg-amber-500' },
-];
+const SHEETS = [PAPER.lilas, PAPER.saumon, PAPER.beurre, PAPER.ciel, PAPER.mauve];
+const TAPES = [PAPER.beurre, PAPER.ciel, PAPER.saumon, PAPER.mauve, PAPER.lilas];
 
 // --- DONNÉES DE LA FAQ ---
 const faqData = [
   {
     category: "Comprendre l'association",
-    icon: "🏠",
     items: [
       {
         question: "Qu'est-ce que l'association Indigo ?",
@@ -34,12 +29,11 @@ const faqData = [
   },
   {
     category: "Accompagnement et services",
-    icon: "🤝",
     items: [
       {
         question: "Quels types d'accompagnement propose Indigo ?",
         answer: (
-          <ul className="list-disc pl-5 space-y-1">
+          <ul className="mt-1 grid gap-1.5 list-disc pl-5 marker:text-[var(--act)]">
             <li>Ateliers pour enfants (émotions, compétences sociales, jeux créativité, autonomie, ateliers concentration BrainBall…)</li>
             <li>Groupes de parole pour parents</li>
             <li>Séances individuelles (enfant, parent, fratrie)</li>
@@ -61,7 +55,6 @@ const faqData = [
   },
   {
     category: "Fonctionnement pratique",
-    icon: "⚙️",
     items: [
       {
         question: "Comment prendre contact ou s'inscrire à un atelier ?",
@@ -83,7 +76,6 @@ const faqData = [
   },
   {
     category: "Valeurs et philosophie",
-    icon: "💜",
     items: [
       {
         question: "Quelle est votre approche ?",
@@ -101,7 +93,6 @@ const faqData = [
   },
   {
     category: "Pour aller plus loin",
-    icon: "🚀",
     items: [
       {
         question: "Puis-je proposer une idée d'atelier ou devenir bénévole ?",
@@ -133,14 +124,8 @@ const faqStructuredData = {
 };
 
 export default function FAQPage() {
-  const [openIndex, setOpenIndex] = useState<string | null>(null);
-
-  const toggleFAQ = (index: string) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   return (
-    <div className="min-h-screen">
+    <div>
       <SEO
         title="FAQ : questions fréquentes"
         description="Toutes les réponses à vos questions sur l'Association Indigo : accompagnement enfants atypiques, ateliers, groupes de parole, adhésion, prise en charge TDAH, DYS, HPI."
@@ -148,118 +133,64 @@ export default function FAQPage() {
         structuredData={faqStructuredData}
       />
 
-      {/* Hero Section - Arc-en-ciel */}
-      <section className="relative pt-28 pb-20 overflow-hidden">
-        {/* Fond dégradé arc-en-ciel */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-primary/20 via-peach-primary/20 to-nature-primary/20"></div>
-        
-        {/* Cercles décoratifs */}
-        <div className="absolute top-10 left-10 w-32 h-32 bg-indigo-primary/10 rounded-full blur-2xl"></div>
-        <div className="absolute top-20 right-20 w-40 h-40 bg-peach-primary/10 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-10 left-1/3 w-36 h-36 bg-nature-primary/10 rounded-full blur-2xl"></div>
-        
-        {/* Étoiles décoratives */}
-        <div className="absolute top-16 right-1/4 text-peach-primary/40 animate-pulse">
-          <Sparkles size={24} />
-        </div>
-        <div className="absolute bottom-20 left-1/4 text-indigo-primary/40 animate-pulse delay-300">
-          <Sparkles size={20} />
-        </div>
-        <div className="absolute top-1/2 right-10 text-nature-primary/40 animate-pulse delay-500">
-          <Sparkles size={28} />
-        </div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <span className="inline-flex items-center justify-center p-4 bg-white/80 backdrop-blur-sm text-indigo-primary rounded-full mb-6 shadow-lg">
-            <HelpCircle size={40} />
-          </span>
-          <h1 className="font-heading font-bold text-4xl md:text-5xl text-dark-text mb-4">
-            Questions <span className="text-indigo-primary">Fré</span><span className="text-peach-primary">quen</span><span className="text-nature-primary">tes</span>
-          </h1>
-          <p className="font-body text-dark-text/70 text-lg max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur l'Association Indigo et notre accompagnement des familles d'enfants atypiques.
-          </p>
-          
-          {/* Barre arc-en-ciel */}
-          <div className="mt-8 h-1.5 w-48 mx-auto rounded-full bg-gradient-to-r from-indigo-primary via-peach-primary to-nature-primary"></div>
-        </div>
-      </section>
+      <PageHeader
+        title="Les questions qu'on nous pose"
+        paper={PAPER.ciel}
+        intro="Tout ce qu'il faut savoir sur l'Association Indigo et l'accompagnement des familles d'enfants atypiques. Une autre question ? Écrivez-nous."
+      >
+        <nav aria-label="Thèmes" className="mt-8 flex flex-wrap gap-3">
+          {faqData.map((section, i) => (
+            <a
+              key={section.category}
+              href={`#theme-${i}`}
+              className="tag paper-lift px-4 pt-2 pb-1.5 font-extrabold"
+              style={{ backgroundColor: SHEETS[i % SHEETS.length] }}
+            >
+              {section.category}
+            </a>
+          ))}
+        </nav>
+      </PageHeader>
 
-      {/* FAQ Content */}
-      <section className="container mx-auto px-4 py-16 max-w-4xl">
-        <div className="space-y-8">
-          {faqData.map((section, sIndex) => {
-            const colors = categoryColors[sIndex % categoryColors.length];
-            
-            return (
-              <div 
-                key={sIndex} 
-                className={`bg-white rounded-3xl shadow-sm border-2 ${colors.border} overflow-hidden transition-all hover:shadow-lg`}
-              >
-                {/* Titre de Catégorie avec couleur */}
-                <div className={`${colors.bg} px-6 py-5 border-b ${colors.border} flex items-center gap-3`}>
-                  <span className="text-2xl">{section.icon}</span>
-                  <h2 className={`font-heading font-bold text-xl ${colors.title}`}>
-                    {section.category}
-                  </h2>
-                </div>
-                
-                {/* Questions de la catégorie */}
-                <div className="divide-y divide-gray-100">
-                  {section.items.map((item, qIndex) => {
-                    const uniqueKey = `${sIndex}-${qIndex}`;
-                    const isOpen = openIndex === uniqueKey;
-
-                    return (
-                      <div key={qIndex} className="group">
-                        <button
-                          onClick={() => toggleFAQ(uniqueKey)}
-                          className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none hover:bg-gray-50 transition-colors"
-                        >
-                          <span className={`font-body font-bold text-lg ${isOpen ? colors.title : 'text-dark-text group-hover:text-indigo-primary'} transition-colors`}>
-                            {item.question}
-                          </span>
-                          {isOpen ? (
-                            <ChevronUp className={`${colors.title} flex-shrink-0 ml-4`} />
-                          ) : (
-                            <ChevronDown className="text-gray-400 group-hover:text-indigo-primary flex-shrink-0 ml-4 transition-colors" />
-                          )}
-                        </button>
-                        
-                        {isOpen && (
-                          <div className="px-6 pb-6 pt-2">
-                            <div className={`font-body text-dark-text/70 leading-relaxed pl-4 border-l-4 ${colors.border}`}>
-                              {item.answer}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+      <section className="mat pb-20 pt-4">
+        <div className="mx-auto grid max-w-3xl gap-14 px-4">
+          {faqData.map((section, sIndex) => (
+            <div
+              key={section.category}
+              id={`theme-${sIndex}`}
+              className="paper relative scroll-mt-6 bg-white"
+              style={{ transform: `rotate(${sIndex % 2 ? 0.6 : -0.6}deg)` }}
+            >
+              <Tape color={TAPES[sIndex % TAPES.length]} className="-top-3 right-12 rotate-[5deg]" />
+              <h2 className="px-7 pt-6 pb-5 text-2xl sm:text-[1.7rem] font-extrabold" style={{ backgroundColor: SHEETS[sIndex % SHEETS.length] }}>
+                {section.category}
+              </h2>
+              <div className="divide-y-2 divide-dashed divide-[var(--grid-strong)] px-7">
+                {section.items.map((item) => (
+                  <details key={item.question} className="group">
+                    <summary className="flex items-center justify-between gap-4 py-5 text-lg font-extrabold leading-snug">
+                      {item.question}
+                      <Plus size={22} className="chev shrink-0 transition-transform duration-300" aria-hidden />
+                    </summary>
+                    <div className="pb-6 pr-6 font-semibold leading-relaxed text-[var(--ink-2)]">{item.answer}</div>
+                  </details>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            </div>
+          ))}
 
-        {/* CTA vers Contact - Style arc-en-ciel */}
-        <div className="mt-12 text-center bg-gradient-to-r from-indigo-primary/5 via-peach-primary/5 to-nature-primary/5 p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
-          {/* Bordure arc-en-ciel en haut */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-primary via-peach-primary to-nature-primary"></div>
-          
-          <p className="font-heading font-bold text-xl text-dark-text mb-2">
-            Vous n'avez pas trouvé votre réponse ?
-          </p>
-          <p className="text-dark-text/60 mb-6">
-            N'hésitez pas à nous contacter directement, nous vous répondrons avec plaisir !
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-primary to-peach-primary text-white font-heading font-bold rounded-full hover:shadow-lg hover:scale-105 transition-all shadow-md"
-          >
-            <MessageCircle size={20} />
-            Nous contacter
-          </Link>
+          <div className="ticket paper bg-white px-10 py-9 text-center rotate-[-0.8deg]">
+            <p className="display text-2xl font-extrabold">Vous n'avez pas trouvé votre réponse ?</p>
+            <p className="mt-2 font-semibold text-[var(--ink-2)]">Écrivez-nous, ou posez la question aux autres parents sur le groupe.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-6 py-3.5 font-extrabold text-white hover:bg-[var(--act)]">
+                <Mail size={18} aria-hidden /> Nous écrire
+              </Link>
+              <a href={LINKS.facebook} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--ink)] bg-white px-6 py-3 font-extrabold hover:bg-[var(--mat)]">
+                <Facebook size={18} aria-hidden /> Le groupe des parents
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </div>

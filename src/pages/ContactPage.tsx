@@ -1,41 +1,57 @@
-import Contact from '../components/Contact';
+// Contact « L'atelier » : la carte postale, et les autres moyens de nous joindre.
 import { Link } from 'react-router-dom';
-import { HelpCircle } from 'lucide-react';
+import { Mail, MapPin, Facebook, ArrowRight } from 'lucide-react';
+import Contact from '../components/Contact';
 import SEO from '../components/SEO';
+import { LINKS } from '../atelier/data';
+import { PageHeader, Tape, PAPER } from '../atelier/kit';
 
 export default function ContactPage() {
   return (
-    <div className="bg-light-bg min-h-screen">
+    <div>
       <SEO
         title="Nous Contacter | Association Indigo - Preseau"
         description="Contactez l'Association Indigo à Preseau. Une question sur nos ateliers, groupes de parole ou l'accompagnement des enfants atypiques ? Nous vous répondons rapidement."
         canonical="/contact"
       />
 
-      {/* Composant Contact (Formulaire + Infos) */}
-      <div className="pt-20">
-        <Contact />
-      </div>
+      <PageHeader
+        title="Contacter l'Association Indigo"
+        paper={PAPER.saumon}
+        intro="Une question sur nos ateliers ? Besoin d'échanger sur votre situation ? Nous sommes là pour vous écouter et vous répondre."
+      />
 
-      {/* Lien vers la FAQ */}
-      <section className="container mx-auto px-4 pb-16 max-w-4xl">
-        <div className="text-center bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-          <span className="inline-flex items-center justify-center p-3 bg-indigo-primary/10 text-indigo-primary rounded-full mb-4">
-            <HelpCircle size={28} />
-          </span>
-          <p className="font-heading font-bold text-xl text-dark-text mb-2">
-            Vous avez des questions sur l'association ?
+      <section className="mat pb-20">
+        <div className="mx-auto max-w-5xl px-4">
+          <Contact />
+
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            <a href={`mailto:${LINKS.email}`} className="paper paper-lift relative block bg-white p-6 rotate-[-1deg]">
+              <Tape color={PAPER.lilas} className="-top-3 left-8 rotate-[-6deg]" />
+              <Mail size={22} aria-hidden />
+              <p className="display mt-3 text-xl font-extrabold">Par email</p>
+              <p className="mt-1 break-all font-bold underline">{LINKS.email}</p>
+            </a>
+            <a href={LINKS.facebook} target="_blank" rel="noopener noreferrer" className="paper paper-lift relative block p-6 rotate-[1deg]" style={{ backgroundColor: PAPER.ciel }}>
+              <Tape color={PAPER.beurre} className="-top-3 left-8 rotate-[4deg]" />
+              <Facebook size={22} aria-hidden />
+              <p className="display mt-3 text-xl font-extrabold">Le groupe des parents</p>
+              <p className="mt-1 font-semibold text-[var(--ink-2)]">Le groupe privé Facebook, pour les questions du quotidien.</p>
+            </a>
+            <div className="paper relative bg-white p-6 rotate-[-0.5deg]">
+              <Tape color={PAPER.menthe} className="-top-3 left-8 rotate-[-3deg]" />
+              <MapPin size={22} aria-hidden />
+              <p className="display mt-3 text-xl font-extrabold">Par courrier</p>
+              <p className="mt-1 font-semibold text-[var(--ink-2)]">Association Indigo<br />Mairie de Preseau<br />59990 Preseau</p>
+            </div>
+          </div>
+
+          <p className="mt-12 text-center text-lg font-semibold text-[var(--ink-2)]">
+            La réponse est peut-être déjà là :{' '}
+            <Link to="/faq" className="inline-flex items-center gap-1.5 font-extrabold text-[var(--ink)] underline">
+              les questions fréquentes <ArrowRight size={17} aria-hidden />
+            </Link>
           </p>
-          <p className="text-dark-text/60 mb-6">
-            Consultez notre Foire aux Questions pour trouver rapidement les réponses.
-          </p>
-          <Link
-            to="/faq"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-primary text-white font-heading font-bold rounded-full hover:bg-indigo-primary/90 transition-all shadow-md"
-          >
-            <HelpCircle size={20} />
-            Voir la FAQ
-          </Link>
         </div>
       </section>
     </div>
