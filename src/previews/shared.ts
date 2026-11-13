@@ -142,7 +142,7 @@ export function cleanTitle(t: string) {
 export function eventDay(iso: string) {
   const d = new Date(iso);
   return {
-    weekday: d.toLocaleDateString('fr-FR', { weekday: 'long' }),
+    weekday: ((w) => w.charAt(0).toUpperCase() + w.slice(1))(d.toLocaleDateString('fr-FR', { weekday: 'long' })),
     day: d.toLocaleDateString('fr-FR', { day: 'numeric' }),
     month: d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', ''),
     monthLong: d.toLocaleDateString('fr-FR', { month: 'long' }),

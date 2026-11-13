@@ -3,7 +3,8 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import DirectionA from './DirectionA';
 import DirectionB from './DirectionB';
-import DirectionC from './DirectionC';
+import HomeAtelier from './atelier/HomeAtelier';
+import ArticleAtelier from './atelier/ArticleAtelier';
 
 const DIRECTIONS = [
   {
@@ -23,7 +24,7 @@ const DIRECTIONS = [
   {
     id: 'c',
     name: "L'atelier",
-    pitch: 'La table des ateliers : tapis de découpe, papier découpé, scotch washi et les vraies affiches punaisées. Chaleureux et fait main.',
+    pitch: "La table des ateliers vue de dessus : tapis de découpe, guirlande d'étiquettes, papier découpé, scotch washi. Version approfondie, avec la page article.",
     fonts: 'Grandstander + Nunito (une écriture d’enfant, mais lisible)',
     swatches: ['#D7EEDD', '#CBD1FA', '#FFC7B2', '#FFE69E', '#BFE3F7', '#2A284E'],
   },
@@ -39,7 +40,7 @@ function Switcher() {
     >
       <Link to="/preview" className={`${item} hover:bg-white/15`}>Comparer</Link>
       {DIRECTIONS.map((d) => (
-        <NavLink key={d.id} to={`/preview/${d.id}`} className={({ isActive }) => `${item} ${isActive ? 'bg-white text-[#1d1f3a]' : 'hover:bg-white/15'}`}>
+        <NavLink key={d.id} to={`/preview/${d.id}`} end={false} className={({ isActive }) => `${item} ${isActive ? 'bg-white text-[#1d1f3a]' : 'hover:bg-white/15'}`}>
           {d.id.toUpperCase()}
         </NavLink>
       ))}
@@ -91,7 +92,8 @@ export default function PreviewRouter() {
         <Route index element={<Index />} />
         <Route path="a" element={<DirectionA />} />
         <Route path="b" element={<DirectionB />} />
-        <Route path="c" element={<DirectionC />} />
+        <Route path="c" element={<HomeAtelier />} />
+        <Route path="c/articles/:slug" element={<ArticleAtelier />} />
       </Routes>
       <Switcher />
     </>
