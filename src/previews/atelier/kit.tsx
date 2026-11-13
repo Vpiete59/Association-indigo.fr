@@ -4,7 +4,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Menu, X, MapPin, Mail, Facebook, Scissors } from 'lucide-react';
+import { Menu, X, MapPin, Mail, Facebook, Scissors, Settings } from 'lucide-react';
 import { LINKS, PARTNERS, type ProfileKey } from '../shared';
 
 export const BASE = '/preview/c';
@@ -165,6 +165,9 @@ export function AtelierHeader() {
           <a href={LINKS.adhesion} className="ml-2 rounded-full bg-[var(--ink)] text-white px-5 py-3 hover:bg-[var(--act)] transition-colors">
             Adhérer · 5 € par an
           </a>
+          <Link to="/admin" title="Espace bénévoles" aria-label="Espace bénévoles (administration)" className="ml-1 grid h-11 w-11 place-items-center rounded-full text-[var(--ink-2)] hover:bg-[var(--mat)] hover:text-[var(--ink)]">
+            <Settings size={20} aria-hidden />
+          </Link>
         </nav>
         <button className="lg:hidden p-3 rounded-full hover:bg-[var(--mat)]" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
@@ -176,6 +179,9 @@ export function AtelierHeader() {
             <Link key={n.label} to={n.to} onClick={() => setOpen(false)} className="px-3 py-3 rounded-xl hover:bg-[var(--mat)]">{n.label}</Link>
           ))}
           <a href={LINKS.adhesion} className="mt-1 px-3 py-3 rounded-xl bg-[var(--ink)] text-white text-center">Adhérer · 5 € par an</a>
+          <Link to="/admin" className="mt-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-[var(--ink-2)] hover:bg-[var(--mat)]">
+            <Settings size={18} aria-hidden /> Espace bénévoles
+          </Link>
         </nav>
       )}
     </header>
@@ -231,6 +237,7 @@ export function AtelierFooter() {
           <Link to="/mentions-legales" className="underline">Mentions légales</Link>
           <Link to="/politique-confidentialite" className="underline">Confidentialité</Link>
           <Link to="/faq" className="underline">Questions fréquentes</Link>
+          <Link to="/admin" className="underline">Espace bénévoles</Link>
         </div>
       </div>
     </footer>
