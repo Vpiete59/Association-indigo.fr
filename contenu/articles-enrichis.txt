@@ -1,0 +1,798 @@
+Compléments des articles « Comprendre » (novembre 2026)
+=======================================================
+
+Chaque bloc ci-dessous remplit le champ « Suite de l'article » (paragraph_2) d'un article.
+Le texte d'origine de l'association (paragraph_1) n'est pas modifié : il reste en introduction.
+« meta » remplace le résumé pour Google quand il est vide, trop court ou mal coupé.
+Mise en forme : une ligne seule sans point final = intertitre ; « - » = liste ; [texte](/articles/slug) = lien.
+
+Pour appliquer : scripts/build-enrichissement-sql.mjs génère supabase/content/enrichissement-articles.sql,
+à exécuter une fois dans l'éditeur SQL de Supabase. Ou copier-coller chaque bloc dans l'espace bénévoles.
+
+
+=== tdah-tda
+meta: TDAH chez l'enfant : les signes, le parcours de diagnostic, les aménagements scolaires (PAP, PPS) et ce qui aide à la maison.
+---
+Comment savoir si mon enfant a un TDAH ?
+
+Tous les enfants bougent, oublient et s'impatientent. Ce qui fait penser à un TDAH, c'est l'intensité et la durée : des difficultés présentes depuis l'enfance (avant 12 ans), depuis plus de six mois, dans plusieurs lieux (à la maison et à l'école) et qui compliquent vraiment le quotidien. Un enfant qui n'est agité qu'en classe, ou seulement depuis un événement difficile, peut avoir d'autres raisons de l'être.
+
+Quelques situations reviennent souvent chez les parents que nous accueillons :
+- les devoirs qui durent deux heures pour dix minutes de travail ;
+- les affaires perdues, les consignes oubliées en route ;
+- les colères qui montent très vite et retombent aussi vite ;
+- les mots du carnet : « bavarde », « dans la lune », « peut mieux faire » ;
+- un enfant qui s'épuise à faire des efforts que personne ne voit.
+
+Le parcours de diagnostic
+
+Le point de départ est le médecin qui suit votre enfant : médecin traitant, pédiatre ou médecin scolaire. Il écarte d'autres causes (sommeil, vue, audition, anxiété) et oriente vers un spécialiste : pédopsychiatre, neuropédiatre ou pédiatre formé aux troubles du neurodéveloppement. Le diagnostic est clinique : il repose sur des entretiens, des questionnaires remplis par les parents et l'enseignant, et l'observation de l'enfant. Des bilans complètent souvent le tableau : neuropsychologique, orthophonique, psychomoteur.
+
+Pour les enfants jusqu'à 12 ans, les plateformes de coordination et d'orientation (PCO) peuvent organiser et prendre en charge certains bilans, sur prescription du médecin. Les délais sont parfois longs : prendre rendez-vous tôt, sans attendre d'être certain, fait gagner des mois.
+
+À l'école : PAP ou PPS ?
+
+Le plan d'accompagnement personnalisé (PAP) se met en place avec l'école, après l'avis du médecin scolaire, sans passer par la MDPH. Il liste des aménagements simples : place près du tableau, consignes courtes, temps supplémentaire, tolérance pour bouger. Quand les besoins sont plus importants (aide humaine AESH, matériel), on demande un projet personnalisé de scolarisation (PPS) auprès de la MDPH. Notre fiche [Dossier MDPH : établir un projet de vie](/articles/dossier-mdph) vous guide pas à pas.
+
+À la maison, ce qui aide
+
+- Des routines affichées en images : matin, devoirs, coucher.
+- Une consigne à la fois, donnée en regardant l'enfant.
+- Des pauses qui bougent : dix minutes de travail, deux minutes de mouvement.
+- Des félicitations précises sur les efforts, pas seulement sur le résultat.
+- Du temps pour vous : un parent épuisé n'est pas un mauvais parent.
+
+Les programmes de guidance parentale, proposés par certains professionnels et associations, font partie des accompagnements reconnus. Un traitement médicamenteux peut aussi être discuté avec le médecin spécialiste ; c'est une décision qui se prend en famille, au cas par cas.
+
+Pour aller plus loin
+
+Lisez [les trois formes du trouble de l'attention](/articles/trouble-de-lintention-avec-ou-sans-hyperactivite), [l'impulsivité chez le TDAH](/articles/impulsivite-chez-le-tdah) et [le TDAH chez la femme](/articles/le-tdah-chez-la-femme). Et si vous voulez en parler avec des parents qui vivent la même chose, nos [groupes de parole à Préseau](/evenements) sont ouverts, avec ou sans diagnostic.
+
+
+=== trouble-de-lintention-avec-ou-sans-hyperactivite
+meta: TDA ou TDAH ? Les trois formes du trouble de l'attention, les fonctions exécutives et pourquoi les filles sont repérées plus tard.
+---
+Trois façons de vivre le trouble
+
+Les professionnels décrivent trois présentations du TDAH, qui peuvent évoluer avec l'âge :
+- la forme à prédominance inattentive, autrefois appelée TDA : l'enfant rêve, perd le fil, met longtemps à se mettre au travail, mais ne dérange pas la classe ;
+- la forme à prédominance hyperactive et impulsive : l'enfant bouge, coupe la parole, agit avant de réfléchir ;
+- la forme mixte, la plus fréquente, qui associe les deux.
+
+La forme inattentive est la plus discrète. Ces enfants sont souvent décrits comme lents, timides ou « pas motivés ». Ils passent sous les radars pendant des années, en particulier les filles, qui compensent beaucoup et cachent leurs difficultés. Beaucoup de femmes découvrent leur trouble à l'âge adulte, parfois au moment du diagnostic de leur propre enfant.
+
+Les fonctions exécutives, le vrai cœur du problème
+
+Le TDAH n'est pas un manque d'intelligence ni de volonté. Il touche les fonctions exécutives, ce « chef d'orchestre » du cerveau qui permet de planifier, de démarrer une tâche, de garder une information en tête, de freiner une réaction et de gérer son temps.
+
+Au quotidien, cela donne des situations très concrètes :
+- savoir sa leçon le soir et l'avoir oubliée le lendemain ;
+- commencer trois choses et n'en finir aucune ;
+- comprendre la consigne mais oublier la deuxième partie en chemin ;
+- se concentrer des heures sur un jeu passionnant, et pas cinq minutes sur une fiche de calcul.
+
+Ce dernier point déroute beaucoup de parents. On parle d'hyperfocalisation : quand l'intérêt est fort, l'attention se verrouille. Cela ne prouve pas que l'enfant « fait exprès » le reste du temps.
+
+L'hyperactivité peut être intérieure
+
+Sans le « H » visible, l'agitation se déplace souvent dans la tête : pensées qui s'enchaînent, difficulté à se poser, à s'endormir. C'est pour cette raison que beaucoup de spécialistes préfèrent aujourd'hui parler de TDAH dans tous les cas.
+
+Ce qui aide l'enfant inattentif
+
+- Découper les tâches en petites étapes cochables.
+- Rendre le temps visible : sablier, minuteur, horloge à secteurs.
+- Préparer le cartable la veille, avec une liste plastifiée.
+- Vérifier la compréhension en faisant reformuler la consigne.
+- Valoriser chaque étape terminée.
+
+Notre dossier [TDAH / TDA](/articles/tdah-tda) détaille le parcours de diagnostic et les aménagements possibles à l'école.
+
+
+=== tdah-le-cerveau-en-ebullition
+meta: Un cerveau TDAH qui ne s'arrête jamais : pourquoi le coucher est si difficile pour les enfants hyperactifs, et des idées concrètes pour apaiser la soirée.
+---
+Pourquoi le soir est si compliqué
+
+Pour beaucoup de familles, la fin de journée est le moment le plus difficile. L'enfant a tenu toute la journée à l'école, il a fait des efforts pour rester assis et attentif, et le soir, la pression retombe d'un coup : agitation, opposition, fous rires, larmes. Ce n'est pas un caprice, c'est souvent de la fatigue nerveuse.
+
+Au moment du coucher, le cerveau en ébullition continue de tourner. Les pensées s'enchaînent, une idée en appelle une autre, le corps a encore besoin de bouger. Beaucoup d'enfants TDAH mettent longtemps à s'endormir, même quand ils sont épuisés.
+
+Des idées pour apaiser la soirée
+
+- Un rituel identique chaque soir, affiché en images : bain, pyjama, histoire, câlin, lumière.
+- Une vraie dépense physique dans l'après-midi, pas juste avant le coucher.
+- Les écrans éteints au moins une heure avant le lit : leur lumière et leur rythme maintiennent le cerveau en alerte.
+- Une lumière douce et une maison qui ralentit, pas seulement la chambre de l'enfant.
+- Un carnet ou une boîte à soucis pour « déposer » ce qui tourne dans la tête.
+- Une respiration simple à faire ensemble : inspirer en gonflant le ventre, souffler longtemps comme sur une bougie.
+- Un objet lourd ou enveloppant (couverture, coussin) pour certains enfants qui se calment par le corps.
+
+Rester ferme sur l'heure et souple sur la manière
+
+Un enfant TDAH a besoin d'un cadre stable, mais il a aussi besoin d'un peu de liberté pour se poser : lire avec une lampe dix minutes, écouter une histoire audio, garder une balle anti-stress. L'important est que le rituel soit prévisible.
+
+Quand en parler au médecin ?
+
+Si l'endormissement prend régulièrement plus d'une demi-heure, si l'enfant se réveille souvent ou s'il est épuisé la journée, parlez-en à son médecin. Les difficultés de sommeil sont fréquentes chez les enfants TDAH et peuvent aggraver l'inattention et l'irritabilité. Notre article sur [les troubles du sommeil chez l'enfant](/articles/troubles-du-sommeil-chez-lenfant) vous donne d'autres pistes.
+
+Pour mieux comprendre le trouble lui-même, lisez notre dossier [TDAH / TDA](/articles/tdah-tda).
+
+
+=== le-tdah-chez-la-femme
+meta: TDAH chez la femme : un diagnostic souvent tardif, le masquage, la charge mentale et la fatigue invisible. Comprendre et trouver des appuis.
+---
+Pourquoi le TDAH des femmes passe inaperçu
+
+Pendant longtemps, on a décrit le TDAH à partir de petits garçons agités. Chez les filles, le trouble prend plus souvent une forme inattentive : rêverie, désorganisation, hypersensibilité, anxiété. Elles dérangent peu en classe, travaillent deux fois plus pour compenser et apprennent très tôt à cacher leurs difficultés. Beaucoup ne sont diagnostiquées qu'à l'âge adulte, après des années à se croire « nulles », « trop émotives » ou « pas assez organisées ».
+
+Le masquage, une stratégie qui épuise
+
+Le masquage, c'est l'ensemble des efforts pour paraître « comme tout le monde » : listes partout, vérifications répétées, sourire quand on est débordée, perfectionnisme pour éviter l'oubli. Ces stratégies permettent de tenir, mais elles coûtent une énergie énorme. C'est de là que vient la fatigue décrite plus haut.
+
+Quand la vie se charge (études, travail, enfants, maison), l'équilibre devient fragile. Beaucoup de femmes consultent d'abord pour de l'épuisement, de l'anxiété ou une dépression, avant que quelqu'un pense au TDAH.
+
+Mère TDAH d'un enfant TDAH
+
+Le TDAH a une forte composante héréditaire. Il arrive souvent qu'une mère se reconnaisse en lisant le compte-rendu du bilan de son enfant. Cette découverte peut être bouleversante, mais aussi libératrice : elle éclaire tout un parcours et permet de mieux comprendre son enfant de l'intérieur.
+
+Des appuis qui aident
+
+- Parler à son médecin traitant, qui peut orienter vers un psychiatre formé au TDAH de l'adulte.
+- Alléger l'organisation plutôt que de redoubler d'efforts : un agenda unique, des rappels automatiques, des tâches déléguées.
+- Accepter de « faire à peu près » certaines choses pour garder de l'énergie pour l'essentiel.
+- Prévoir des moments de récupération sans culpabilité.
+- Rencontrer d'autres femmes concernées : se sentir comprise change beaucoup.
+
+À l'Association Indigo, de nombreux parents découvrent leur propre fonctionnement en accompagnant celui de leur enfant. Nos [groupes de parole à Préseau](/evenements) sont aussi faits pour ça. Pour comprendre le trouble, lisez notre dossier [TDAH / TDA](/articles/tdah-tda).
+
+
+=== dys
+meta: Troubles DYS : comment les repérer, quels professionnels consulter, les aménagements à l'école (PAP, PPS) et les outils qui aident.
+---
+Les signes qui peuvent alerter
+
+Un trouble DYS se repère souvent à l'école, quand un enfant travaille beaucoup pour un résultat qui ne suit pas. Quelques signes méritent d'en parler à un professionnel :
+- un langage oral qui reste difficile à comprendre après 4 ans ;
+- une lecture très lente et coûteuse, des confusions de sons qui persistent au CE1 ;
+- une écriture illisible, douloureuse ou très lente ;
+- de grandes difficultés pour s'habiller, découper, faire du vélo ;
+- des résultats en calcul très éloignés du reste ;
+- un enfant fatigué, découragé, qui dit qu'il est « nul ».
+
+Qui consulter ?
+
+Le premier interlocuteur est le médecin de l'enfant, qui prescrit les bilans adaptés :
+- l'orthophoniste pour le langage oral et écrit, et le calcul ;
+- le psychomotricien et l'ergothérapeute pour le geste et l'écriture ;
+- l'orthoptiste pour la vision et les mouvements des yeux ;
+- le neuropsychologue pour l'attention, la mémoire et les fonctions exécutives.
+
+Les séances d'orthophonie sont prises en charge par l'Assurance maladie sur prescription. Pour les enfants jusqu'à 12 ans, les plateformes de coordination et d'orientation (PCO) peuvent prendre en charge certains bilans de psychomotricité, d'ergothérapie ou de psychologie. Dans les situations complexes, le médecin peut orienter vers un centre de référence des troubles du langage et des apprentissages (CRTLA), souvent rattaché à un hôpital.
+
+À l'école
+
+Avec un diagnostic, l'école peut mettre en place un plan d'accompagnement personnalisé (PAP) : supports agrandis et aérés, moins de copie, temps supplémentaire, évaluation à l'oral, tolérance orthographique. Si les besoins sont plus lourds (ordinateur, aide humaine), la demande passe par la MDPH avec un projet personnalisé de scolarisation (PPS). Pour les examens, des aménagements comme un temps majoré peuvent être demandés.
+
+Des outils qui changent la vie
+
+- L'ordinateur et la dictée vocale pour contourner l'écriture.
+- Les livres audio pour accéder aux histoires sans s'épuiser sur le déchiffrage.
+- Les polices aérées, les lignes de couleur, les règles de lecture.
+- Les cartes mentales pour organiser une leçon.
+
+Chaque trouble a sa fiche
+
+Lisez nos fiches sur [la dyslexie](/articles/dyslexie), [la dyspraxie](/articles/la-dyspraxie), [la dysphasie](/articles/la-dysphasie), [la dysgraphie](/articles/la-dysgraphie) et [la dyscalculie](/articles/la-dyscalculie). Et pour échanger avec d'autres familles, nos [rendez-vous à Préseau](/evenements) sont ouverts à tous.
+
+
+=== dyslexie
+meta: La dyslexie expliquée aux parents : les signes selon l'âge, le bilan orthophonique, les aménagements à l'école et ce qui aide à la maison.
+---
+Les signes selon l'âge
+
+La dyslexie se diagnostique en général après au moins un an et demi d'apprentissage de la lecture, souvent en CE1 ou CE2. Certains signes peuvent toutefois apparaître plus tôt :
+- en maternelle : difficulté à reconnaître les rimes, à retenir les comptines, à nommer les lettres ;
+- au CP : confusions de sons proches (f/v, p/b, ch/j), inversions de lettres qui persistent ;
+- ensuite : lecture lente et hachée, compréhension qui s'effondre quand le texte est long, orthographe très fragile malgré l'apprentissage ;
+- et souvent : une grande fatigue, l'évitement des livres, une perte de confiance.
+
+Le bilan orthophonique
+
+Si vous avez un doute, parlez-en à l'enseignant et au médecin de votre enfant. Il pourra prescrire un bilan orthophonique, pris en charge par l'Assurance maladie. L'orthophoniste évalue la lecture, l'orthographe, le langage oral et la conscience des sons. Le diagnostic s'appuie aussi parfois sur un bilan neuropsychologique et un bilan orthoptique, car la dyslexie s'associe souvent à d'autres troubles DYS ou à un trouble de l'attention.
+
+À l'école, des aménagements simples
+
+Avec un plan d'accompagnement personnalisé (PAP), l'enseignant peut :
+- fournir des documents aérés, en police plus grande ;
+- limiter la copie et donner les leçons photocopiées ;
+- lire les consignes à voix haute ;
+- évaluer à l'oral quand c'est possible ;
+- ne pas pénaliser l'orthographe hors des dictées ;
+- accorder du temps supplémentaire.
+
+Au collège et au lycée, l'ordinateur, les logiciels de lecture et des aménagements d'examen peuvent être demandés.
+
+À la maison
+
+- Lire à voix haute à votre enfant, même quand il est grand : il garde le goût des histoires.
+- Proposer des livres audio et des bandes dessinées.
+- Alterner : il lit une ligne, vous lisez la suivante.
+- Faire des devoirs courts, avec des pauses.
+- Rappeler que la dyslexie n'a rien à voir avec l'intelligence. Beaucoup d'adultes dyslexiques ont un parcours brillant.
+
+Pour avoir une vue d'ensemble des troubles des apprentissages, lisez notre dossier [Troubles DYS](/articles/dys). Et si vous voulez en parler, le [groupe des parents](/contact) est là.
+
+
+=== la-dyspraxie
+meta: La dyspraxie (trouble de la coordination) : le repérage, le rôle de l'ergothérapeute et du psychomotricien, les adaptations à l'école.
+---
+Un trouble qui porte aussi un autre nom
+
+Les professionnels parlent aujourd'hui de trouble développemental de la coordination (TDC). C'est la même difficulté : automatiser les gestes. Elle se remarque souvent dès la maternelle, chez un enfant qui a du mal avec les puzzles, le découpage, l'habillage ou le vélo, alors qu'il parle très bien et comprend tout.
+
+Comment se fait le diagnostic ?
+
+Le médecin de l'enfant oriente vers des bilans :
+- le bilan en psychomotricité évalue la coordination, l'équilibre, le repérage dans l'espace ;
+- le bilan en ergothérapie observe les gestes du quotidien et l'écriture ;
+- le bilan neuropsychologique précise les difficultés visuo-spatiales et d'organisation ;
+- le bilan orthoptique vérifie le regard, souvent concerné.
+
+Ces bilans ne sont pas remboursés en libéral, sauf exceptions. Pour les enfants jusqu'à 12 ans, les plateformes de coordination et d'orientation (PCO) peuvent les prendre en charge sur prescription médicale. L'allocation d'éducation de l'enfant handicapé (AEEH), versée sur décision de la MDPH, peut aussi aider à financer les séances.
+
+À l'école
+
+L'écriture à la main est souvent le point le plus coûteux. Les aménagements les plus utiles :
+- des leçons photocopiées plutôt que copiées ;
+- des feuilles avec des repères de couleur, des cases plus grandes en mathématiques ;
+- moins de tracés à la règle et au compas, ou des outils adaptés ;
+- une évaluation sur le fond, pas sur la présentation ;
+- l'apprentissage de l'ordinateur, souvent avec un ergothérapeute, pour remplacer l'écriture.
+
+Ces adaptations s'inscrivent dans un plan d'accompagnement personnalisé (PAP) ou, si un ordinateur ou une aide humaine sont nécessaires, dans un projet personnalisé de scolarisation (PPS) demandé à la MDPH.
+
+À la maison
+
+- Des vêtements faciles : élastiques, scratchs, pas de petits boutons.
+- Des couverts adaptés si besoin, et du temps pour les repas.
+- Les étapes d'une tâche en images (s'habiller, préparer son sac).
+- Des activités qui font du bien au corps sans compétition : natation, danse, Brain Ball.
+- Beaucoup d'encouragements : l'enfant dyspraxique fournit un effort que l'on ne voit pas.
+
+À découvrir aussi : notre dossier [Troubles DYS](/articles/dys) et [la dysgraphie](/articles/la-dysgraphie), souvent liée à la dyspraxie.
+
+
+=== la-dysphasie
+meta: La dysphasie (TDL) au quotidien : communiquer avec un enfant dysphasique, les supports visuels et le rôle essentiel de l'orthophonie.
+---
+Communiquer autrement, au quotidien
+
+Vivre avec la dysphasie, c'est apprendre à passer par d'autres chemins que les mots. Quelques habitudes simples changent beaucoup la vie de l'enfant et de la famille :
+- se mettre à sa hauteur et attendre d'avoir son regard avant de parler ;
+- utiliser des phrases courtes, un mot important à la fois ;
+- montrer en même temps qu'on dit : un geste, un objet, une image ;
+- reformuler correctement ce qu'il a dit, sans le faire répéter ;
+- lui laisser le temps de chercher ses mots, sans finir ses phrases à sa place ;
+- vérifier qu'il a compris en lui demandant de montrer ou de faire.
+
+Les supports visuels
+
+Les emplois du temps en images, les pictogrammes, les photos des étapes de la journée sont de vrais appuis. Ils diminuent l'anxiété, car l'enfant sait ce qui l'attend, et ils l'aident à s'exprimer. Certains orthophonistes proposent aussi des gestes associés à la parole, ou des outils de communication sur tablette.
+
+Le rôle de l'orthophoniste
+
+La rééducation orthophonique est au cœur de l'accompagnement. Elle est souvent longue, parfois sur plusieurs années, avec plusieurs séances par semaine. L'orthophoniste travaille les sons, le vocabulaire, la construction des phrases, la compréhension, et donne aux parents des idées pour prolonger le travail à la maison par le jeu.
+
+Les émotions, souvent malmenées
+
+Quand on ne trouve pas ses mots, la frustration monte vite. Les colères, les retraits ou les gestes brusques sont souvent une manière de dire ce qu'on n'arrive pas à formuler. Aider l'enfant à nommer ses émotions avec des images (une roue des émotions, des cartes) lui donne un moyen de s'exprimer sans exploser.
+
+À l'école
+
+L'enfant dysphasique a besoin de consignes écrites ou illustrées, de temps pour répondre, d'évaluations adaptées et souvent d'une aide humaine. Ces aménagements passent par un plan d'accompagnement personnalisé (PAP) ou un projet personnalisé de scolarisation (PPS) via la MDPH.
+
+Pour connaître les premiers signes et le parcours de diagnostic, lisez [la dysphasie chez l'enfant](/articles/la-dysphasie-chez-lenfant). Pour une vue d'ensemble, notre dossier [Troubles DYS](/articles/dys).
+
+
+=== la-dysphasie-chez-lenfant
+meta: Dysphasie chez l'enfant : les premiers signes selon l'âge, quand consulter et le parcours de diagnostic du trouble du langage.
+---
+Les premiers signes selon l'âge
+
+Chaque enfant parle à son rythme, mais certains repères doivent conduire à demander un avis :
+- vers 18 mois à 2 ans : très peu de mots, peu de gestes pour communiquer ;
+- vers 3 ans : pas encore de petites phrases de deux ou trois mots, un langage très difficile à comprendre pour les proches ;
+- vers 4 ans : des phrases très simplifiées, des mots déformés, des difficultés à comprendre les consignes ;
+- après 5 ans : un langage qui reste difficile à comprendre pour les personnes extérieures.
+
+Un retard de langage simple se rattrape souvent avec le temps et un peu d'aide. La dysphasie, elle, persiste malgré la rééducation. C'est l'évolution sur plusieurs mois qui permet de faire la différence.
+
+Quand consulter ?
+
+Dès que vous avez un doute, parlez-en au médecin de votre enfant ou à la PMI. Il vérifiera d'abord l'audition : une otite séreuse ou une baisse d'audition peut freiner le langage. Puis il prescrira un bilan orthophonique. N'attendez pas l'entrée à l'école : plus l'accompagnement commence tôt, mieux c'est.
+
+Le parcours de diagnostic
+
+Le diagnostic de trouble développemental du langage est posé par une équipe, à partir de plusieurs bilans :
+- le bilan orthophonique, qui évalue l'expression et la compréhension ;
+- l'examen médical et l'audition ;
+- un bilan psychologique, qui vérifie que les capacités de raisonnement non verbal sont préservées.
+
+Dans les situations complexes, le médecin peut orienter vers un centre de référence des troubles du langage et des apprentissages (CRTLA). Pour les enfants jusqu'à 12 ans, les plateformes de coordination et d'orientation (PCO) peuvent aussi coordonner les bilans.
+
+Après le diagnostic
+
+L'enfant suit une rééducation orthophonique régulière. À l'école, des aménagements sont mis en place, parfois avec une aide humaine (AESH) via la MDPH. Certains enfants avec des besoins importants sont accueillis en ULIS, une classe qui offre des temps en petit groupe tout en restant dans l'école.
+
+Et vous, parents
+
+L'attente des bilans, les rendez-vous répétés et l'inquiétude pèsent lourd. Vous n'êtes pas seuls. Découvrez comment [communiquer au quotidien avec un enfant dysphasique](/articles/la-dysphasie) et venez rencontrer d'autres familles lors de nos [rendez-vous à Préseau](/evenements).
+
+
+=== phobie-scolaire
+meta: Phobie scolaire : les signes, que faire dès les premiers jours, qui consulter et comment préparer le retour à l'école.
+---
+Que faire dès les premiers jours ?
+
+Quand un enfant ne parvient plus à aller à l'école, la tentation est forte de choisir entre deux extrêmes : le forcer coûte que coûte, ou le laisser à la maison en attendant que ça passe. Ni l'un ni l'autre ne règle la situation. Ce qui aide :
+- prendre sa souffrance au sérieux et le lui dire ;
+- prévenir rapidement l'école (enseignant, CPE, infirmière ou médecin scolaire) ;
+- consulter le médecin de l'enfant pour écarter une cause physique et obtenir un premier avis ;
+- garder un rythme de vie normal à la maison (lever, repas, coucher) ;
+- maintenir un lien avec l'école, même minime : récupérer les cours, garder contact avec un camarade.
+
+Qui consulter ?
+
+Le refus scolaire anxieux se soigne. Le médecin peut orienter vers un psychologue, un pédopsychiatre ou un centre médico-psychologique (CMP). Les thérapies cognitives et comportementales sont souvent proposées pour travailler sur l'anxiété, de façon progressive. Il est important aussi de chercher la cause : harcèlement, trouble des apprentissages, haut potentiel, trouble de l'attention, anxiété de séparation… Un bilan permet parfois de découvrir une difficulté passée inaperçue.
+
+Avec l'école
+
+L'école peut mettre en place des aménagements : emploi du temps allégé, retour progressif, lieu refuge dans l'établissement, personne référente. Quand l'enfant ne peut plus du tout se rendre en classe pour raison médicale, il existe des solutions temporaires, comme l'assistance pédagogique à domicile ou une inscription au CNED sur avis médical. Elles doivent rester une étape vers le retour, pas une fin en soi.
+
+Le retour, petit à petit
+
+La reprise se prépare par paliers : passer devant l'école, entrer dans la cour, assister à un cours qu'il aime, puis allonger les temps de présence. Chaque étape réussie compte. Les rechutes font partie du chemin, elles ne veulent pas dire que tout est perdu.
+
+Prendre soin de soi
+
+La phobie scolaire bouleverse toute la famille : culpabilité, regard des autres, organisation du travail. Parler avec d'autres parents qui l'ont traversée fait un bien immense.
+
+Notre article [Phobie scolaire : les solutions](/articles/phobie-scolaire-les-solutions) détaille les pistes concrètes. Nos [groupes de parole à Préseau](/evenements) accueillent les parents concernés, avec ou sans diagnostic.
+
+
+=== haut-potentiel
+mode: replace
+meta: Enfant HPI : comment l'identifier, le bilan psychologique, la scolarité, la double exceptionnalité et le rôle des parents.
+---
+Comment savoir si mon enfant est HPI ?
+
+Seul un bilan psychologique permet de parler de haut potentiel. Il est réalisé par un psychologue, avec un test d'efficience intellectuelle adapté à l'âge (le WISC pour les enfants de 6 à 16 ans). On parle de HPI lorsque l'indice global est très supérieur à la moyenne, généralement à partir de 130. Mais le chiffre ne dit pas tout : le psychologue regarde surtout l'équilibre entre les différentes capacités et la façon dont l'enfant raisonne.
+
+Faire un bilan n'est pas une obligation. Il devient utile quand l'enfant va mal, s'ennuie au point de décrocher, se sent différent ou que l'école ne sait pas comment l'aider.
+
+À l'école
+
+Un enfant HPI n'est pas forcément un bon élève. Certains apprennent si vite qu'ils n'ont jamais appris à apprendre, et se heurtent au premier vrai obstacle au collège. D'autres s'ennuient, rêvent, se mettent en retrait. Plusieurs réponses existent :
+- l'enrichissement : approfondir, proposer des défis, des projets ;
+- l'accélération : sauter une classe, quand l'enfant est prêt sur le plan émotionnel et social ;
+- un plan d'accompagnement personnalisé (PAP) si des difficultés d'apprentissage s'ajoutent.
+
+L'important est d'en parler avec l'équipe enseignante, bilan en main.
+
+La double exceptionnalité
+
+Un enfant peut être HPI et avoir aussi un TDAH, un trouble DYS ou un trouble anxieux. On parle de double exceptionnalité. Les deux se masquent mutuellement : l'intelligence compense le trouble, le trouble cache l'intelligence. Ces enfants sont souvent repérés tard. Si votre enfant semble brillant à l'oral mais s'effondre à l'écrit, pensez-y.
+
+Le rôle des parents
+
+- Répondre aux questions, ou chercher les réponses ensemble.
+- Nourrir la curiosité avec des sorties, des livres, des activités variées.
+- Accueillir les émotions intenses sans les minimiser.
+- Rappeler que l'erreur fait partie de l'apprentissage.
+- Ne pas résumer l'enfant à son intelligence : il reste un enfant de son âge.
+
+Pour aller plus loin
+
+Lisez [Haut potentiel HPI / HPE](/articles/haut-potentiel-hpihpe) sur la vie émotionnelle, [l'ennui chez l'enfant HPI](/articles/lennui-chez-le-hpi) et [un témoignage de parcours HPI](/articles/hpi-histoire-de-vie).
+
+
+=== haut-potentiel-hpihpe
+meta: HPI et HPE : la vie émotionnelle des enfants à haut potentiel, le sentiment de décalage, et comment les aider à apprivoiser leur sensibilité au quotidien.
+---
+HPI, HPE : de quoi parle-t-on ?
+
+HPI signifie haut potentiel intellectuel. Il se mesure avec un bilan psychologique. HPE, pour haut potentiel émotionnel, est un terme employé par certains professionnels pour décrire une sensibilité et une intelligence émotionnelle très développées. Ce n'est pas un diagnostic reconnu, mais il met des mots sur ce que vivent beaucoup de familles : chez ces enfants, la tête et le cœur vont très vite, et pas toujours au même rythme.
+
+Un décalage qui se vit tous les jours
+
+Un enfant HPI peut raisonner comme un adolescent sur un sujet qui le passionne, et réagir comme un enfant de son âge, ou plus jeune, face à une frustration. On parle de dyssynchronie. Il peut aussi se sentir à part avec les enfants de son âge, ne pas comprendre leurs jeux, préférer la compagnie des adultes, et en souffrir.
+
+Des émotions puissantes
+
+La joie, l'injustice, la tristesse ou la peur sont vécues intensément. Une remarque anodine peut blesser profondément, une injustice dans la cour empêcher de dormir. Les grandes questions (la mort, l'univers, le sens de la vie) arrivent parfois très tôt et peuvent angoisser.
+
+Comment l'aider ?
+
+- Nommer les émotions avec lui, sans les juger : « Tu es très en colère parce que c'est injuste. »
+- Lui apprendre à repérer les signaux de son corps avant l'explosion.
+- Lui donner des outils pour se calmer : respiration, coin calme, dessin, mouvement.
+- Répondre honnêtement à ses questions existentielles, avec des mots de son âge.
+- L'aider à trouver des amis qui lui ressemblent : clubs, activités autour de ses passions.
+- Valoriser sa sensibilité comme une force, tout en l'aidant à s'en protéger.
+
+Quand demander de l'aide ?
+
+Si l'anxiété, les crises ou l'isolement prennent trop de place, un psychologue qui connaît le haut potentiel peut accompagner l'enfant et ses parents. Les ateliers de [sophrologie et de gestion des émotions](/articles/les-ateliers-sophrologiegestion-des-emotions) proposés par l'association sont aussi une belle porte d'entrée.
+
+Pour comprendre l'identification et la scolarité, lisez notre dossier [Haut potentiel](/articles/haut-potentiel). Et sur la sensibilité, [l'hypersensibilité chez l'enfant](/articles/lhypersensibilite-chez-lenfant).
+
+
+=== lennui-chez-le-hpi
+meta: L'ennui à l'école chez l'enfant HPI : pourquoi il épuise, comment le repérer et des idées pour nourrir sa curiosité.
+---
+Pourquoi l'ennui pèse autant
+
+Pour un enfant qui comprend vite, attendre que la notion soit expliquée trois fois peut être une vraie épreuve. L'ennui n'est pas un simple désintérêt : à force, l'enfant peut perdre l'habitude de faire des efforts, décrocher, ou se convaincre que l'école « ne sert à rien ». Certains deviennent agités, d'autres se réfugient dans la rêverie. Chez les enfants qui ont aussi un trouble de l'attention, l'ennui aggrave encore les difficultés de concentration.
+
+Les signes à la maison
+
+- Des colères ou des larmes au retour de l'école, sans raison apparente.
+- Un refus des devoirs jugés trop faciles ou répétitifs.
+- Des maux de ventre le dimanche soir.
+- Un enfant qui dit qu'il « n'apprend rien ».
+- Une curiosité débordante à la maison qui contraste avec l'école.
+
+En parler avec l'enseignant
+
+Un échange calme avec l'enseignant permet souvent de trouver des solutions simples, surtout si un bilan a été fait :
+- proposer des exercices d'approfondissement plutôt que des exercices supplémentaires du même type ;
+- confier un petit projet ou un exposé sur un thème qui le passionne ;
+- lui permettre de lire quand il a terminé ;
+- lui donner un rôle de tuteur, avec mesure ;
+- envisager, si besoin, un plan d'accompagnement ou un saut de classe.
+
+À la maison, nourrir la curiosité
+
+- Des livres, documentaires et podcasts sur ses sujets du moment.
+- Des jeux de stratégie et de logique en famille.
+- Des sorties : musées, ateliers scientifiques, nature.
+- Des activités où il peut apprendre à persévérer : musique, sport, échecs.
+- Et aussi du temps libre : savoir s'ennuyer un peu à la maison aide à créer et à rêver.
+
+Apprendre à faire des efforts
+
+Un enfant HPI qui a toujours réussi sans travailler doit apprendre que l'effort et l'erreur sont normaux. Valorisez le chemin plutôt que le résultat, et racontez vos propres erreurs.
+
+Pour mieux comprendre ce fonctionnement, lisez notre dossier [Haut potentiel](/articles/haut-potentiel) et [HPI / HPE et émotions](/articles/haut-potentiel-hpihpe).
+
+
+=== lhypersensibilite-chez-lenfant
+meta: L'hypersensibilité chez l'enfant : ce que c'est, les liens avec le TDAH et le haut potentiel, et des gestes simples pour l'aider.
+---
+Un trait de caractère, pas une maladie
+
+L'hypersensibilité n'est pas un diagnostic. C'est une façon d'être au monde. La psychologue américaine Elaine Aron, qui a beaucoup étudié ce trait, estime qu'il concerne environ une personne sur cinq. Les enfants hypersensibles perçoivent plus, ressentent plus fort et ont besoin de plus de temps pour digérer ce qu'ils vivent.
+
+Elle se retrouve souvent chez les enfants à [haut potentiel](/articles/haut-potentiel), avec un [TDAH](/articles/tdah-tda) ou un trouble du spectre de l'autisme, mais elle existe aussi seule.
+
+Sensibilité émotionnelle et sensibilité sensorielle
+
+Il est utile de distinguer deux choses :
+- la sensibilité émotionnelle : émotions intenses, empathie, besoin d'harmonie ;
+- la sensibilité sensorielle : bruits, étiquettes des vêtements, lumières, foule, textures des aliments.
+
+Quand les réactions sensorielles sont très fortes et gênent le quotidien (habillage impossible, crises dans les lieux bruyants, alimentation très restreinte), un avis médical et un bilan en ergothérapie ou en psychomotricité peuvent aider à comprendre et à adapter l'environnement.
+
+Au quotidien, ce qui aide
+
+- Anticiper : prévenir des changements, expliquer le programme de la journée.
+- Aménager un coin calme où il peut se retirer, sans que ce soit une punition.
+- Prévoir des temps de pause après l'école, avant les devoirs.
+- Mettre des mots sur les émotions : « Tu as l'air submergé, tu veux qu'on souffle ensemble ? »
+- Accepter certaines adaptations : casque anti-bruit, vêtements sans étiquette.
+- Éviter les « tu es trop sensible » : il ne l'a pas choisi.
+
+À l'école
+
+Un enfant hypersensible peut être bouleversé par une remarque, une dispute ou le bruit de la cantine. Prévenir l'enseignant de son fonctionnement permet souvent d'éviter des malentendus. Une place au calme, une consigne donnée avec douceur ou un mot rassurant font une grande différence.
+
+Une force à apprivoiser
+
+Empathie, créativité, intuition, sens de la justice : l'hypersensibilité est aussi une richesse. L'enjeu est d'aider l'enfant à s'en protéger sans s'éteindre. Les [ateliers de gestion des émotions](/articles/les-ateliers-sophrologiegestion-des-emotions) de l'association, en binôme parent-enfant, sont pensés pour cela.
+
+
+=== limportance-du-jeu-chez-lenfant
+meta: Le jeu, premier outil d'apprentissage : ce qu'il développe et comment jouer avec un enfant TDAH, DYS ou HPI.
+---
+Ce que le jeu développe
+
+En jouant, l'enfant ne « perd pas son temps » : il travaille. Selon les jeux, il développe :
+- la motricité : courir, grimper, construire, découper ;
+- le langage : raconter, inventer des histoires, négocier les règles ;
+- la pensée : anticiper, résoudre un problème, faire des stratégies ;
+- les émotions : perdre, attendre son tour, gérer la frustration ;
+- le lien aux autres : coopérer, partager, se faire des amis.
+
+Le jeu libre, celui que l'enfant invente sans adulte et sans objectif, est particulièrement précieux. C'est là qu'il expérimente, se trompe sans risque et devient acteur.
+
+Jouer avec un enfant atypique
+
+Le jeu est aussi un formidable outil pour les enfants qui fonctionnent différemment, à condition d'adapter un peu :
+- pour un enfant TDAH : des parties courtes, des jeux de rapidité et de mouvement, des règles simples affichées ;
+- pour un enfant dyspraxique : des jeux de construction à grosses pièces, de la pâte à modeler, du jeu de ballon sans compétition ;
+- pour un enfant dysphasique : des jeux de mime, de cartes illustrées, de rôle, où l'on communique aussi avec le corps ;
+- pour un enfant HPI : des jeux de stratégie, de logique, des énigmes, mais aussi des jeux où l'on peut perdre en riant ;
+- pour un enfant anxieux ou hypersensible : des jeux coopératifs, où l'on gagne ou perd ensemble.
+
+Les jeux de société, un vrai entraînement
+
+Attendre son tour, respecter une règle, accepter de perdre, se concentrer quelques minutes : les jeux de société entraînent en douceur les fonctions que l'école sollicite. Jouer en famille, c'est aussi offrir un moment où l'enfant n'est ni évalué ni corrigé.
+
+Et les écrans ?
+
+Les écrans ne remplacent pas le jeu avec le corps et avec les autres. Pour les plus jeunes surtout, mieux vaut des temps courts, choisis, et partagés avec un adulte. Pour un enfant agité ou qui dort mal, éviter les écrans le soir aide beaucoup.
+
+Jouer ensemble, sans objectif
+
+Le conseil le plus précieux reste celui du début : laissez votre enfant mener le jeu. Dix minutes par jour où vous le suivez, sans corriger ni enseigner, renforcent la complicité et la confiance.
+
+L'association propose aussi des activités où l'on apprend en bougeant, comme le [Brain Ball](/articles/le-brain-ball). Retrouvez les prochaines dates dans nos [rendez-vous](/evenements).
+
+
+=== deverloppement-personnel
+meta: Confiance en soi chez l'enfant atypique : pourquoi elle est fragile et des gestes bienveillants pour l'aider à croire en lui.
+---
+Pourquoi la confiance est souvent fragile
+
+Un enfant atypique entend beaucoup de remarques : « concentre-toi », « dépêche-toi », « tu pourrais faire mieux ». À force, même avec des parents bienveillants, il finit par croire qu'il est le problème. Beaucoup d'enfants TDAH, DYS ou à haut potentiel se décrivent comme « nuls » alors qu'ils déploient chaque jour des efforts considérables. Prendre soin de leur estime de soi est aussi important que les rééducations.
+
+Ce qui nourrit la confiance
+
+- Féliciter l'effort et la stratégie, pas seulement la note : « Tu as relu ta phrase, bravo. »
+- Être précis : un compliment concret vaut plus qu'un « c'est bien » général.
+- Repérer ses forces et lui en parler souvent : sa créativité, son humour, sa générosité, ses passions.
+- Lui confier de vraies responsabilités à sa mesure.
+- Séparer l'enfant de son comportement : « Ce que tu as fait n'est pas acceptable, mais je t'aime. »
+- Réparer après un conflit : s'excuser quand on s'est emporté, c'est lui apprendre que l'erreur est humaine.
+
+Changer de regard sur la différence
+
+Expliquer à l'enfant comment fonctionne son cerveau, avec des mots simples, l'aide énormément. Comprendre qu'il n'est pas paresseux mais qu'il a un trouble de l'attention, ou que la lecture est difficile à cause de la dyslexie, lui enlève un poids. Les livres jeunesse sur la différence peuvent ouvrir la discussion.
+
+Et vous, parents
+
+La question posée plus haut n'est pas anodine. Nos histoires d'enfance influencent notre façon d'éduquer. Beaucoup de parents d'enfants atypiques se reconnaissent dans les difficultés de leur enfant et découvrent leur propre fonctionnement. Prendre soin de soi, s'accorder de la douceur, demander de l'aide : c'est aussi montrer l'exemple.
+
+Des lieux pour en parler
+
+À l'Association Indigo, les [groupes de parole](/evenements) permettent d'échanger sans jugement avec d'autres parents. Les [ateliers parent-enfant de gestion des émotions](/articles/les-ateliers-sophrologiegestion-des-emotions) aident aussi à renforcer le lien et la confiance.
+
+
+=== les-ateliers-sophrologiegestion-des-emotions
+meta: Ateliers de sophrologie parent-enfant à Préseau : apprendre ensemble à reconnaître et apaiser ses émotions, pour les familles atypiques.
+---
+Des ateliers pensés pour les familles atypiques
+
+Avec un enfant TDAH, DYS, TSA, HPI ou hypersensible, les émotions peuvent déborder vite, pour l'enfant comme pour le parent. Les ateliers de sophrologie ludique proposés par l'Association Indigo offrent un moment pour souffler ensemble, dans un cadre sécurisant, bienveillant et sans jugement.
+
+Ils sont animés par Maïté, infirmière et sophrologue, et elle-même maman d'enfant atypique. Elle connaît de l'intérieur l'intensité de ce quotidien.
+
+Comment se passe une séance ?
+
+Les ateliers se déroulent en groupe, en binôme parent-enfant. À travers des exercices ludiques et adaptés, chacun apprend à reconnaître, accueillir et apaiser ses émotions :
+- des exercices de respiration, faciles à refaire à la maison ;
+- de la détente corporelle, pour relâcher les tensions ;
+- des mouvements doux ;
+- des visualisations positives, pour se créer des images ressources.
+
+Ce que les ateliers apportent
+
+Chaque séance vise à :
+- mieux comprendre ses propres émotions et celles de son enfant ;
+- mettre en place des outils simples et concrets pour le quotidien, adaptés aux besoins de chacun ;
+- retrouver de la sérénité en famille et à l'école ;
+- renforcer le lien parent-enfant grâce à un moment de partage et de lâcher-prise ;
+- favoriser l'écoute, la confiance et la communication autour des émotions.
+
+La sophrologie, c'est quoi ?
+
+La sophrologie est une méthode de relaxation qui associe respiration, détente musculaire et visualisation. Elle ne remplace pas un suivi médical ou une rééducation, mais elle complète utilement l'accompagnement des enfants atypiques en leur donnant des outils pour gérer le stress et les émotions.
+
+Comment participer ?
+
+Les dates des prochains ateliers sont publiées dans nos [rendez-vous](/evenements) et dans le groupe Facebook des parents. Pour toute question, vous pouvez aussi nous [écrire](/contact).
+
+Sur le même thème, lisez [l'hypersensibilité chez l'enfant](/articles/lhypersensibilite-chez-lenfant) et [HPI / HPE et émotions](/articles/haut-potentiel-hpihpe).
+
+
+=== le-brain-ball
+meta: Le Brain Ball : balles, rythme et musique pour travailler concentration et coordination. Pourquoi il plaît aux enfants TDAH, DYS et TSA.
+---
+Pourquoi le Brain Ball plaît aux enfants atypiques
+
+Beaucoup d'enfants atypiques ont besoin de bouger pour se concentrer. Le Brain Ball part de ce besoin au lieu de le combattre : on apprend avec le corps. Les familles qui y participent avec l'association décrivent des enfants plus détendus, fiers de réussir un enchaînement, et un moment joyeux partagé avec leurs parents.
+
+Il peut intéresser en particulier :
+- les enfants TDAH, qui ont besoin de mouvement et de défis courts ;
+- les enfants dyspraxiques, qui travaillent la coordination sans la pression de l'écrit ;
+- les enfants avec un trouble du spectre de l'autisme, grâce au rythme régulier et prévisible ;
+- les enfants anxieux ou hypersensibles, qui se recentrent sur le geste et la musique.
+
+Le Brain Ball ne remplace pas une rééducation en psychomotricité ou en ergothérapie, mais il en est un complément ludique.
+
+Comment se passe une séance ?
+
+Une séance commence par des exercices simples : faire rebondir une balle, la rattraper, la passer d'une main à l'autre. Puis on ajoute le rythme de la musique, un partenaire, une deuxième balle, des anneaux. La difficulté augmente progressivement, chacun avance à son niveau. L'erreur fait partie du jeu : la balle tombe, on rit, on recommence.
+
+Les séances se font en groupe, parents et enfants ensemble. C'est aussi l'occasion de rencontrer d'autres familles.
+
+Ce que l'enfant travaille sans s'en rendre compte
+
+- L'attention : suivre la balle, le rythme et la consigne en même temps.
+- La coordination des deux mains et du regard.
+- La latéralité et le repérage dans l'espace.
+- La patience et la persévérance.
+- La confiance en soi, à chaque nouvel enchaînement réussi.
+
+À la maison
+
+Quelques balles qui rebondissent bien et une musique rythmée suffisent pour prolonger le plaisir : se lancer la balle en comptant, la faire rebondir sur le temps, alterner main droite et main gauche.
+
+Voir l'activité en images
+
+Découvrez [le retour en images de la séance du 17 février 2026](/articles/activite-brain-ball) à Préseau. Les prochaines séances sont annoncées dans nos [rendez-vous](/evenements).
+
+
+=== activite-brain-ball
+mode: replace
+meta: Retour en images sur la séance de Brain Ball du 17 février 2026 à Préseau : parents et enfants réunis autour du jonglage rythmé.
+---
+« Bouge ton corps pour brancher ton cerveau ! »
+
+Le 17 février 2026, l'Association Indigo a réuni parents et enfants à Préseau pour une séance de Brain Ball. Balles qui rebondissent, passes en musique, enchaînements de plus en plus difficiles : petits et grands ont joué ensemble pendant toute la séance.
+
+Une séance en famille
+
+Ce qui fait la richesse de ces moments, c'est de les vivre ensemble. Les parents ne regardent pas depuis le bord : ils lancent, rattrapent, ratent et recommencent avec leurs enfants. Pour un enfant qui entend souvent qu'il « ne tient pas en place », découvrir une activité où le mouvement est la règle change tout.
+
+Ce qu'on y a fait
+
+- Des exercices de rebond pour se mettre en route, chacun à son rythme.
+- Des passes à deux, parent et enfant, sur le tempo de la musique.
+- Des enchaînements en groupe, où il faut regarder les autres et s'ajuster.
+- Beaucoup de rires quand les balles s'échappent.
+
+Le Brain Ball, en quelques mots
+
+Le Brain Ball est une méthode ludique et sensorimotrice, inspirée du jonglage de rebond. Elle associe le mouvement, le rythme et la réflexion pour travailler la concentration, la coordination et le bien-être. Pour tout comprendre de la méthode et de ce qu'elle apporte aux enfants TDAH, DYS ou TSA, lisez notre fiche [Le Brain Ball](/articles/le-brain-ball).
+
+Un grand merci
+
+Merci aux familles présentes pour leur énergie, et à la commune de Préseau pour son accueil. Ces moments sont possibles grâce aux adhérents et aux bénévoles de l'association.
+
+Pourquoi bouger aide à apprendre
+
+Pour beaucoup d'enfants avec un TDAH, un trouble DYS ou un TSA, rester immobile demande un effort énorme. Le Brain Ball renverse la logique : ici, c'est en bougeant qu'on se concentre. Suivre la balle des yeux, garder le rythme, attendre le bon moment pour lancer : sans s'en rendre compte, l'enfant entraîne son attention et sa coordination, et repart fier de ce qu'il a réussi.
+
+Les prochaines séances
+
+Vous souhaitez participer à la prochaine séance ? Les dates sont publiées dans nos [rendez-vous](/evenements) et dans le groupe Facebook des parents. L'adhésion à l'association est de 5 euros par an.
+
+
+=== dossier-mdph
+meta: Dossier MDPH enfant : à quoi sert le projet de vie, comment le rédiger, les aides possibles (AEEH, AESH, PCH) et les délais.
+---
+À quoi sert le projet de vie ?
+
+Dans le formulaire de demande à la MDPH, une partie est réservée à la vie quotidienne et aux attentes de la famille. C'est ce qu'on appelle souvent le projet de vie. Il n'est pas obligatoire, mais il est très précieux : les professionnels qui étudient le dossier ne connaissent pas votre enfant. Les bilans médicaux décrivent un trouble ; le projet de vie raconte ce que ce trouble change, concrètement, dans la vie de votre enfant et de votre famille.
+
+Les aides que l'on peut demander
+
+Selon la situation, la MDPH peut accorder :
+- l'allocation d'éducation de l'enfant handicapé (AEEH) et ses éventuels compléments, pour compenser les frais et la réduction d'activité des parents ;
+- la prestation de compensation du handicap (PCH), dans certaines situations ;
+- une aide humaine à l'école (AESH) et du matériel pédagogique adapté, dans le cadre d'un projet personnalisé de scolarisation (PPS) ;
+- une orientation scolaire, par exemple en ULIS ;
+- une carte mobilité inclusion, selon les besoins.
+
+Comment rédiger le projet de vie ?
+
+Quelques conseils de parents qui sont passés par là :
+- décrivez une journée type, du lever au coucher, avec les difficultés de chaque moment ;
+- parlez des mauvais jours, pas seulement des bons : c'est ce qui montre les besoins ;
+- donnez des exemples précis plutôt que des généralités ;
+- expliquez ce qui est déjà en place (rééducations, aménagements) et ce que cela coûte en temps et en argent ;
+- dites clairement ce que vous demandez et pourquoi ;
+- parlez aussi des progrès et des réussites : ils montrent ce qui fonctionne.
+
+Le modèle de lettre de cette fiche vous donne une trame. La [deuxième partie](/articles/dossier-mdph-etablir-un-projet-de-vie-partie-2) détaille son contenu.
+
+Les pièces à joindre
+
+Le dossier comprend le formulaire de demande, un certificat médical de moins d'un an, les justificatifs d'identité et de domicile, et tous les bilans utiles. Pour un enfant scolarisé, le GEVA-Sco, rempli avec l'école, est essentiel. Notre [mémo dossier MDPH](/articles/memo-dossier-mdph) liste tout ce qu'il ne faut pas oublier.
+
+Et après ?
+
+La MDPH dispose de quatre mois pour répondre. Sans réponse dans ce délai, la demande est considérée comme refusée. En cas de désaccord, un recours est possible dans les deux mois qui suivent la décision.
+
+Ces démarches sont longues et parfois décourageantes. N'hésitez pas à en parler lors de nos [groupes de parole](/evenements) : d'autres parents pourront partager leur expérience.
+
+
+=== dossier-mdph-etablir-un-projet-de-vie-partie-2
+meta: Projet de vie MDPH, partie 2 : ce qu'il faut écrire, rubrique par rubrique, avec des exemples de formulations concrètes.
+---
+Le modèle de lettre (partie 2)
+
+L'affiche ci-dessous reprend le début du modèle de projet de vie : vos coordonnées, celles de la MDPH de votre département, l'objet de la lettre et une première phrase de présentation de votre enfant. Voici comment construire la suite, rubrique par rubrique. La [première partie](/articles/dossier-mdph) explique à quoi sert ce document et quelles aides demander.
+
+Présenter votre enfant
+
+Commencez par qui il est, au-delà de ses difficultés : son âge, sa classe, ce qu'il aime, ses qualités. Puis indiquez les diagnostics posés, les professionnels qui le suivent et depuis quand.
+
+Exemple : « Lucas a 8 ans, il est en CE2. C'est un enfant curieux et drôle, passionné de dinosaures. Un TDAH et une dyslexie ont été diagnostiqués en 2025. Il est suivi en orthophonie deux fois par semaine. »
+
+Décrire les difficultés au quotidien
+
+C'est le cœur du document. Passez en revue les moments de la journée et les domaines de vie :
+- l'autonomie : se lever, s'habiller, se laver, manger, préparer ses affaires ;
+- l'école : lecture, écriture, attention, relations avec les autres, fatigue ;
+- les devoirs : durée, aide nécessaire, conflits ;
+- la vie sociale : amis, activités, sorties ;
+- les émotions et le comportement : crises, anxiété, sommeil ;
+- la sécurité : rue, dangers, besoin de surveillance.
+
+Pour chaque point, soyez concret : « Il faut lui rappeler chaque étape de l'habillage, cela prend 40 minutes chaque matin. »
+
+Expliquer l'impact sur la famille
+
+Les rendez-vous de rééducation, le temps passé aux devoirs, la réduction du temps de travail d'un parent, les frais non remboursés (psychomotricité, ergothérapie, bilans) : tout cela compte et peut justifier une aide financière.
+
+Formuler vos demandes
+
+Terminez en indiquant clairement ce que vous demandez (AEEH, aide humaine à l'école, matériel, orientation) et ce que cela permettrait à votre enfant. Reliez chaque demande à une difficulté décrite plus haut.
+
+Avant d'envoyer
+
+- Faites relire le projet de vie par une personne qui connaît bien votre enfant.
+- Gardez une copie de tout le dossier.
+- Vérifiez la liste des pièces avec notre [mémo dossier MDPH](/articles/memo-dossier-mdph).
+
+Vous avez besoin d'aide pour rédiger ? Les parents de l'association échangent souvent sur ces démarches lors des [groupes de parole](/evenements) et dans le groupe Facebook.
+
+
+=== memo-dossier-mdph
+meta: Mémo dossier MDPH : les pièces à réunir pour un enfant (certificat médical, bilans, GEVA-Sco) et des astuces pour ne rien oublier.
+---
+La liste des pièces à réunir
+
+Pour une demande concernant un enfant, le dossier comprend en général :
+- le formulaire de demande à la MDPH, complété et signé ;
+- le certificat médical, rempli par le médecin et daté de moins d'un an ;
+- une copie d'une pièce d'identité de l'enfant et du représentant légal ;
+- un justificatif de domicile ;
+- si besoin, le jugement concernant l'autorité parentale ou la garde ;
+- les comptes-rendus des bilans : orthophonie, psychomotricité, ergothérapie, neuropsychologie, orthoptie, psychologie ;
+- le GEVA-Sco, pour un enfant scolarisé ;
+- le projet de vie, fortement conseillé ;
+- tout document utile : courriers de l'école, PAP, devis de matériel.
+
+Le GEVA-Sco, à ne pas oublier
+
+Le GEVA-Sco décrit la scolarité de l'enfant et ses besoins à l'école. Il est rempli avec l'équipe éducative : lors d'une réunion d'équipe éducative pour une première demande, ou d'une équipe de suivi de la scolarisation pour un renouvellement. Demandez cette réunion à l'école suffisamment tôt, car elle peut prendre du temps à organiser.
+
+S'organiser pour ne pas s'épuiser
+
+Les démarches administratives pèsent lourd dans la charge mentale des parents. Quelques astuces partagées par les familles de l'association :
+- un classeur unique, avec un intercalaire par professionnel ;
+- un dossier sur l'ordinateur où tout est scanné ;
+- un tableau avec les dates des bilans, de la demande et des échéances de renouvellement ;
+- des copies de tout ce qui est envoyé ;
+- une demande de renouvellement à anticiper plusieurs mois avant la fin des droits.
+
+Déposer et suivre la demande
+
+Selon les départements, le dossier se dépose en ligne, par courrier ou sur place. Gardez une preuve de dépôt. La MDPH dispose de quatre mois pour répondre ; sans réponse, la demande est considérée comme refusée. Si la décision ne vous convient pas, un recours est possible dans les deux mois.
+
+Pour écrire le projet de vie, appuyez-vous sur notre [modèle de projet de vie](/articles/dossier-mdph) et sa [deuxième partie](/articles/dossier-mdph-etablir-un-projet-de-vie-partie-2).
+
+Vous n'êtes pas seuls face à ces démarches : nos [groupes de parole](/evenements) sont l'occasion de poser vos questions à des parents qui les ont déjà traversées.

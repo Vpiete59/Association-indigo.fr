@@ -5,7 +5,7 @@ import { ArrowRight, Search, X, Clock } from 'lucide-react';
 import { supabase, type Article } from '../lib/supabase';
 import SEO from '../components/SEO';
 import { PROFILES, cleanTitle, categoryLabel, type ProfileKey } from '../atelier/data';
-import { readingMinutes } from '../atelier/articleBody';
+import { readingMinutes, articleText, INLINE_LINK } from '../atelier/articleBody';
 import { Tape, PAPER, PROFILE_PAPER, articleHref } from '../atelier/kit';
 
 type Filter = 'tout' | ProfileKey | 'famille';
@@ -27,7 +27,7 @@ const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,
 const TILT = [-1.5, 1, -0.5, 1.5, -1, 0.5];
 
 function excerpt(a: Article) {
-  const raw = (a.subtitle || a.paragraph_1 || '').replace(/[\p{Extended_Pictographic}️]/gu, '').replace(/\s+/g, ' ').trim();
+  const raw = (a.subtitle || articleText(a).replace(INLINE_LINK, '$1') || '').replace(/[\p{Extended_Pictographic}️]/gu, '').replace(/\s+/g, ' ').trim();
   return raw.length > 150 ? raw.slice(0, raw.lastIndexOf(' ', 150)) + '…' : raw;
 }
 
@@ -69,7 +69,7 @@ export default function ArticlesListPage() {
   const results = useMemo(() => {
     const q = norm(query.trim());
     // Une recherche porte sur toute la bibliothèque, quel que soit l'onglet ouvert
-    if (q) return articles.filter((a) => norm(`${a.title} ${a.subtitle || ''} ${a.paragraph_1 || ''}`).includes(q));
+    if (q) return articles.filter((a) => norm(`${a.title} ${a.subtitle || ''} ${articleText(a)}`).includes(q));
     let list = articles.filter((a) => matchesFilter(a, filter));
     // Le dossier principal du profil passe en tête
     if (profile) list = [...list.filter((a) => a.slug === profile.dossier), ...list.filter((a) => a.slug !== profile.dossier)];
@@ -135,7 +135,7 @@ export default function ArticlesListPage() {
                         <h2 className="mt-3 text-xl font-bold leading-snug group-hover:text-[var(--act)]">{cleanTitle(a.title)}</h2>
                         {excerpt(a) && <p className="mt-2 flex-1 text-[15px] font-semibold leading-relaxed text-[var(--ink-2)] line-clamp-3">{excerpt(a)}</p>}
                         <p className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--ink-2)]">
-                          <Clock size={15} aria-hidden /> {readingMinutes(a.paragraph_1)} min de lecture
+                          <Clock size={15} aria-hidden /> {readingMinutes(articleText(a))} min de lecture
                         </p>
                       </div>
                     </Link>

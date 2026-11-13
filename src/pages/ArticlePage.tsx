@@ -1,20 +1,41 @@
 // Page article « L'atelier » : une feuille blanche posée sur le tapis, pensée pour la lecture.
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight, Clock, Facebook, CalendarDays, ArrowRight } from 'lucide-react';
 import { supabase, type Article } from '../lib/supabase';
 import SEO, { clampDescription } from '../components/SEO';
 import { PROFILES, LINKS, useSiteData, cleanTitle, categoryLabel } from '../atelier/data';
-import { parseArticle, readingMinutes, type Block } from '../atelier/articleBody';
+import { parseArticle, readingMinutes, articleText, INLINE_LINK, type Block } from '../atelier/articleBody';
 import { Tape, Sparkle, CutLine, PAPER, PROFILE_PAPER, SPARK, articleHref } from '../atelier/kit';
 
 const BULLET_COLORS = [SPARK.orange, SPARK.indigo, SPARK.rouge];
+
+// Texte avec liens : [les troubles DYS](/articles/dys) -> lien interne, https://... -> nouvel onglet
+function Inline({ text }: { text: string }) {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  for (const m of text.matchAll(INLINE_LINK)) {
+    const [whole, label, href] = m;
+    const at = m.index ?? 0;
+    if (at > last) parts.push(text.slice(last, at));
+    parts.push(
+      href.startsWith('/') ? (
+        <Link key={at} to={href} className="font-bold text-[var(--act)] underline decoration-2 underline-offset-2 hover:text-[var(--ink)]">{label}</Link>
+      ) : (
+        <a key={at} href={href} target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--act)] underline decoration-2 underline-offset-2 hover:text-[var(--ink)]">{label}</a>
+      ),
+    );
+    last = at + whole.length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return <>{parts}</>;
+}
 
 function Body({ blocks }: { blocks: Block[] }) {
   return (
     <div className="text-[1.125rem] leading-[1.8] text-[#34325A]">
       {blocks.map((b, i) => {
-        if (b.type === 'lead') return <p key={i} className="text-[1.3rem] leading-[1.6] font-bold text-[var(--ink)]">{b.text}</p>;
+        if (b.type === 'lead') return <p key={i} className="text-[1.3rem] leading-[1.6] font-bold text-[var(--ink)]"><Inline text={b.text} /></p>;
         if (b.type === 'h2')
           return (
             <h2 key={i} id={b.id} className="scroll-mt-6 mt-14 mb-4 text-[1.65rem] sm:text-[1.85rem] font-extrabold leading-tight text-[var(--ink)]">
@@ -32,12 +53,12 @@ function Body({ blocks }: { blocks: Block[] }) {
               {b.items.map((it, k) => (
                 <li key={k} className="flex gap-3">
                   <Sparkle color={BULLET_COLORS[k % 3]} size={18} className="mt-[0.45em] shrink-0" />
-                  <span>{it}</span>
+                  <span><Inline text={it} /></span>
                 </li>
               ))}
             </ul>
           );
-        return <p key={i} className="mt-5 first:mt-0">{b.text}</p>;
+        return <p key={i} className="mt-5 first:mt-0"><Inline text={b.text} /></p>;
       })}
     </div>
   );
@@ -106,7 +127,7 @@ export default function ArticlePage() {
     );
 
   const title = cleanTitle(article.title);
-  const rawDescription = (article.meta_description || article.subtitle || article.paragraph_1 || `Découvrez notre dossier complet sur ${title}.`)
+  const rawDescription = (article.meta_description || article.subtitle || articleText(article).replace(INLINE_LINK, '$1') || `Découvrez notre dossier complet sur ${title}.`)
     .replace(/\s+/g, ' ')
     .trim();
   const seoDescription = rawDescription.length < 110
@@ -143,7 +164,8 @@ export default function ArticlePage() {
 
   const profile = PROFILES.find((p) => p.category === article.category || p.dossier === article.slug);
   const paper = profile ? PROFILE_PAPER[profile.key] : PAPER.menthe;
-  const blocks = parseArticle(article.paragraph_1);
+  const fullText = articleText(article);
+  const blocks = parseArticle(fullText);
   const toc = blocks
     .filter((b): b is Extract<Block, { type: 'h2' }> => b.type === 'h2')
     .filter((h, i, all) => all.findIndex((x) => x.text.toLowerCase() === h.text.toLowerCase()) === i);
@@ -179,7 +201,7 @@ export default function ArticlePage() {
           <h1 className="mt-6 text-[clamp(2.2rem,4.6vw,3.7rem)] font-extrabold leading-[1.04]">{title}</h1>
           {article.subtitle && <p className="mt-4 text-xl font-semibold text-[var(--ink-2)] max-w-[40rem]">{article.subtitle}</p>}
           <p className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[15px] font-bold text-[var(--ink-2)]">
-            <span className="inline-flex items-center gap-1.5"><Clock size={16} aria-hidden /> {readingMinutes(article.paragraph_1)} min de lecture</span>
+            <span className="inline-flex items-center gap-1.5"><Clock size={16} aria-hidden /> {readingMinutes(fullText)} min de lecture</span>
             <span className="inline-flex items-center gap-1.5"><CalendarDays size={16} aria-hidden /> Mis à jour le {updated}</span>
           </p>
         </div>

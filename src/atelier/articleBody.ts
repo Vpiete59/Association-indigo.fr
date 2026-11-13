@@ -1,4 +1,4 @@
-// Transforme le texte brut d'un article (paragraph_1) en blocs structurés :
+// Transforme le texte brut d'un article (paragraph_1 puis paragraph_2) en blocs structurés :
 // intertitres (H2), paragraphes et listes. Les articles sont saisis dans l'admin
 // sans mise en forme : un intertitre y est une ligne courte sans point final ou
 // terminée par « ... », une puce commence par « • » ou « - ».
@@ -24,6 +24,7 @@ function slugify(t: string) {
 function looksLikeHeading(t: string) {
   const words = t.split(/\s+/).length;
   if (words < 2 || t.length > 110) return false;
+  if (/^sources?\s*:/i.test(t)) return false; // « source : … » reste une mention, pas un intertitre
   if (/(\.\.\.|…)$/.test(t)) return true; // « Le cerveau TDAH et le filtre verbal... »
   if (/\?$/.test(t)) return t.length <= 90; // « Comment l'aider ? »
   return !/[.!:;,]$/.test(t) && t.length <= 80;
@@ -40,7 +41,12 @@ function tidyHeading(t: string) {
 }
 
 export function parseArticle(raw: string): Block[] {
-  const lines = (raw || '').replace(/\r/g, '').split('\n').map((l) => l.trim());
+  const lines = (raw || '')
+    .replace(/\r/g, '')
+    .split('\n')
+    .map((l) => l.trim())
+    // Les séparateurs « --- » ou « ⸻ » des publications Facebook deviennent des respirations
+    .map((l) => (/^(?:[-–—_*=~\s]{3,}|[⸻—\s]+)$/.test(l) ? '' : l));
   const groups: string[][] = [];
   let cur: string[] = [];
   for (const l of lines) {
@@ -90,7 +96,18 @@ export function parseArticle(raw: string): Block[] {
   return blocks;
 }
 
+// Texte complet d'un article : introduction (paragraph_1) puis développement (paragraph_2)
+export function articleText(a: { paragraph_1?: string | null; paragraph_2?: string | null }) {
+  return [a.paragraph_1, a.paragraph_2].filter((t) => t && t.trim()).join('\n\n');
+}
+
+export function wordCount(raw: string) {
+  return (raw || '').split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+}
+
+// Liens dans le texte : [texte du lien](/articles/dys) ou [texte](https://...)
+export const INLINE_LINK = /\[([^\]]+)\]\(((?:\/|https?:\/\/)[^)\s]+)\)/g;
+
 export function readingMinutes(raw: string) {
-  const words = (raw || '').split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / 200));
+  return Math.max(1, Math.round(wordCount(raw) / 200));
 }

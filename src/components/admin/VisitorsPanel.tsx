@@ -1,17 +1,20 @@
-import { useEffect, useState, useMemo } from 'react';
+// Fréquentation du site (table page_views, visites anonymes hors /admin).
+// Supabase renvoie au plus 1 000 lignes par requête : on récupère tout, page par page,
+// sinon les jours récents disparaissent dès que le site dépasse 1 000 pages vues sur la période.
+import { useEffect, useMemo, useState } from 'react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { supabase } from '../../lib/supabase';
-import { Users, Eye, TrendingUp, Calendar } from 'lucide-react';
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from 'recharts';
+import { PAPER } from '../../atelier/kit';
 
-type Period = 7 | 30 | 90;
+type Period = 7 | 30 | 90 | 365;
+const PERIODS: { days: Period; label: string }[] = [
+  { days: 7, label: '7 jours' },
+  { days: 30, label: '30 jours' },
+  { days: 90, label: '3 mois' },
+  { days: 365, label: '1 an' },
+];
+const PAGE = 1000;
 
 interface PageView {
   path: string;
@@ -19,275 +22,288 @@ interface PageView {
   created_at: string;
 }
 
-export default function VisitorsPanel() {
-  const [period, setPeriod] = useState<Period>(7);
-  const [views, setViews] = useState<PageView[]>([]);
-  const [loading, setLoading] = useState(true);
+// Jour local (Europe/Paris côté navigateur), pas le jour UTC
+const dayKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  useEffect(() => {
-    async function fetchViews() {
-      setLoading(true);
-      const since = new Date();
-      since.setDate(since.getDate() - period);
-      const { data, error } = await supabase
+async function fetchAllSince(since: Date): Promise<PageView[]> {
+  const first = await supabase
+    .from('page_views')
+    .select('path, visitor_id, created_at', { count: 'exact' })
+    .gte('created_at', since.toISOString())
+    .order('created_at', { ascending: true })
+    .range(0, PAGE - 1);
+  if (first.error) throw first.error;
+  const rows = [...(first.data || [])];
+  const total = first.count ?? rows.length;
+  const pages: Promise<PageView[]>[] = [];
+  for (let from = PAGE; from < total; from += PAGE) {
+    pages.push(
+      (async () => {
+        const { data, error } = await supabase
         .from('page_views')
         .select('path, visitor_id, created_at')
         .gte('created_at', since.toISOString())
-        .order('created_at', { ascending: true });
-      if (error) {
-        console.error('[analytics] fetch error:', error);
-        setViews([]);
-      } else {
-        setViews(data || []);
-      }
-      setLoading(false);
-    }
-    fetchViews();
-  }, [period]);
+        .order('created_at', { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (error) throw error;
+        return (data || []) as PageView[];
+      })(),
+    );
+  }
+  for (const p of await Promise.all(pages)) rows.push(...p);
+  return rows;
+}
 
-  // Calculs dérivés
+function pageLabel(path: string, titles: Record<string, string>) {
+  if (path === '/') return 'Accueil';
+  if (titles[path]) return titles[path];
+  const named: Record<string, string> = {
+    '/articles': 'Bibliothèque (Comprendre)',
+    '/evenements': 'Rendez-vous',
+    '/faq': 'Questions fréquentes',
+    '/contact': 'Contact',
+    '/mentions-legales': 'Mentions légales',
+    '/politique-confidentialite': 'Politique de confidentialité',
+  };
+  return named[path] || path;
+}
+
+export default function VisitorsPanel({ titles = {} }: { titles?: Record<string, string> }) {
+  const [period, setPeriod] = useState<Period>(30);
+  const [views, setViews] = useState<PageView[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reload, setReload] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      // On charge aussi la période précédente, pour comparer
+      const since = new Date();
+      since.setHours(0, 0, 0, 0);
+      since.setDate(since.getDate() - (period * 2 - 1));
+      try {
+        const rows = await fetchAllSince(since);
+        if (!cancelled) setViews(rows);
+      } catch (e) {
+        const err = e as { message?: string; code?: string };
+        console.error('[analytics] fetch error:', err);
+        if (!cancelled) {
+          setViews([]);
+          setError(
+            /jwt|expired|401|PGRST30/i.test(`${err.code} ${err.message}`)
+              ? 'Votre session a expiré. Déconnectez-vous puis reconnectez-vous.'
+              : /does not exist|PGRST205|42P01/i.test(`${err.code} ${err.message}`)
+                ? "La table des visites n'existe pas dans la base. La migration « create_page_views » doit être appliquée dans Supabase."
+                : `Les statistiques n'ont pas pu être chargées (${err.message || 'erreur inconnue'}).`,
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [period, reload]);
+
   const stats = useMemo(() => {
-    const totalViews = views.length;
-    const uniqueVisitors = new Set(views.map((v) => v.visitor_id)).size;
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    start.setDate(start.getDate() - (period - 1));
+    const current = views.filter((v) => new Date(v.created_at) >= start);
+    const previous = views.filter((v) => new Date(v.created_at) < start);
 
-    // Vues par jour
-    const dailyMap = new Map<string, { date: string; views: number; visitors: Set<string> }>();
-    for (let i = period - 1; i >= 0; i--) {
+    const uniq = (list: PageView[]) => new Set(list.map((v) => v.visitor_id)).size;
+    const evolution = (now: number, before: number) => (before === 0 ? null : Math.round(((now - before) / before) * 100));
+
+    // Regroupement par jour (≤ 90 jours) ou par semaine (1 an)
+    const byWeek = period === 365;
+    const buckets = new Map<string, { label: string; views: number; visitors: Set<string> }>();
+    const step = byWeek ? 7 : 1;
+    for (let i = period - 1; i >= 0; i -= step) {
       const d = new Date();
+      d.setHours(0, 0, 0, 0);
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
-      dailyMap.set(key, { date: key, views: 0, visitors: new Set() });
+      buckets.set(dayKey(d), {
+        label: d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
+        views: 0,
+        visitors: new Set(),
+      });
     }
-    for (const v of views) {
-      const key = v.created_at.slice(0, 10);
-      const entry = dailyMap.get(key);
-      if (entry) {
-        entry.views++;
-        entry.visitors.add(v.visitor_id);
+    const keys = [...buckets.keys()];
+    for (const v of current) {
+      const k = dayKey(new Date(v.created_at));
+      // Semaine : on range la visite dans le dernier seau qui commence avant elle
+      const target = byWeek ? [...keys].reverse().find((key) => key <= k) : k;
+      const b = target ? buckets.get(target) : undefined;
+      if (b) {
+        b.views++;
+        b.visitors.add(v.visitor_id);
       }
     }
-    const daily = Array.from(dailyMap.values()).map((d) => ({
-      date: d.date,
-      label: new Date(d.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
-      views: d.views,
-      visitors: d.visitors.size,
-    }));
+    const series = [...buckets.values()].map((b) => ({ label: b.label, views: b.views, visitors: b.visitors.size }));
 
-    // Top 10 pages
-    const pathCount = new Map<string, { views: number; visitors: Set<string> }>();
-    for (const v of views) {
-      const entry = pathCount.get(v.path) || { views: 0, visitors: new Set() };
-      entry.views++;
-      entry.visitors.add(v.visitor_id);
-      pathCount.set(v.path, entry);
+    const pages = new Map<string, { views: number; visitors: Set<string> }>();
+    for (const v of current) {
+      const e = pages.get(v.path) || { views: 0, visitors: new Set<string>() };
+      e.views++;
+      e.visitors.add(v.visitor_id);
+      pages.set(v.path, e);
     }
-    const topPages = Array.from(pathCount.entries())
-      .map(([path, { views, visitors }]) => ({ path, views, visitors: visitors.size }))
+    const topPages = [...pages.entries()]
+      .map(([path, e]) => ({ path, views: e.views, visitors: e.visitors.size }))
       .sort((a, b) => b.views - a.views)
-      .slice(0, 10);
+      .slice(0, 12);
 
-    // Tendance vs période précédente (approximation : on prend la moitié récente vs moitié ancienne)
-    const mid = Math.floor(daily.length / 2);
-    const recentViews = daily.slice(mid).reduce((s, d) => s + d.views, 0);
-    const oldViews = daily.slice(0, mid).reduce((s, d) => s + d.views, 0);
-    const trend = oldViews === 0 ? 0 : Math.round(((recentViews - oldViews) / oldViews) * 100);
+    const today = dayKey(new Date());
+    const todayViews = current.filter((v) => dayKey(new Date(v.created_at)) === today);
 
-    return { totalViews, uniqueVisitors, daily, topPages, trend };
+    return {
+      views: current.length,
+      visitors: uniq(current),
+      viewsEvo: evolution(current.length, previous.length),
+      visitorsEvo: evolution(uniq(current), uniq(previous)),
+      perVisitor: uniq(current) ? (current.length / uniq(current)).toFixed(1).replace('.', ',') : '0',
+      todayVisitors: uniq(todayViews),
+      series,
+      topPages,
+      byWeek,
+    };
   }, [views, period]);
 
+  const periodLabel = PERIODS.find((p) => p.days === period)!.label;
+
   return (
-    <div className="space-y-6">
-      {/* Sélecteur de période */}
-      <div className="flex items-center gap-2 bg-white rounded-2xl p-2 shadow-sm border border-gray-100 w-fit">
-        <Calendar size={18} className="text-gray-400 ml-2" />
-        {([7, 30, 90] as Period[]).map((p) => (
-          <button
-            key={p}
-            onClick={() => setPeriod(p)}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-              period === p
-                ? 'bg-indigo-primary text-white shadow-sm'
-                : 'text-gray-500 hover:bg-gray-50'
-            }`}
-          >
-            {p} jours
-          </button>
-        ))}
+    <div className="grid gap-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <div role="group" aria-label="Période" className="flex flex-wrap gap-1 rounded-full bg-white p-1 paper">
+          {PERIODS.map((p) => (
+            <button
+              key={p.days}
+              type="button"
+              onClick={() => setPeriod(p.days)}
+              aria-pressed={period === p.days}
+              className={`rounded-full px-4 py-2 text-sm font-extrabold transition-colors ${
+                period === p.days ? 'bg-[var(--ink)] text-white' : 'text-[var(--ink-2)] hover:bg-[var(--mat)]'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setReload((n) => n + 1)}
+          className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-extrabold text-[var(--ink-2)] hover:bg-white"
+        >
+          <RefreshCw size={16} aria-hidden className={loading ? 'animate-spin' : ''} /> Actualiser
+        </button>
       </div>
 
+      {error && (
+        <div role="alert" className="paper flex gap-3 bg-white p-5 font-semibold" style={{ borderLeft: '6px solid #EE7A5F' }}>
+          <AlertTriangle className="shrink-0 text-[#C2492F]" aria-hidden />
+          <p>{error}</p>
+        </div>
+      )}
+
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-primary border-t-transparent"></div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-busy="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-white/70" />
+          ))}
         </div>
       ) : (
-        <>
-          {/* KPI cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <KpiCard
-              icon={<Eye size={24} />}
-              label="Pages vues"
-              value={stats.totalViews.toLocaleString('fr-FR')}
-              color="indigo"
-            />
-            <KpiCard
-              icon={<Users size={24} />}
-              label="Visiteurs uniques"
-              value={stats.uniqueVisitors.toLocaleString('fr-FR')}
-              color="peach"
-            />
-            <KpiCard
-              icon={<TrendingUp size={24} />}
-              label="Tendance"
-              value={`${stats.trend > 0 ? '+' : ''}${stats.trend}%`}
-              color={stats.trend >= 0 ? 'nature' : 'red'}
-              hint="recent vs début période"
-            />
-          </div>
+        !error && (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Kpi label="Visiteurs" value={stats.visitors} evo={stats.visitorsEvo} paper={PAPER.lilas} hint={`sur ${periodLabel}`} />
+              <Kpi label="Pages vues" value={stats.views} evo={stats.viewsEvo} paper={PAPER.saumon} hint={`sur ${periodLabel}`} />
+              <Kpi label="Pages par visiteur" value={stats.perVisitor} paper={PAPER.beurre} hint="en moyenne" />
+              <Kpi label="Visiteurs aujourd'hui" value={stats.todayVisitors} paper={PAPER.menthe} hint="depuis minuit" />
+            </div>
 
-          {/* Graphique */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="font-heading font-bold text-lg text-dark-text mb-4">
-              Évolution des visites
-            </h3>
-            {stats.totalViews === 0 ? (
-              <div className="text-center py-12 text-gray-400 italic">
-                Aucune donnée pour cette période.
+            <section className="paper bg-white p-5 sm:p-7">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="text-xl font-extrabold">Évolution {stats.byWeek ? 'semaine par semaine' : 'jour par jour'}</h2>
+                <p className="flex gap-4 text-sm font-bold text-[var(--ink-2)]">
+                  <span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-[#5361C9]" /> Pages vues</span>
+                  <span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-[#F4A259]" /> Visiteurs</span>
+                </p>
               </div>
-            ) : (
-              <div style={{ width: '100%', height: 320 }}>
-                <ResponsiveContainer>
-                  <LineChart data={stats.daily} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="label" stroke="#9CA3AF" fontSize={12} />
-                    <YAxis stroke="#9CA3AF" fontSize={12} allowDecimals={false} />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: 12,
-                        border: '1px solid #E5E7EB',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                      }}
-                      formatter={(value, name) => [
-                        value as number,
-                        name === 'views' ? 'Pages vues' : 'Visiteurs',
-                      ]}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="views"
-                      stroke="#7689DE"
-                      strokeWidth={3}
-                      dot={{ fill: '#7689DE', r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="visitors"
-                      stroke="#F8A88A"
-                      strokeWidth={3}
-                      dot={{ fill: '#F8A88A', r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                <div className="flex justify-center gap-6 mt-4 text-sm">
-                  <span className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-indigo-primary"></span>
-                    <span className="text-dark-text/70">Pages vues</span>
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-peach-primary"></span>
-                    <span className="text-dark-text/70">Visiteurs uniques</span>
-                  </span>
+              {stats.views === 0 ? (
+                <p className="py-14 text-center font-semibold text-[var(--ink-2)]">Aucune visite enregistrée sur cette période.</p>
+              ) : (
+                <div className="mt-5 h-72">
+                  <ResponsiveContainer>
+                    <BarChart data={stats.series} margin={{ top: 4, right: 4, left: -18, bottom: 0 }} barGap={2}>
+                      <CartesianGrid vertical={false} stroke="#E8E6F2" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#4B4873' }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={18} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#4B4873' }} tickLine={false} axisLine={false} />
+                      <Tooltip
+                        cursor={{ fill: 'rgba(83,97,201,.08)' }}
+                        contentStyle={{ borderRadius: 12, border: '2px solid #2A284E', fontWeight: 700 }}
+                        formatter={(value, name) => [value as number, name === 'views' ? 'Pages vues' : 'Visiteurs']}
+                      />
+                      <Bar dataKey="views" fill="#5361C9" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                      <Bar dataKey="visitors" fill="#F4A259" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </section>
 
-          {/* Top pages */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="font-heading font-bold text-lg text-dark-text mb-4">
-              Pages les plus visitées
-            </h3>
-            {stats.topPages.length === 0 ? (
-              <div className="text-center py-8 text-gray-400 italic">
-                Aucune donnée pour cette période.
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="text-xs uppercase text-gray-500 border-b border-gray-100">
-                    <tr>
-                      <th className="p-3 w-12">#</th>
-                      <th className="p-3">Page</th>
-                      <th className="p-3 text-right">Vues</th>
-                      <th className="p-3 text-right">Visiteurs uniques</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {stats.topPages.map((page, i) => {
-                      const maxViews = stats.topPages[0].views;
-                      const barPct = (page.views / maxViews) * 100;
-                      return (
-                        <tr key={page.path} className="hover:bg-gray-50">
-                          <td className="p-3 text-gray-400 font-bold">{i + 1}</td>
-                          <td className="p-3 max-w-md">
-                            <div className="font-bold text-dark-text truncate">
-                              {page.path === '/' ? 'Accueil' : page.path}
-                            </div>
-                            <div className="mt-1.5 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-indigo-primary rounded-full transition-all"
-                                style={{ width: `${barPct}%` }}
-                              />
-                            </div>
-                          </td>
-                          <td className="p-3 text-right font-bold text-indigo-primary">
-                            {page.views}
-                          </td>
-                          <td className="p-3 text-right text-gray-500">
-                            {page.visitors}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </>
+            <section className="paper bg-white p-5 sm:p-7">
+              <h2 className="text-xl font-extrabold">Pages les plus lues</h2>
+              {stats.topPages.length === 0 ? (
+                <p className="py-8 text-center font-semibold text-[var(--ink-2)]">Rien pour l'instant.</p>
+              ) : (
+                <ol className="mt-4 grid gap-3">
+                  {stats.topPages.map((p) => (
+                    <li key={p.path} className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1.5">
+                      <a href={p.path} target="_blank" rel="noopener noreferrer" className="truncate font-bold hover:underline" title={p.path}>
+                        {pageLabel(p.path, titles)}
+                      </a>
+                      <span className="text-right text-sm font-extrabold tabular-nums">
+                        {p.views} <span className="font-semibold text-[var(--ink-2)]">vues · {p.visitors} visiteurs</span>
+                      </span>
+                      <span className="col-span-2 h-2 overflow-hidden rounded-full bg-[#EEF0FB]">
+                        <span className="block h-full rounded-full bg-[#5361C9]" style={{ width: `${(p.views / stats.topPages[0].views) * 100}%` }} />
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </section>
+
+            <p className="text-sm font-semibold text-[var(--ink-2)]">
+              Comptage anonyme et sans cookie : un visiteur = un navigateur. Les robots (Google, Facebook…) et vos passages dans l'espace bénévoles ne sont pas comptés.
+            </p>
+          </>
+        )
       )}
     </div>
   );
 }
 
-function KpiCard({
-  icon,
-  label,
-  value,
-  color,
-  hint,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  color: 'indigo' | 'peach' | 'nature' | 'red';
-  hint?: string;
-}) {
-  const colorClasses = {
-    indigo: 'bg-indigo-primary/10 text-indigo-primary',
-    peach: 'bg-peach-primary/10 text-peach-primary',
-    nature: 'bg-nature-primary/10 text-nature-primary',
-    red: 'bg-red-50 text-red-500',
-  };
+function Kpi({ label, value, evo, paper, hint }: { label: string; value: number | string; evo?: number | null; paper: string; hint: string }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">{label}</span>
-        <div className={`p-2 rounded-xl ${colorClasses[color]}`}>{icon}</div>
-      </div>
-      <div className="font-heading font-bold text-3xl text-dark-text">{value}</div>
-      {hint && <div className="text-xs text-gray-400 mt-1">{hint}</div>}
+    <div className="paper relative overflow-hidden bg-white p-5">
+      <span aria-hidden className="absolute inset-x-0 top-0 h-2" style={{ backgroundColor: paper }} />
+      <p className="text-sm font-extrabold text-[var(--ink-2)]">{label}</p>
+      <p className="display mt-1 text-4xl font-extrabold tabular-nums">{typeof value === 'number' ? value.toLocaleString('fr-FR') : value}</p>
+      <p className="mt-1 text-sm font-semibold text-[var(--ink-2)]">
+        {hint}
+        {evo !== undefined && evo !== null && (
+          <span className={`ml-2 font-extrabold ${evo >= 0 ? 'text-[#2E7D4F]' : 'text-[#C2492F]'}`}>
+            {evo > 0 ? '+' : ''}
+            {evo} % vs période précédente
+          </span>
+        )}
+      </p>
     </div>
   );
 }

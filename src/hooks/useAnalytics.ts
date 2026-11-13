@@ -26,8 +26,9 @@ export function useAnalytics() {
     const path = location.pathname;
     if (path.startsWith('/admin')) return;
 
-    // Pendant le prerender Puppeteer, on n'a pas besoin d'envoyer des hits
-    if (navigator.userAgent.includes('HeadlessChrome')) return;
+    // Prerender Puppeteer, robots d'indexation (Googlebot exécute le JS) et outils de test :
+    // on ne compte que les vraies visites.
+    if (navigator.webdriver || /HeadlessChrome|bot|crawl|spider|slurp|Lighthouse|PageSpeed|facebookexternalhit|Chrome-Lighthouse/i.test(navigator.userAgent)) return;
 
     const visitorId = getOrCreateVisitorId();
     supabase

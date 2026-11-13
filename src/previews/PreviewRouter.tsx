@@ -3,6 +3,18 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import DirectionA from './DirectionA';
 import DirectionB from './DirectionB';
+import { Dashboard } from '../pages/AdminPage';
+import { css as atelierCss } from '../atelier/kit';
+
+// Aperçu de l'espace bénévoles sans connexion (données publiques uniquement)
+function AdminPreview() {
+  return (
+    <div className="atelier">
+      <style>{atelierCss}</style>
+      <Dashboard email="aperçu local, sans connexion" />
+    </div>
+  );
+}
 
 const DIRECTIONS = [
   {
@@ -83,6 +95,7 @@ export default function PreviewRouter() {
         <Route index element={<Index />} />
         <Route path="a" element={<DirectionA />} />
         <Route path="b" element={<DirectionB />} />
+        <Route path="admin" element={<AdminPreview />} />
       </Routes>
       <Switcher />
     </>
